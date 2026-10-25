@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرسى المعرفة – تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0f2a43;--sea:#1f7a8c;--sand:#f2e8d5;--rope:#b8884b;--ink:#13202c;--err:#b3261e;--ok:#1b6e3c}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Tajawal,Tahoma,sans-serif;color:var(--ink);
+background:linear-gradient(180deg,var(--navy) 0 38%,var(--sand) 38% 100%)}
+.card{width:100%;max-width:400px;background:#fffaf0;border:2px solid var(--rope);border-radius:14px;padding:24px}
+h1{margin:0 0 4px;font-size:26px;font-weight:800;color:var(--navy)}
+.sub{margin:0 0 18px;color:#5b6b78;font-size:14px}
+.tabs{display:flex;border-bottom:2px solid #e3d6bb;margin-bottom:16px}
+.tabs button{flex:1;background:none;border:0;padding:10px;font:700 15px Tajawal,sans-serif;color:#7a6a4a;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button[aria-selected=true]{color:var(--navy);border-color:var(--sea)}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 4px}
+input{width:100%;padding:12px;border:1.5px solid #cdbf9f;border-radius:8px;font:16px Tajawal,sans-serif;background:#fff;direction:ltr;text-align:left}
+input:focus,button:focus-visible{outline:3px solid var(--sea);outline-offset:1px}
+.go{width:100%;margin-top:18px;padding:13px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:800 16px Tajawal,sans-serif;cursor:pointer}
+.go:disabled{opacity:.6;cursor:wait}
+.link{background:none;border:0;color:var(--sea);font:700 14px Tajawal,sans-serif;cursor:pointer;padding:10px 0 0}
+#msg{min-height:22px;margin-top:12px;font-size:14px;font-weight:700}
+#msg.err{color:var(--err)}#msg.ok{color:var(--ok)}
+#user{display:none;text-align:center}
+#user p{direction:ltr;font-weight:700;word-break:break-all}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>⚓ مرسى المعرفة</h1>
+  <p class="sub">سجّل دخولك لمتابعة دراستك</p>
+
+  <section id="auth">
+    <div class="tabs" role="tablist">
+      <button id="tabIn" role="tab" aria-selected="true">تسجيل الدخول</button>
+      <button id="tabUp" role="tab" aria-selected="false">حساب جديد</button>
+    </div>
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+    <label for="pass">كلمة المرور</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="6 أحرف على الأقل">
+    <button class="go" id="go">تسجيل الدخول</button>
+    <button class="link" id="reset">نسيت كلمة المرور؟</button>
+  </section>
+
+  <section id="user">
+    <p>أنت مسجّل بـ:</p>
+    <p id="who"></p>
+    <button class="go" id="out">تسجيل الخروج</button>
+  </section>
+
+  <div id="msg" role="status" aria-live="polite"></div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
+  authDomain: "knowledgeharbor-30476.firebaseapp.com",
+  projectId: "knowledgeharbor-30476",
+  storageBucket: "knowledgeharbor-30476.firebasestorage.app",
+  messagingSenderId: "280788802817",
+  appId: "1:280788802817:web:f2a7aea087fab122790f00",
+  measurementId: "G-KSD4JSVTGK"
+};
+const auth = getAuth(initializeApp(firebaseConfig));
+
+const $ = id => document.getElementById(id);
+let mode = "in";
+
+const errors = {
+  "auth/invalid-email": "صيغة البريد الإلكتروني غير صحيحة.",
+  "auth/missing-password": "اكتب كلمة المرور.",
+  "auth/weak-password": "كلمة المرور ضعيفة، استخدم 6 أحرف على الأقل.",
+  "auth/email-already-in-use": "هذا البريد مسجّل مسبقاً، جرّب تسجيل الدخول.",
+  "auth/invalid-credential": "البريد أو كلمة المرور غير صحيحة.",
+  "auth/user-not-found": "لا يوجد حساب بهذا البريد.",
+  "auth/wrong-password": "كلمة المرور غير صحيحة.",
+  "auth/too-many-requests": "محاولات كثيرة، انتظر قليلاً ثم أعد المحاولة.",
+  "auth/network-request-failed": "تعذّر الاتصال، تحقق من الإنترنت.",
+  "auth/unauthorized-domain": "هذا الدومين غير مضاف في Authorized domains بإعدادات Firebase."
+};
+const say = (t, type) => { $("msg").textContent = t; $("msg").className = type || ""; };
+const fail = e => say(errors[e.code] || ("حدث خطأ: " + e.code), "err");
+
+function setMode(m){
+  mode = m;
+  $("tabIn").setAttribute("aria-selected", m === "in");
+  $("tabUp").setAttribute("aria-selected", m === "up");
+  $("go").textContent = m === "in" ? "تسجيل الدخول" : "إنشاء الحساب";
+  $("pass").autocomplete = m === "in" ? "current-password" : "new-password";
+  $("reset").style.display = m === "in" ? "" : "none";
+  say("");
+}
+$("tabIn").onclick = () => setMode("in");
+$("tabUp").onclick = () => setMode("up");
+
+$("go").onclick = async () => {
+  const email = $("email").value.trim(), pass = $("pass").value;
+  $("go").disabled = true; say("");
+  try {
+    mode === "in" ? await signInWithEmailAndPassword(auth, email, pass)
+                  : await createUserWithEmailAndPassword(auth, email, pass);
+  } catch (e) { fail(e); }
+  $("go").disabled = false;
+};
+
+$("reset").onclick = async () => {
+  const email = $("email").value.trim();
+  if (!email) return say("اكتب بريدك أولاً ثم اضغط نسيت كلمة المرور.", "err");
+  try { await sendPasswordResetEmail(auth, email); say("أرسلنا رابط إعادة التعيين إلى بريدك.", "ok"); }
+  catch (e) { fail(e); }
+};
+
+$("out").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, user => {
+  $("auth").style.display = user ? "none" : "";
+  $("user").style.display = user ? "block" : "none";
+  if (user) { $("who").textContent = user.email; say("تم تسجيل الدخول بنجاح ✅", "ok"); }
+  else say("");
+});
+</script>
+</body>
+</html>
