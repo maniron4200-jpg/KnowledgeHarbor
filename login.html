@@ -24,8 +24,6 @@ input:focus,button:focus-visible{outline:3px solid var(--sea);outline-offset:1px
 .link{background:none;border:0;color:var(--sea);font:700 14px Tajawal,sans-serif;cursor:pointer;padding:10px 0 0}
 #msg{min-height:22px;margin-top:12px;font-size:14px;font-weight:700}
 #msg.err{color:var(--err)}#msg.ok{color:var(--ok)}
-#user{display:none;text-align:center}
-#user p{direction:ltr;font-weight:700;word-break:break-all}
 </style>
 </head>
 <body>
@@ -46,19 +44,13 @@ input:focus,button:focus-visible{outline:3px solid var(--sea);outline-offset:1px
     <button class="link" id="reset">نسيت كلمة المرور؟</button>
   </section>
 
-  <section id="user">
-    <p>أنت مسجّل بـ:</p>
-    <p id="who"></p>
-    <button class="go" id="out">تسجيل الخروج</button>
-  </section>
-
   <div id="msg" role="status" aria-live="polite"></div>
 </main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-         sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+         sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -118,13 +110,11 @@ $("reset").onclick = async () => {
   catch (e) { fail(e); }
 };
 
-$("out").onclick = () => signOut(auth);
-
 onAuthStateChanged(auth, user => {
-  $("auth").style.display = user ? "none" : "";
-  $("user").style.display = user ? "block" : "none";
-  if (user) { $("who").textContent = user.email; say("تم تسجيل الدخول بنجاح ✅", "ok"); }
-  else say("");
+  if (user) {
+    say("تم تسجيل الدخول ✅ جارٍ التحويل...", "ok");
+    window.location.replace("home.html");
+  }
 });
 </script>
 </body>
