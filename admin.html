@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرسى المعرفة – لوحة التحكم</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0f2a43;--sea:#1f7a8c;--sand:#f2e8d5;--rope:#b8884b;--err:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:var(--sand);color:#13202c;display:none}
+header{background:var(--navy);color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:19px}
+header a{color:#fff;font-weight:700}
+main{max-width:640px;margin:0 auto;padding:16px}
+.card{background:#fffaf0;border:2px solid var(--rope);border-radius:14px;padding:16px;margin-bottom:16px}
+h2{margin:0 0 10px;font-size:17px;color:var(--navy)}
+input,select,textarea{width:100%;padding:11px;margin:5px 0;border:1.5px solid #cdbf9f;border-radius:8px;font:15px Tajawal,sans-serif;background:#fff}
+textarea{min-height:70px}
+.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
+.sub{border-bottom:1px solid #e3d6bb;padding:8px 0}
+.prof{margin:6px 14px}
+.lec{margin:4px 28px;font-size:14px}
+small{color:#7a6a4a}
+.x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
+</style>
+</head>
+<body>
+<header><h1>⚙️ لوحة التحكم</h1><a href="home.html">الرئيسية</a></header>
+<main>
+  <div class="card">
+    <h2>📚 مادة جديدة</h2>
+    <input id="sName" placeholder="اسم المادة">
+    <input id="sTerm" placeholder="الفصل (مثلاً: الفصل الأول)">
+    <button class="add" id="addS">إضافة المادة</button>
+  </div>
+  <div class="card">
+    <h2>👨‍🏫 أستاذ جديد</h2>
+    <input id="pName" placeholder="اسم الأستاذ">
+    <select id="pSub"></select>
+    <button class="add" id="addP">إضافة الأستاذ</button>
+  </div>
+  <div class="card">
+    <h2>🎬 محاضرة جديدة</h2>
+    <select id="lSub"></select>
+    <select id="lProf"></select>
+    <input id="lTitle" placeholder="عنوان المحاضرة">
+    <input id="lUrl" placeholder="رابط يوتيوب" dir="ltr">
+    <textarea id="lDesc" placeholder="وصف (اختياري)"></textarea>
+    <button class="add" id="addL">إضافة المحاضرة</button>
+  </div>
+  <div class="card">
+    <h2>المحتوى الحالي</h2>
+    <div id="list"></div>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
+  authDomain: "knowledgeharbor-30476.firebaseapp.com",
+  projectId: "knowledgeharbor-30476",
+  storageBucket: "knowledgeharbor-30476.firebasestorage.app",
+  messagingSenderId: "280788802817",
+  appId: "1:280788802817:web:f2a7aea087fab122790f00",
+  measurementId: "G-KSD4JSVTGK"
+};
+const ADMIN = "maniron4200@gmail.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = id => document.getElementById(id);
+const val = id => $(id).value.trim();
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let S = [], P = [], L = [];
+
+onAuthStateChanged(auth, u => {
+  if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
+  document.body.style.display = "block";
+  load();
+});
+
+async function load() {
+  try {
+    const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
+    const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
+    S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
+    S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
+    render();
+  } catch (e) { alert("خطأ بتحميل البيانات: " + e.code); }
+}
+
+function opts(arr, label) {
+  return arr.length ? arr.map(x => `<option value="${x.id}">${esc(label(x))}</option>`).join("") : `<option value="">— ما كو —</option>`;
+}
+function fillProfs() {
+  $("lProf").innerHTML = opts(P.filter(p => p.subjectId === $("lSub").value), p => p.name);
+}
+$("lSub").onchange = fillProfs;
+
+function render() {
+  const sv = $("lSub").value;
+  $("pSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
+  $("lSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
+  if (sv && S.some(s => s.id === sv)) $("lSub").value = sv;
+  fillProfs();
+  $("list").innerHTML = S.map(s =>
+    `<div class="sub"><b>📚 ${esc(s.name)}</b> <small>${esc(s.term)}</small> <button class="x" data-t="s" data-id="${s.id}">حذف</button>` +
+    P.filter(p => p.subjectId === s.id).map(p =>
+      `<div class="prof">👨‍🏫 ${esc(p.name)} <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
+      L.filter(l => l.professorId === p.id).map(l =>
+        `<div class="lec">🎬 ${esc(l.title)} <button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
+      `</div>`).join("") +
+    `</div>`).join("") || "<p>ما كو محتوى بعد.</p>";
+}
+
+async function add(name, data) {
+  try { await addDoc(collection(db, name), { ...data, createdAt: serverTimestamp() }); await load(); }
+  catch (e) { alert("فشلت الإضافة: " + e.code); }
+}
+
+$("addS").onclick = async () => {
+  if (!val("sName")) return alert("اكتب اسم المادة");
+  await add("subjects", { name: val("sName"), term: val("sTerm") });
+  $("sName").value = ""; $("sTerm").value = "";
+};
+$("addP").onclick = async () => {
+  if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
+  await add("professors", { name: val("pName"), subjectId: $("pSub").value });
+  $("pName").value = "";
+};
+$("addL").onclick = async () => {
+  if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
+  await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value });
+  $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = "";
+};
+
+$("list").onclick = async e => {
+  const b = e.target.closest("button[data-id]");
+  if (!b || !confirm("متأكد من الحذف؟")) return;
+  const { t, id } = b.dataset;
+  const del = (n, i) => deleteDoc(doc(db, n, i));
+  try {
+    if (t === "s") {
+      for (const p of P.filter(x => x.subjectId === id)) await del("professors", p.id);
+      for (const l of L.filter(x => x.subjectId === id)) await del("lectures", l.id);
+      await del("subjects", id);
+    } else if (t === "p") {
+      for (const l of L.filter(x => x.professorId === id)) await del("lectures", l.id);
+      await del("professors", id);
+    } else await del("lectures", id);
+    await load();
+  } catch (err) { alert("فشل الحذف: " + err.code); }
+};
+</script>
+</body>
+</html>
