@@ -57,6 +57,7 @@ small{color:#9a8650}
   <div class="card">
     <h2>🗂️ المحتوى الحالي</h2>
     <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
+    <button class="add" id="copyO" style="margin-bottom:10px;background:var(--ink)">📋 نسخ الترتيب (بديل بدون Firebase)</button>
     <div id="list"></div>
   </div>
 </main>
@@ -210,6 +211,14 @@ $("saveO").onclick = async () => {
   }
   clearTimeout(timer);
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
+};
+
+$("copyO").onclick = async () => {
+  const obj = {};
+  L.forEach((l, i) => { obj[l.id] = i; });
+  const text = JSON.stringify(obj, null, 1);
+  try { await navigator.clipboard.writeText(text); alert("تم نسخ الترتيب ✅\nالصقه بملف order.json على GitHub واحفظ (Commit)."); }
+  catch (_) { prompt("انسخ هذا النص يدوياً والصقه بملف order.json:", text); }
 };
 
 $("list").onclick = async e => {
