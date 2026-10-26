@@ -135,24 +135,48 @@ function render() {
 }
 
 async function add(name, data) {
-  try { await addDoc(collection(db, name), { ...data, createdAt: serverTimestamp() }); await load(); }
-  catch (e) { alert("فشلت الإضافة: " + e.code); }
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 40000);
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const fields = {};
+    for (const [k, v] of Object.entries(data)) {
+      fields[k] = typeof v === "number" ? { integerValue: String(v) } : { stringValue: String(v ?? "") };
+    }
+    fields.createdAt = { timestampValue: new Date().toISOString() };
+    const url = "https://firestore.googleapis.com/v1/projects/" + firebaseConfig.projectId + "/databases/(default)/documents/" + name;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+      body: JSON.stringify({ fields }),
+      signal: ctl.signal
+    });
+    if (!res.ok) {
+      let msg = res.status;
+      try { const j = await res.json(); msg = res.status + " " + ((j.error && j.error.message) || ""); } catch (_) {}
+      throw new Error(msg);
+    }
+    clearTimeout(timer);
+    await load();
+    return true;
+  } catch (e) {
+    clearTimeout(timer);
+    alert("فشلت الإضافة: " + (e.name === "AbortError" ? "انتهت المهلة، النت ضعيف" : e.message));
+    return false;
+  }
 }
 
 $("addS").onclick = async () => {
   if (!val("sName")) return alert("اكتب اسم المادة");
-  await add("subjects", { name: val("sName"), term: val("sTerm") });
-  $("sName").value = ""; $("sTerm").value = "";
+  if (await add("subjects", { name: val("sName"), term: val("sTerm") })) { $("sName").value = ""; $("sTerm").value = ""; }
 };
 $("addP").onclick = async () => {
   if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
-  await add("professors", { name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value });
-  $("pName").value = ""; $("pPhoto").value = "";
+  if (await add("professors", { name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value })) { $("pName").value = ""; $("pPhoto").value = ""; }
 };
 $("addL").onclick = async () => {
   if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
-  await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: L.length });
-  $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = "";
+  if (await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: L.length })) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; }
 };
 
 $("saveO").onclick = async () => {
