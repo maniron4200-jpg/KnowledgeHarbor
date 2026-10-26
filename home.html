@@ -28,9 +28,6 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .gate{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:20px}
 .gate input{width:100%;padding:12px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;font:16px Tajawal,sans-serif}
 .err{color:var(--err);font-weight:700;min-height:22px}
-.mv{display:flex;gap:8px;margin-top:10px}
-.mv button{flex:1;padding:8px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
-.mv button:active{background:var(--gold2)}
 </style>
 </head>
 <body>
@@ -43,7 +40,7 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -60,7 +57,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [], sel = { s: null, p: null }, me = null, isAdmin = false;
+let S = [], P = [], L = [], sel = { s: null, p: null }, me = null, isAdmin = false, orderMap = null;
 
 const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
 const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
@@ -103,14 +100,21 @@ const ordNum = t => {
   const i = ORD.findIndex(w => n.includes(w));
   return i < 0 ? Infinity : i + 1;
 };
-const lecKey = l => (typeof l.order === "number" ? l.order : ordNum(l.title));
+const baseKey = l => (typeof l.order === "number" ? l.order : ordNum(l.title));
+// الترتيب المحفوظ بملف order.json له الأولوية، وأي محاضرة غير موجودة فيه تنزل للآخر
+const lecKey = l => (orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l);
+const sortL = () => L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
 
 async function load() {
   try {
+    try {
+      const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" });
+      if (r.ok) orderMap = await r.json();
+    } catch (e) { orderMap = null; }
     const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
     const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
     S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
-    L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
+    sortL();
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
     render();
   } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + e.code; }
@@ -135,34 +139,13 @@ function render() {
     const p = P.find(x => x.id === sel.p);
     app.innerHTML = `<button class="back" data-back="p">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(p?.name)}</h2>` +
       (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${ytEmbed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">▶️ فتح على يوتيوب</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
-  }
-}
-
-async function move(id, dir) {
-  if (!isAdmin) return;
-  const list = L.filter(l => l.professorId === sel.p);
-  const i = list.findIndex(l => l.id === id);
-  const j = dir === "up" ? i - 1 : i + 1;
-  if (i < 0 || j < 0 || j >= list.length) return;
-  [list[i], list[j]] = [list[j], list[i]];
-  list.forEach((l, k) => l.order = k + 1);
-  L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
-  render();
-  try {
-    const batch = writeBatch(db);
-    list.forEach(l => batch.update(doc(db, "lectures", l.id), { order: l.order }));
-    await batch.commit();
-  } catch (e) {
-    alert("تعذّر حفظ الترتيب: " + (e.code || e));
-    load();
+        `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${ytEmbed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">▶️ فتح على يوتيوب</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
   }
 }
 
 $("app").onclick = e => {
   const b = e.target.closest("button");
   if (!b) return;
-  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
   if (b.dataset.s) sel = { s: b.dataset.s, p: null };
   else if (b.dataset.p) sel.p = b.dataset.p;
   else if (b.dataset.back === "s") sel = { s: null, p: null };
