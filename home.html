@@ -15,6 +15,8 @@ header a,#out{background:var(--rope);color:#fff;border:0;border-radius:8px;paddi
 main{max-width:640px;margin:0 auto;padding:16px}
 .item{display:block;width:100%;text-align:right;background:#fffaf0;border:2px solid var(--rope);border-radius:12px;padding:14px;margin-bottom:10px;font:700 16px Tajawal,sans-serif;color:var(--navy);cursor:pointer}
 .item small{display:block;color:#7a6a4a;font-weight:400;margin-top:2px}
+.prof{display:flex;align-items:center;gap:12px}
+.prof img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--rope)}
 .back{background:none;border:0;color:var(--sea);font:700 15px Tajawal,sans-serif;cursor:pointer;padding:0 0 10px}
 h2{margin:0 0 12px;color:var(--navy);font-size:20px}
 .lec{background:#fffaf0;border:2px solid var(--rope);border-radius:12px;padding:14px;margin-bottom:12px}
@@ -108,7 +110,7 @@ function render() {
     const s = S.find(x => x.id === sel.s);
     app.innerHTML = `<button class="back" data-back="s">→ رجوع للمواد</button><h2>${esc(s?.name)}</h2>` +
       (P.filter(p => p.subjectId === sel.s).map(p =>
-        `<button class="item" data-p="${p.id}">👨‍🏫 ${esc(p.name)}</button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
+        `<button class="item prof" data-p="${p.id}">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"}<span>${esc(p.name)}</span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
   } else {
     const p = P.find(x => x.id === sel.p);
     app.innerHTML = `<button class="back" data-back="p">→ رجوع للأساتذة</button><h2>${esc(p?.name)}</h2>` +
