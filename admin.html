@@ -6,42 +6,42 @@
 <title>مرسى المعرفة – لوحة التحكم</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0f2a43;--sea:#1f7a8c;--sand:#f2e8d5;--rope:#b8884b;--err:#b3261e}
+:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e}
 *{box-sizing:border-box}
-body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:var(--sand);color:#13202c;display:none}
-header{background:var(--navy);color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}
-header h1{margin:0;font-size:19px}
-header a{color:#fff;font-weight:700}
-main{max-width:640px;margin:0 auto;padding:16px}
-.card{background:#fffaf0;border:2px solid var(--rope);border-radius:14px;padding:16px;margin-bottom:16px}
-h2{margin:0 0 10px;font-size:17px;color:var(--navy)}
-input,select,textarea{width:100%;padding:11px;margin:5px 0;border:1.5px solid #cdbf9f;border-radius:8px;font:15px Tajawal,sans-serif;background:#fff}
+body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
+header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
+header h1{margin:0;font-size:20px;color:var(--gold)}
+header a{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:13px}
+main{max-width:640px;margin:0 auto;padding:18px 16px}
+.card{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(201,162,39,.12)}
+h2{margin:0 0 10px;font-size:17px;color:var(--ink);padding-bottom:8px;border-bottom:2px solid var(--line)}
+input,select,textarea{width:100%;padding:11px;margin:5px 0;border:1.5px solid var(--line);border-radius:10px;font:15px Tajawal,sans-serif;background:#fff;color:var(--ink)}
 textarea{min-height:70px}
-.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
-.sub{border-bottom:1px solid #e3d6bb;padding:8px 0}
+.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
+.sub{border-bottom:1px solid var(--line);padding:8px 0}
 .prof{margin:6px 14px}
-.prof img{width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle}
+.prof img{width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid var(--line)}
 .lec{margin:4px 28px;font-size:14px}
-small{color:#7a6a4a}
+small{color:#9a8650}
 .x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
-.ph{background:var(--sea)}
+.ph{background:var(--gold)}
 </style>
 </head>
 <body>
-<header><h1>⚙️ لوحة التحكم</h1><a href="home.html">الرئيسية</a></header>
+<header><h1>⚙️ لوحة التحكم</h1><a href="home.html">🏠 الرئيسية</a></header>
 <main>
   <div class="card">
     <h2>📚 مادة جديدة</h2>
     <input id="sName" placeholder="اسم المادة">
     <input id="sTerm" placeholder="الفصل (مثلاً: الفصل الأول)">
-    <button class="add" id="addS">إضافة المادة</button>
+    <button class="add" id="addS">➕ إضافة المادة</button>
   </div>
   <div class="card">
     <h2>👨‍🏫 أستاذ جديد</h2>
     <input id="pName" placeholder="اسم الأستاذ">
     <input id="pPhoto" placeholder="اسم صورة الأستاذ (مثلاً: IMG_20261026_140950_938.jpg)" dir="ltr">
     <select id="pSub"></select>
-    <button class="add" id="addP">إضافة الأستاذ</button>
+    <button class="add" id="addP">➕ إضافة الأستاذ</button>
   </div>
   <div class="card">
     <h2>🎬 محاضرة جديدة</h2>
@@ -50,10 +50,10 @@ small{color:#7a6a4a}
     <input id="lTitle" placeholder="عنوان المحاضرة">
     <input id="lUrl" placeholder="رابط يوتيوب" dir="ltr">
     <textarea id="lDesc" placeholder="وصف (اختياري)"></textarea>
-    <button class="add" id="addL">إضافة المحاضرة</button>
+    <button class="add" id="addL">➕ إضافة المحاضرة</button>
   </div>
   <div class="card">
-    <h2>المحتوى الحالي</h2>
+    <h2>🗂️ المحتوى الحالي</h2>
     <div id="list"></div>
   </div>
 </main>
@@ -171,6 +171,3 @@ $("list").onclick = async e => {
 </script>
 </body>
 </html>
-
-
-  
