@@ -64,7 +64,7 @@ small{color:#9a8650}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { initializeFirestore, writeBatch, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -78,7 +78,7 @@ const firebaseConfig = {
 const ADMIN = "maniron4200@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 const $ = id => document.getElementById(id);
 const val = id => $(id).value.trim();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -159,10 +159,13 @@ $("saveO").onclick = async () => {
   const btn = $("saveO");
   btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
   try {
-    await Promise.all(L.map((l, i) => { l.order = i; return updateDoc(doc(db, "lectures", l.id), { order: i }); }));
+    const batch = writeBatch(db);
+    L.forEach((l, i) => { l.order = i; batch.update(doc(db, "lectures", l.id), { order: i }); });
+    const timeout = new Promise((_, rej) => setTimeout(() => rej({ code: "timeout (تأكد من النت وحاول مرة ثانية)" }), 25000));
+    await Promise.race([batch.commit(), timeout]);
     setDirty(false);
     alert("تم حفظ الترتيب ✅");
-  } catch (err) { alert("فشل حفظ الترتيب: " + err.code); }
+  } catch (err) { alert("فشل حفظ الترتيب: " + (err.code || err.message)); }
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 };
 
