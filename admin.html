@@ -158,14 +158,33 @@ $("addL").onclick = async () => {
 $("saveO").onclick = async () => {
   const btn = $("saveO");
   btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 40000);
   try {
-    const batch = writeBatch(db);
-    L.forEach((l, i) => { l.order = i; batch.update(doc(db, "lectures", l.id), { order: i }); });
-    const timeout = new Promise((_, rej) => setTimeout(() => rej({ code: "timeout (تأكد من النت وحاول مرة ثانية)" }), 25000));
-    await Promise.race([batch.commit(), timeout]);
+    const token = await auth.currentUser.getIdToken();
+    const base = "projects/" + firebaseConfig.projectId + "/databases/(default)/documents";
+    const writes = L.map((l, i) => ({
+      update: { name: base + "/lectures/" + l.id, fields: { order: { integerValue: String(i) } } },
+      updateMask: { fieldPaths: ["order"] }
+    }));
+    const res = await fetch("https://firestore.googleapis.com/v1/" + base + ":commit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+      body: JSON.stringify({ writes }),
+      signal: ctl.signal
+    });
+    if (!res.ok) {
+      let msg = res.status;
+      try { const j = await res.json(); msg = res.status + " " + ((j.error && j.error.message) || ""); } catch (_) {}
+      throw new Error(msg);
+    }
+    L.forEach((l, i) => { l.order = i; });
     setDirty(false);
     alert("تم حفظ الترتيب ✅");
-  } catch (err) { alert("فشل حفظ الترتيب: " + (err.code || err.message)); }
+  } catch (err) {
+    alert("فشل حفظ الترتيب: " + (err.name === "AbortError" ? "انتهت المهلة، النت ضعيف" : err.message));
+  }
+  clearTimeout(timer);
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 };
 
