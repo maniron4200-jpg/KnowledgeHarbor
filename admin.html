@@ -20,9 +20,11 @@ textarea{min-height:70px}
 .add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
 .sub{border-bottom:1px solid #e3d6bb;padding:8px 0}
 .prof{margin:6px 14px}
+.prof img{width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle}
 .lec{margin:4px 28px;font-size:14px}
 small{color:#7a6a4a}
 .x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
+.ph{background:var(--sea)}
 </style>
 </head>
 <body>
@@ -37,6 +39,7 @@ small{color:#7a6a4a}
   <div class="card">
     <h2>👨‍🏫 أستاذ جديد</h2>
     <input id="pName" placeholder="اسم الأستاذ">
+    <input id="pPhoto" placeholder="اسم صورة الأستاذ (مثلاً: IMG_20261026_140950_938.jpg)" dir="ltr">
     <select id="pSub"></select>
     <button class="add" id="addP">إضافة الأستاذ</button>
   </div>
@@ -58,7 +61,7 @@ small{color:#7a6a4a}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -111,7 +114,7 @@ function render() {
   $("list").innerHTML = S.map(s =>
     `<div class="sub"><b>📚 ${esc(s.name)}</b> <small>${esc(s.term)}</small> <button class="x" data-t="s" data-id="${s.id}">حذف</button>` +
     P.filter(p => p.subjectId === s.id).map(p =>
-      `<div class="prof">👨‍🏫 ${esc(p.name)} <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
+      `<div class="prof">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"} ${esc(p.name)} <button class="x ph" data-t="ph" data-id="${p.id}">صورة</button> <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
       L.filter(l => l.professorId === p.id).map(l =>
         `<div class="lec">🎬 ${esc(l.title)} <button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
       `</div>`).join("") +
@@ -130,8 +133,8 @@ $("addS").onclick = async () => {
 };
 $("addP").onclick = async () => {
   if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
-  await add("professors", { name: val("pName"), subjectId: $("pSub").value });
-  $("pName").value = "";
+  await add("professors", { name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value });
+  $("pName").value = ""; $("pPhoto").value = "";
 };
 $("addL").onclick = async () => {
   if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
@@ -141,8 +144,17 @@ $("addL").onclick = async () => {
 
 $("list").onclick = async e => {
   const b = e.target.closest("button[data-id]");
-  if (!b || !confirm("متأكد من الحذف؟")) return;
+  if (!b) return;
   const { t, id } = b.dataset;
+  if (t === "ph") {
+    const cur = (P.find(x => x.id === id) || {}).photo || "";
+    const name = prompt("اكتب اسم ملف الصورة (مثلاً: IMG_20261026_140950_938.jpg)", cur);
+    if (name === null) return;
+    try { await updateDoc(doc(db, "professors", id), { photo: name.trim() }); await load(); }
+    catch (err) { alert("فشل تحديث الصورة: " + err.code); }
+    return;
+  }
+  if (!confirm("متأكد من الحذف؟")) return;
   const del = (n, i) => deleteDoc(doc(db, n, i));
   try {
     if (t === "s") {
@@ -159,3 +171,6 @@ $("list").onclick = async e => {
 </script>
 </body>
 </html>
+
+
+  
