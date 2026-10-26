@@ -25,6 +25,8 @@ textarea{min-height:70px}
 small{color:#9a8650}
 .x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
 .ph{background:var(--gold)}
+.mv{background:var(--soft);color:var(--ink);border:1px solid var(--gold)}
+.dirty{outline:3px solid var(--err)}
 </style>
 </head>
 <body>
@@ -54,6 +56,7 @@ small{color:#9a8650}
   </div>
   <div class="card">
     <h2>🗂️ المحتوى الحالي</h2>
+    <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
     <div id="list"></div>
   </div>
 </main>
@@ -80,6 +83,9 @@ const $ = id => document.getElementById(id);
 const val = id => $(id).value.trim();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let S = [], P = [], L = [];
+let dirty = false;
+
+function setDirty(v) { dirty = v; $("saveO").classList.toggle("dirty", v); }
 
 onAuthStateChanged(auth, u => {
   if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
@@ -93,6 +99,13 @@ async function load() {
     const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
     S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
+    L.sort((a,b) => {
+      const ao = typeof a.order === "number", bo = typeof b.order === "number";
+      if (ao && bo) return a.order - b.order;
+      if (ao !== bo) return ao ? -1 : 1;
+      return ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0);
+    });
+    setDirty(false);
     render();
   } catch (e) { alert("خطأ بتحميل البيانات: " + e.code); }
 }
@@ -115,8 +128,8 @@ function render() {
     `<div class="sub"><b>📚 ${esc(s.name)}</b> <small>${esc(s.term)}</small> <button class="x" data-t="s" data-id="${s.id}">حذف</button>` +
     P.filter(p => p.subjectId === s.id).map(p =>
       `<div class="prof">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"} ${esc(p.name)} <button class="x ph" data-t="ph" data-id="${p.id}">صورة</button> <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
-      L.filter(l => l.professorId === p.id).map(l =>
-        `<div class="lec">🎬 ${esc(l.title)} <button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
+      L.filter(l => l.professorId === p.id).map((l, i) =>
+        `<div class="lec"><small>${i + 1}</small> 🎬 ${esc(l.title)} <button class="x mv" data-t="up" data-id="${l.id}">⬆️</button><button class="x mv" data-t="dn" data-id="${l.id}">⬇️</button><button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
       `</div>`).join("") +
     `</div>`).join("") || "<p>ما كو محتوى بعد.</p>";
 }
@@ -138,14 +151,37 @@ $("addP").onclick = async () => {
 };
 $("addL").onclick = async () => {
   if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
-  await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value });
+  await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: L.length });
   $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = "";
+};
+
+$("saveO").onclick = async () => {
+  const btn = $("saveO");
+  btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
+  try {
+    await Promise.all(L.map((l, i) => { l.order = i; return updateDoc(doc(db, "lectures", l.id), { order: i }); }));
+    setDirty(false);
+    alert("تم حفظ الترتيب ✅");
+  } catch (err) { alert("فشل حفظ الترتيب: " + err.code); }
+  btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 };
 
 $("list").onclick = async e => {
   const b = e.target.closest("button[data-id]");
   if (!b) return;
   const { t, id } = b.dataset;
+  if (t === "up" || t === "dn") {
+    const cur = L.find(x => x.id === id);
+    const group = L.filter(x => x.professorId === cur.professorId);
+    const gi = group.indexOf(cur);
+    const other = group[t === "up" ? gi - 1 : gi + 1];
+    if (!other) return;
+    const a = L.indexOf(cur), c = L.indexOf(other);
+    [L[a], L[c]] = [L[c], L[a]];
+    setDirty(true);
+    render();
+    return;
+  }
   if (t === "ph") {
     const cur = (P.find(x => x.id === id) || {}).photo || "";
     const name = prompt("اكتب اسم ملف الصورة (مثلاً: IMG_20261026_140950_938.jpg)", cur);
