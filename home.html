@@ -45,6 +45,7 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .sess.run{background:var(--err)}
 .quote{background:var(--soft);border:2px dashed var(--gold);border-radius:14px;padding:12px 14px;text-align:center;font-weight:700;font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:14px}
 .quote small{display:block;color:var(--gold);font-weight:800;margin-top:2px}
+iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 </style>
 </head>
 <body>
@@ -162,6 +163,19 @@ function ytEmbed(url) {
   const m = String(url).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
   return m ? `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" allowfullscreen></iframe>` : "";
 }
+// تليكرام: القنوات العامة (t.me/اسم_القناة/رقم) تنعرض داخل الصفحة، والخاصة (t.me/c/...) تنفتح بالرابط
+const tgMatch = url => String(url).match(/^https?:\/\/(?:t|telegram)\.me\/(?!c\/)([A-Za-z0-9_]{4,})\/(\d+)/);
+function embed(url) {
+  const yt = ytEmbed(url);
+  if (yt) return yt;
+  const t = tgMatch(url);
+  return t ? `<iframe class="tg" src="https://t.me/${t[1]}/${t[2]}?embed=1&mode=tme" loading="lazy"></iframe>` : "";
+}
+function linkLabel(url) {
+  if (ytEmbed(url) || /youtu/i.test(url)) return "▶️ فتح على يوتيوب";
+  if (/(?:t|telegram)\.me\//i.test(url)) return "✈️ فتح على تليكرام";
+  return "🔗 فتح الرابط";
+}
 
 const termKey = t => { const n = ordNum(t); return isFinite(n) ? "n" + n : norm(t); };
 const termOf = p => { const s = S.find(x => x.id === p.subjectId); return s ? String(s.term || "").trim() : ""; };
@@ -215,7 +229,7 @@ function render() {
     app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
       (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
       (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${ytEmbed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">▶️ فتح على يوتيوب</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
+        `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
     if ($("saveO")) $("saveO").classList.toggle("dirty", dirty);
   }
 }
