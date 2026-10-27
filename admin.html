@@ -3,72 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مرسى المعرفة – الرئيسية</title>
+<title>مرسى المعرفة – لوحة التحكم</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
-header{background:#fff;color:var(--ink);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
+body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
+header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
 header h1{margin:0;font-size:20px;color:var(--gold)}
-header a,#out{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:0;border-radius:10px;padding:8px 12px;font:700 13px Tajawal,sans-serif;cursor:pointer;text-decoration:none}
+header a{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:13px}
 main{max-width:640px;margin:0 auto;padding:18px 16px}
-h2{margin:0 0 14px;color:var(--ink);font-size:20px;padding-bottom:8px;border-bottom:2px solid var(--line)}
-.item{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:#fff;border:2px solid var(--gold);border-radius:14px;padding:12px 14px;margin-bottom:10px;font:700 16px Tajawal,sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(201,162,39,.12)}
-.item:active{background:var(--soft)}
-.item small{display:block;color:#9a8650;font-weight:400;margin-top:2px}
-.ico{flex:none;width:46px;height:46px;border-radius:50%;background:var(--soft);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:23px;overflow:hidden}
-.ico img{width:100%;height:100%;object-fit:cover}
-.back{background:none;border:0;color:var(--gold);font:700 15px Tajawal,sans-serif;cursor:pointer;padding:0 0 10px}
-.lec{background:#fff;border:2px solid var(--line);border-right:5px solid var(--gold);border-radius:12px;padding:14px;margin-bottom:12px}
-.lec h3{margin:0 0 6px;font-size:16px}
-.lec p{margin:6px 0 0;font-size:14px;color:#7a6c47}
-iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
-.lec a{color:var(--gold);font-weight:700}
-.gate{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:20px}
-.gate input{width:100%;padding:12px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;font:16px Tajawal,sans-serif}
-.err{color:var(--err);font-weight:700;min-height:22px}
-.mv{display:flex;gap:8px;margin-top:10px}
-.mv button{flex:1;padding:8px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
-.mv button:active{background:var(--gold2)}
-.save{width:100%;padding:12px;margin-bottom:14px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
-.save.dirty{outline:3px solid var(--err)}
-.stats{display:flex;gap:8px;margin-bottom:10px}
-.stat{flex:1;background:#fff;border:2px solid var(--gold);border-radius:14px;padding:10px 4px;text-align:center;box-shadow:0 2px 8px rgba(201,162,39,.12)}
-.stat b{display:block;font-size:22px;color:var(--gold)}
-.stat small{color:#9a8650;font-size:12px}
-.bar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(135deg,var(--gold),var(--gold2))}
-.goal{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#9a8650;margin:6px 0 10px}
-.goal button{background:none;border:0;color:var(--gold);font:700 12px Tajawal,sans-serif;cursor:pointer}
-.sess{width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 16px Tajawal,sans-serif;cursor:pointer}
-.sess.run{background:var(--err)}
-.quote{background:var(--soft);border:2px dashed var(--gold);border-radius:14px;padding:12px 14px;text-align:center;font-weight:700;font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:14px}
-.quote small{display:block;color:var(--gold);font-weight:800;margin-top:2px}
-iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
-.lec.done{border-right-color:#2e7d32;background:#f4fbf4}
-.chk{width:100%;margin-top:10px;padding:10px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
-.chk.on{background:#2e7d32;border-color:#2e7d32;color:#fff}
-.prog{margin-bottom:12px}
-.prog .goal{margin:0 0 6px;font-size:13px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:9;white-space:nowrap}
-.toast.show{opacity:1}
+.card{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(201,162,39,.12)}
+h2{margin:0 0 10px;font-size:17px;color:var(--ink);padding-bottom:8px;border-bottom:2px solid var(--line)}
+input,select,textarea{width:100%;padding:11px;margin:5px 0;border:1.5px solid var(--line);border-radius:10px;font:15px Tajawal,sans-serif;background:#fff;color:var(--ink)}
+textarea{min-height:70px}
+.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
+.sub{border-bottom:1px solid var(--line);padding:8px 0}
+.prof{margin:6px 14px}
+.prof img{width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid var(--line)}
+.lec{margin:4px 28px;font-size:14px}
+small{color:#9a8650}
+.x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
+.ph{background:var(--gold)}
+.mv{background:var(--soft);color:var(--ink);border:1px solid var(--gold)}
+.dirty{outline:3px solid var(--err)}
 </style>
 </head>
 <body>
-<header>
-  <h1>🎓 مرسى المعرفة</h1>
-  <span><a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a> <button id="out">🚪 خروج</button></span>
-</header>
-<div style="max-width:640px;margin:0 auto;padding:18px 16px 0"><div class="quote">✨ في مرسى المعرفة، كل ساعة تدرسها اليوم هي خطوة تقرّبك من حلمك، فاصبر وواصل، فالنجاح يبدأ بجلسة وحدة. ✨<small>🎓 مرسى المعرفة</small></div></div>
-<div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
-<div class="toast" id="toast"></div>
-<main id="app">⏳ جارٍ التحميل...</main>
+<header><h1>⚙️ لوحة التحكم</h1><a href="home.html">🏠 الرئيسية</a></header>
+<main>
+  <div class="card" id="mig" style="display:none"><h2>📦 نقل البيانات إلى GitHub</h2><p style="margin:0 0 8px;font-size:14px">لازم تنقل المحاضرات مرة وحدة حتى تشتغل الإضافة والحذف والترتيب بدون Firebase.</p><button class="add" id="migBtn">📦 نقل البيانات الآن</button></div>
+  <div class="card">
+    <h2>📚 مادة جديدة</h2>
+    <input id="sName" placeholder="اسم المادة">
+    <input id="sTerm" placeholder="الفصل (مثلاً: الفصل الأول)">
+    <button class="add" id="addS">➕ إضافة المادة</button>
+  </div>
+  <div class="card">
+    <h2>👨‍🏫 أستاذ جديد</h2>
+    <input id="pName" placeholder="اسم الأستاذ">
+    <input id="pPhoto" placeholder="اسم صورة الأستاذ (مثلاً: IMG_20261026_140950_938.jpg)" dir="ltr">
+    <select id="pSub"></select>
+    <button class="add" id="addP">➕ إضافة الأستاذ</button>
+  </div>
+  <div class="card">
+    <h2>🎬 محاضرة جديدة</h2>
+    <select id="lSub"></select>
+    <select id="lProf"></select>
+    <input id="lTitle" placeholder="عنوان المحاضرة">
+    <input id="lUrl" placeholder="رابط يوتيوب" dir="ltr">
+    <textarea id="lDesc" placeholder="وصف (اختياري)"></textarea>
+    <button class="add" id="addL">➕ إضافة المحاضرة</button>
+  </div>
+  <div class="card">
+    <h2>🗂️ المحتوى الحالي</h2>
+    <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
+    <div id="list"></div>
+  </div>
+</main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -84,314 +81,209 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
+const val = id => $(id).value.trim();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "").slice(0, 20) : String(Date.now()) + Math.random().toString(36).slice(2, 8));
+let S = [], P = [], L = [], sha = null, migrated = false;
 
-const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
-const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
-
-// توحيد الكتابة: الأحياء = الاحياء = احياء، وإزالة التشكيل والمسافات الزائدة
-const norm = n => String(n || "")
-  .replace(/[\u064B-\u0652\u0640]/g, "")
-  .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
-  .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
-
-onAuthStateChanged(auth, async u => {
-  if (!u) { location.replace("login.html"); return; }
-  me = u;
-  document.body.style.display = "block";
-  if (u.email === ADMIN) { isAdmin = true; $("adminLink").style.display = ""; load(); return; }
-  try {
-    const m = await getDoc(doc(db, "members", u.uid));
-    if (m.exists()) { load(); return; }
-  } catch (e) {}
-  showGate();
-});
-$("out").onclick = async () => { await signOut(auth); location.replace("login.html"); };
-
-function showGate() {
-  $("app").innerHTML = `<div class="gate"><h2>🔑 كود الدخول</h2><p>اكتب الكود الي أعطاك إياه المشرف.</p><input id="code" dir="ltr" placeholder="الكود" autocomplete="off"><button class="item" id="codeBtn" style="justify-content:center">✅ دخول</button><p class="err" id="codeMsg"></p></div>`;
-  $("codeBtn").onclick = async () => {
-    const code = $("code").value.trim();
-    if (!code) return;
-    $("codeMsg").textContent = "";
-    try {
-      await setDoc(doc(db, "members", me.uid), { code, email: me.email });
-      await load();
-    } catch (e) {
-      $("codeMsg").textContent = e.code === "permission-denied" ? "الكود غير صحيح." : "حدث خطأ: " + e.code;
-    }
-  };
+// ---- GitHub ----
+const owner = location.hostname.split(".")[0];
+const seg = location.pathname.split("/").filter(Boolean)[0];
+const repo = (seg && !seg.includes(".")) ? seg : owner + ".github.io";
+const API = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/data.json";
+const H = t => ({ "Authorization": "Bearer " + t, "Accept": "application/vnd.github+json" });
+function token() {
+  let t = localStorage.getItem("ghtoken");
+  if (!t) t = (prompt("الصق مفتاح GitHub هنا (مرة وحدة فقط، ينحفظ بموبايلك):") || "").trim();
+  return t;
+}
+async function ghGet(t) {
+  const r = await fetch(API + "?t=" + Date.now(), { headers: H(t), cache: "no-store" });
+  if (r.status === 404) return { data: null, sha: null };
+  if (!r.ok) throw new Error("GitHub " + r.status);
+  const j = await r.json();
+  const txt = decodeURIComponent(escape(atob(j.content.replace(/\n/g, ""))));
+  return { data: JSON.parse(txt), sha: j.sha };
+}
+async function ghPut(t, data, oldSha) {
+  const body = { message: "update data", content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 1)))) };
+  if (oldSha) body.sha = oldSha;
+  const r = await fetch(API, { method: "PUT", headers: { ...H(t), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) {
+    if (r.status === 401 || r.status === 403) localStorage.removeItem("ghtoken");
+    throw new Error("GitHub " + r.status);
+  }
+  localStorage.setItem("ghtoken", t);
+  return (await r.json()).content.sha;
+}
+async function commit() {
+  const t = token();
+  if (!t) throw new Error("ما كو مفتاح");
+  sha = await ghPut(t, { subjects: S, professors: P, lectures: L }, sha);
 }
 
+// ---- ترتيب ----
 const ORD = ["اولي","ثاني","ثالث","رابع","خامس","سادس","سابع","ثامن","تاسع","عاشر"];
 const ordNum = t => {
-  let n = String(t || "")
-    .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
-    .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
+  let n = String(t || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
   const d = n.match(/\d+/);
   if (d) return +d[0];
   const i = ORD.findIndex(w => n.includes(w));
   return i < 0 ? Infinity : i + 1;
 };
-const baseKey = l => (typeof l.order === "number" ? l.order : ordNum(l.title));
-const lecKey = l => usingData
-  ? (typeof l.order === "number" ? l.order : 1e6 + ordNum(l.title))
-  : ((orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l));
-const sortL = () => L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
+const baseKey = l => (typeof l.order === "number" ? l.order : 1e6 + ordNum(l.title));
+function sortAll() {
+  S.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ar"));
+  L.sort((a, b) => baseKey(a) - baseKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
+}
+let dirty = false;
+function setDirty(v) { dirty = v; $("saveO").classList.toggle("dirty", v); }
+
+onAuthStateChanged(auth, u => {
+  if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
+  document.body.style.display = "block";
+  load();
+});
+
+async function loadFirestore() {
+  const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
+  const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
+  S = m(qs[0]).map(x => ({ id: x.id, name: x.name || "", term: x.term || "" }));
+  P = m(qs[1]).map(x => ({ id: x.id, name: x.name || "", photo: x.photo || "", subjectId: x.subjectId }));
+  L = m(qs[2]).map(x => { const o = { id: x.id, title: x.title || "", url: x.url || "", desc: x.desc || "", subjectId: x.subjectId, professorId: x.professorId }; if (typeof x.order === "number") o.order = x.order; return o; });
+}
 
 async function load() {
-  try {
-    usingData = false;
+  migrated = false;
+  const t = localStorage.getItem("ghtoken");
+  if (t) {
     try {
-      const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
-      if (r.ok) {
-        const d = await r.json();
-        S = d.subjects || []; P = d.professors || []; L = d.lectures || [];
-        usingData = true; orderMap = null;
-      }
-    } catch (e) { usingData = false; }
-    if (!usingData) {
-      try {
-        const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" });
-        if (r.ok) orderMap = await r.json();
-      } catch (e) { orderMap = null; }
-      const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
-      const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
-      S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
-    }
-    sortL();
-    S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
-    render();
-    renderStats();
-  } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + (e.code || e.message); }
+      const r = await ghGet(t);
+      if (r.data) { S = r.data.subjects || []; P = r.data.professors || []; L = r.data.lectures || []; sha = r.sha; migrated = true; }
+    } catch (e) { if (/401|403/.test(e.message)) localStorage.removeItem("ghtoken"); }
+  }
+  if (!migrated) {
+    try { await loadFirestore(); } catch (e) { alert("خطأ بتحميل البيانات: " + (e.code || e.message)); }
+  }
+  sortAll();
+  setDirty(false);
+  render();
 }
 
-function ytEmbed(url) {
-  const m = String(url).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
-  return m ? `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" allowfullscreen></iframe>` : "";
+function opts(arr, label) {
+  return arr.length ? arr.map(x => `<option value="${x.id}">${esc(label(x))}</option>`).join("") : `<option value="">— ما كو —</option>`;
 }
-// تليكرام: القنوات العامة (t.me/اسم_القناة/رقم) تنعرض داخل الصفحة، والخاصة (t.me/c/...) تنفتح بالرابط
-const tgMatch = url => String(url).match(/^https?:\/\/(?:t|telegram)\.me\/(?!c\/)([A-Za-z0-9_]{4,})\/(\d+)/);
-function embed(url) {
-  const yt = ytEmbed(url);
-  if (yt) return yt;
-  const t = tgMatch(url);
-  return t ? `<iframe class="tg" src="https://t.me/${t[1]}/${t[2]}?embed=1&mode=tme" loading="lazy"></iframe>` : "";
+function fillProfs() {
+  $("lProf").innerHTML = opts(P.filter(p => p.subjectId === $("lSub").value), p => p.name);
 }
-function linkLabel(url) {
-  if (ytEmbed(url) || /youtu/i.test(url)) return "▶️ فتح على يوتيوب";
-  if (/(?:t|telegram)\.me\//i.test(url)) return "✈️ فتح على تليكرام";
-  return "🔗 فتح الرابط";
-}
-
-const termKey = t => { const n = ordNum(t); return isFinite(n) ? "n" + n : norm(t); };
-const termOf = p => { const s = S.find(x => x.id === p.subjectId); return s ? String(s.term || "").trim() : ""; };
-
-// المادة: كل الكتابات المتشابهة (الأحياء/الاحياء) ببطاقة وحدة
-function groups() {
-  const m = new Map();
-  S.forEach(s => {
-    const key = norm(s.name);
-    if (!m.has(key)) m.set(key, { key, name: String(s.name || "").trim(), ids: [], terms: [] });
-    const g = m.get(key);
-    g.ids.push(s.id);
-    const t = String(s.term || "").trim();
-    if (t && !g.terms.some(x => termKey(x) === termKey(t))) g.terms.push(t);
-  });
-  return [...m.values()];
-}
-
-// المدرسين داخل المادة: نفس الاسم = مدرس واحد، وفصوله داخله
-function teachers(g) {
-  const m = new Map();
-  P.filter(p => g.ids.includes(p.subjectId)).forEach(p => {
-    const key = norm(p.name);
-    if (!m.has(key)) m.set(key, { key, name: String(p.name || "").trim(), photo: p.photo || "", profs: [] });
-    const t = m.get(key);
-    if (!t.photo && p.photo) t.photo = p.photo;
-    t.profs.push({ id: p.id, term: termOf(p) });
-  });
-  m.forEach(t => t.profs.sort((a, b) => ordNum(a.term) - ordNum(b.term)));
-  return [...m.values()];
-}
+$("lSub").onchange = fillProfs;
 
 function render() {
-  const app = $("app");
-  const g = sel.s ? (groups().find(x => x.key === sel.s) || { name: "", ids: [], terms: [] }) : null;
-  const tch = g && sel.t ? teachers(g).find(x => x.key === sel.t) : null;
-  if (!sel.s) {
-    app.innerHTML = "<h2>📚 المواد الدراسية</h2>" + (groups().map(g =>
-      `<button class="item" data-s="${esc(g.key)}"><span class="ico">${icon(g.name)}</span><span>${esc(g.name)}<small>🗓️ ${esc(g.terms.join(" • "))}</small></span></button>`).join("") || "<p>ما كو مواد بعد.</p>");
-  } else if (!sel.t) {
-    app.innerHTML = `<button class="back" data-back="s">→ رجوع للمواد</button><h2>${icon(g.name)} ${esc(g.name)}</h2>` +
-      (teachers(g).map(t =>
-        `<button class="item" data-t="${esc(t.key)}"><span class="ico">${t.photo ? `<img src="${esc(t.photo)}" alt="">` : "👨‍🏫"}</span><span>${esc(t.name)}<small>🗓️ ${esc(t.profs.map(x => x.term).filter(Boolean).join(" • "))}</small></span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
-  } else if (!sel.p) {
-    app.innerHTML = `<button class="back" data-back="t">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(tch?.name)}</h2>` +
-      ((tch ? tch.profs : []).map(f =>
-        `<button class="item" data-p="${f.id}"><span class="ico">🗓️</span><span>${esc(f.term || "المحاضرات")}<small>🎬 ${L.filter(l => l.professorId === f.id).length} محاضرة • ✅ ${L.filter(l => l.professorId === f.id && getDone()[l.id]).length} منجزة</small></span></button>`).join("") || "<p>ما كو فصول بعد.</p>");
-  } else {
-    const p = P.find(x => x.id === sel.p);
-    const multi = tch && tch.profs.length > 1;
-    app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
-      (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
-      progressHtml() +
-      (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec ${getDone()[l.id] ? "done" : ""}"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}<button class="chk ${getDone()[l.id] ? "on" : ""}" data-done="${l.id}">${getDone()[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
-    if ($("saveO")) $("saveO").classList.toggle("dirty", dirty);
-  }
+  $("mig").style.display = migrated ? "none" : "block";
+  const sv = $("lSub").value;
+  $("pSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
+  $("lSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
+  if (sv && S.some(s => s.id === sv)) $("lSub").value = sv;
+  fillProfs();
+  $("list").innerHTML = S.map(s =>
+    `<div class="sub"><b>📚 ${esc(s.name)}</b> <small>${esc(s.term)}</small> <button class="x" data-t="s" data-id="${s.id}">حذف</button>` +
+    P.filter(p => p.subjectId === s.id).map(p =>
+      `<div class="prof">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"} ${esc(p.name)} <button class="x ph" data-t="ph" data-id="${p.id}">صورة</button> <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
+      L.filter(l => l.professorId === p.id).map((l, i) =>
+        `<div class="lec"><small>${i + 1}</small> 🎬 ${esc(l.title)} <button class="x mv" data-t="up" data-id="${l.id}">⬆️</button><button class="x mv" data-t="dn" data-id="${l.id}">⬇️</button><button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
+      `</div>`).join("") +
+    `</div>`).join("") || "<p>ما كو محتوى بعد.</p>";
 }
 
-function move(id, dir) {
-  if (!isAdmin) return;
-  const list = L.filter(l => l.professorId === sel.p);
-  const i = list.findIndex(l => l.id === id);
-  const j = dir === "up" ? i - 1 : i + 1;
-  if (i < 0 || j < 0 || j >= list.length) return;
-  const a = L.indexOf(list[i]), c = L.indexOf(list[j]);
-  [L[a], L[c]] = [L[c], L[a]];
-  if (usingData) { L.forEach((l, k) => { l.order = k; }); }
-  else { orderMap = {}; L.forEach((l, k) => { orderMap[l.id] = k; }); }
-  dirty = true;
-  render();
+// ينفّذ التعديل بالذاكرة ثم يحفظه بـ GitHub
+async function act(fn) {
+  if (!migrated) { alert("انقل البيانات إلى GitHub أولاً (الزر فوق)."); return false; }
+  fn();
+  sortAll();
+  try { await commit(); setDirty(false); render(); return true; }
+  catch (e) { alert("فشل الحفظ: " + e.message); await load(); return false; }
 }
 
-async function saveOrder() {
-  const btn = $("saveO");
-  let token = localStorage.getItem("ghtoken");
-  if (!token) {
-    token = (prompt("الصق مفتاح GitHub هنا (مرة وحدة فقط، ينحفظ بموبايلك):") || "").trim();
-    if (!token) return;
-  }
-  const owner = location.hostname.split(".")[0];
-  const seg = location.pathname.split("/").filter(Boolean)[0];
-  const repo = (seg && !seg.includes(".")) ? seg : owner + ".github.io";
-  const api = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + (usingData ? "data.json" : "order.json");
-  const h = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
-  const map = {};
-  L.forEach((l, i) => { map[l.id] = i; });
-  btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
+$("migBtn").onclick = async () => {
+  const btn = $("migBtn");
+  btn.disabled = true; btn.textContent = "⏳ جاري النقل...";
   try {
-    let sha, out = map;
-    const g = await fetch(api + "?t=" + Date.now(), { headers: h, cache: "no-store" });
-    if (g.ok) {
-      const j = await g.json();
-      sha = j.sha;
-      if (usingData) {
-        const cur = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, "")))));
-        (cur.lectures || []).forEach(l => { if (typeof map[l.id] === "number") l.order = map[l.id]; });
-        out = cur;
-      }
-    } else if (g.status !== 404 || usingData) throw new Error("GitHub " + g.status);
-    const body = { message: "update lectures order", content: btoa(unescape(encodeURIComponent(JSON.stringify(out)))) };
-    if (sha) body.sha = sha;
-    const r = await fetch(api, { method: "PUT", headers: { ...h, "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    if (!r.ok) throw new Error("GitHub " + r.status);
-    localStorage.setItem("ghtoken", token);
-    dirty = false;
-    btn.classList.remove("dirty");
-    alert("تم حفظ الترتيب ✅\nيظهر للطلاب خلال دقيقة إلى 10 دقائق.");
-  } catch (e) {
-    if (/401|403/.test(e.message)) localStorage.removeItem("ghtoken");
-    alert("فشل الحفظ: " + e.message + (/401|403/.test(e.message) ? "\nالمفتاح غير صحيح أو ما عنده صلاحية." : ""));
-  }
-  btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
-}
-
-// ---- علامة إنجاز المحاضرات ----
-const DK = () => "done_" + (me ? me.uid : "x");
-const getDone = () => { try { return JSON.parse(localStorage.getItem(DK())) || {}; } catch (e) { return {}; } };
-let tt;
-function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200); }
-function progressHtml() {
-  const lecs = L.filter(l => l.professorId === sel.p);
-  if (!lecs.length) return "";
-  const dn = getDone(), k = lecs.filter(l => dn[l.id]).length, pct = Math.round(k / lecs.length * 100);
-  return `<div class="prog"><div class="goal"><span>✅ أنجزت ${k} من ${lecs.length} محاضرة</span><span>${pct}%</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
-}
-function toggleDone(id, btn) {
-  const dn = getDone();
-  if (dn[id]) delete dn[id]; else dn[id] = 1;
-  localStorage.setItem(DK(), JSON.stringify(dn));
-  const card = btn.closest(".lec");
-  card.classList.toggle("done", !!dn[id]);
-  btn.classList.toggle("on", !!dn[id]);
-  btn.textContent = dn[id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة";
-  const pr = document.querySelector(".prog");
-  if (pr) pr.outerHTML = progressHtml();
-  renderStats();
-  if (dn[id]) {
-    const lecs = L.filter(l => l.professorId === sel.p);
-    toast(lecs.every(l => dn[l.id]) ? "🏆 ممتاز! خلصت كل محاضرات هذا الفصل" : ["👏 أحسنت!", "🌟 استمر يا بطل!", "🔥 إنجاز رائع!"][Math.floor(Math.random() * 3)]);
-  }
-}
-
-// ---- شريط الجلسات والساعات والإنجاز ----
-const SK = () => "study_" + (me ? me.uid : "x");
-const RK = () => "run_" + (me ? me.uid : "x");
-const getStudy = () => { try { return JSON.parse(localStorage.getItem(SK())) || { sessions: [], goal: 2 }; } catch (e) { return { sessions: [], goal: 2 }; } };
-const putStudy = d => localStorage.setItem(SK(), JSON.stringify(d));
-const today = () => new Date().toLocaleDateString("en-CA");
-const fmt = n => [Math.floor(n / 3600), Math.floor(n % 3600 / 60), n % 60].map(x => String(x).padStart(2, "0")).join(":");
-function renderStats() {
-  const d = getStudy(), dn = getDone();
-  const run = +localStorage.getItem(RK()) || 0;
-  const total = d.sessions.reduce((a, s) => a + s.sec, 0);
-  const td = d.sessions.filter(s => s.d === today()).reduce((a, s) => a + s.sec, 0);
-  const pct = Math.min(100, Math.round(td / 3600 / d.goal * 100));
-  $("statsWrap").innerHTML =
-    `<div class="stats"><div class="stat"><b>${d.sessions.length}</b><small>🎯 الجلسات</small></div><div class="stat"><b>${(total / 3600).toFixed(1)}</b><small>⏱️ الساعات</small></div><div class="stat"><b>${pct}%</b><small>🏆 الإنجاز اليوم</small></div><div class="stat"><b>${L.filter(l => dn[l.id]).length}/${L.length}</b><small>✅ المحاضرات</small></div></div>` +
-    `<div class="bar"><i style="width:${pct}%"></i></div>` +
-    `<div class="goal"><span>الهدف اليومي: ${d.goal} ساعة</span><button id="goalBtn">✏️ تغيير</button></div>` +
-    `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button>`;
-}
-setInterval(() => {
-  const run = +localStorage.getItem(RK()) || 0, t = $("timer");
-  if (run && t) t.textContent = fmt(Math.floor((Date.now() - run) / 1000));
-}, 1000);
-$("statsWrap").onclick = e => {
-  const b = e.target.closest("button");
-  if (!b) return;
-  if (b.id === "goalBtn") {
-    const d = getStudy();
-    const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
-    if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); }
-  } else if (b.id === "sessBtn") {
-    const run = +localStorage.getItem(RK()) || 0;
-    if (!run) localStorage.setItem(RK(), String(Date.now()));
-    else {
-      const sec = Math.floor((Date.now() - run) / 1000);
-      localStorage.removeItem(RK());
-      if (sec >= 60) { const d = getStudy(); d.sessions.push({ d: today(), sec }); putStudy(d); }
-      else alert("الجلسة أقل من دقيقة، ما انحسبت.");
-    }
-    renderStats();
-  }
+    const t = token();
+    if (!t) throw new Error("ما كو مفتاح");
+    await loadFirestore();
+    let map = null;
+    try { const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" }); if (r.ok) map = await r.json(); } catch (_) {}
+    L.forEach(l => { if (map && typeof map[l.id] === "number") l.order = map[l.id]; });
+    sortAll();
+    L.forEach((l, i) => { l.order = i; });
+    const cur = await ghGet(t);
+    sha = await ghPut(t, { subjects: S, professors: P, lectures: L }, cur.sha);
+    migrated = true;
+    alert("تم نقل البيانات ✅");
+    render();
+  } catch (e) { alert("فشل النقل: " + e.message); }
+  btn.disabled = false; btn.textContent = "📦 نقل البيانات الآن";
 };
 
-$("app").onclick = e => {
-  const b = e.target.closest("button");
+$("addS").onclick = async () => {
+  if (!val("sName")) return alert("اكتب اسم المادة");
+  const o = { id: uid(), name: val("sName"), term: val("sTerm") };
+  if (await act(() => S.push(o))) { $("sName").value = ""; $("sTerm").value = ""; }
+};
+$("addP").onclick = async () => {
+  if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
+  const o = { id: uid(), name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value };
+  if (await act(() => P.push(o))) { $("pName").value = ""; $("pPhoto").value = ""; }
+};
+$("addL").onclick = async () => {
+  if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
+  const mx = L.reduce((m, l) => Math.max(m, typeof l.order === "number" ? l.order : -1), -1);
+  const o = { id: uid(), title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: mx + 1 };
+  if (await act(() => L.push(o))) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; }
+};
+
+$("saveO").onclick = async () => {
+  const btn = $("saveO");
+  btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
+  await act(() => { L.forEach((l, i) => { l.order = i; }); });
+  btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
+};
+
+$("list").onclick = async e => {
+  const b = e.target.closest("button[data-id]");
   if (!b) return;
-  if (b.id === "saveO") { saveOrder(); return; }
-  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
-  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
-  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
-  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
-  else if (b.dataset.t) {
-    sel.t = b.dataset.t; sel.p = null;
-    const t = g && teachers(g).find(x => x.key === sel.t);
-    if (t && t.profs.length === 1) sel.p = t.profs[0].id; // فصل واحد: ادخل للمحاضرات مباشرة
+  const { t, id } = b.dataset;
+  if (t === "up" || t === "dn") {
+    const cur = L.find(x => x.id === id);
+    const group = L.filter(x => x.professorId === cur.professorId);
+    const gi = group.indexOf(cur);
+    const other = group[t === "up" ? gi - 1 : gi + 1];
+    if (!other) return;
+    const a = L.indexOf(cur), c = L.indexOf(other);
+    [L[a], L[c]] = [L[c], L[a]];
+    L.forEach((l, i) => { l.order = i; });
+    setDirty(true);
+    render();
+    return;
   }
-  else if (b.dataset.p) sel.p = b.dataset.p;
-  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
-  else if (b.dataset.back === "t") sel.t = sel.p = null;
-  else if (b.dataset.back === "p") {
-    const t = g && teachers(g).find(x => x.key === sel.t);
-    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
+  if (t === "ph") {
+    const p = P.find(x => x.id === id);
+    const name = prompt("اكتب اسم ملف الصورة (مثلاً: IMG_20261026_140950_938.jpg)", (p && p.photo) || "");
+    if (name === null) return;
+    await act(() => { p.photo = name.trim(); });
+    return;
   }
-  else return;
-  render();
+  if (!confirm("متأكد من الحذف؟")) return;
+  await act(() => {
+    if (t === "s") {
+      P = P.filter(x => x.subjectId !== id);
+      L = L.filter(x => x.subjectId !== id);
+      S = S.filter(x => x.id !== id);
+    } else if (t === "p") {
+      L = L.filter(x => x.professorId !== id);
+      P = P.filter(x => x.id !== id);
+    } else L = L.filter(x => x.id !== id);
+  });
 };
 </script>
 </body>
