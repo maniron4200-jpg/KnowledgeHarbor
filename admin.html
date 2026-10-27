@@ -32,6 +32,7 @@ small{color:#9a8650}
 <body>
 <header><h1>⚙️ لوحة التحكم</h1><a href="home.html">🏠 الرئيسية</a></header>
 <main>
+  <div class="card" id="mig" style="display:none"><h2>📦 نقل البيانات إلى GitHub</h2><p style="margin:0 0 8px;font-size:14px">لازم تنقل المحاضرات مرة وحدة حتى تشتغل الإضافة والحذف والترتيب بدون Firebase.</p><button class="add" id="migBtn">📦 نقل البيانات الآن</button></div>
   <div class="card">
     <h2>📚 مادة جديدة</h2>
     <input id="sName" placeholder="اسم المادة">
@@ -57,7 +58,6 @@ small{color:#9a8650}
   <div class="card">
     <h2>🗂️ المحتوى الحالي</h2>
     <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
-    <button class="add" id="copyO" style="margin-bottom:10px;background:var(--ink)">📋 نسخ الترتيب (بديل بدون Firebase)</button>
     <div id="list"></div>
   </div>
 </main>
@@ -65,7 +65,7 @@ small{color:#9a8650}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { initializeFirestore, writeBatch, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -79,13 +79,64 @@ const firebaseConfig = {
 const ADMIN = "maniron4200@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = initializeFirestore(app, { experimentalForceLongPolling: true });
+const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const val = id => $(id).value.trim();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [];
-let dirty = false;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "").slice(0, 20) : String(Date.now()) + Math.random().toString(36).slice(2, 8));
+let S = [], P = [], L = [], sha = null, migrated = false;
 
+// ---- GitHub ----
+const owner = location.hostname.split(".")[0];
+const seg = location.pathname.split("/").filter(Boolean)[0];
+const repo = (seg && !seg.includes(".")) ? seg : owner + ".github.io";
+const API = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/data.json";
+const H = t => ({ "Authorization": "Bearer " + t, "Accept": "application/vnd.github+json" });
+function token() {
+  let t = localStorage.getItem("ghtoken");
+  if (!t) t = (prompt("الصق مفتاح GitHub هنا (مرة وحدة فقط، ينحفظ بموبايلك):") || "").trim();
+  return t;
+}
+async function ghGet(t) {
+  const r = await fetch(API + "?t=" + Date.now(), { headers: H(t), cache: "no-store" });
+  if (r.status === 404) return { data: null, sha: null };
+  if (!r.ok) throw new Error("GitHub " + r.status);
+  const j = await r.json();
+  const txt = decodeURIComponent(escape(atob(j.content.replace(/\n/g, ""))));
+  return { data: JSON.parse(txt), sha: j.sha };
+}
+async function ghPut(t, data, oldSha) {
+  const body = { message: "update data", content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 1)))) };
+  if (oldSha) body.sha = oldSha;
+  const r = await fetch(API, { method: "PUT", headers: { ...H(t), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) {
+    if (r.status === 401 || r.status === 403) localStorage.removeItem("ghtoken");
+    throw new Error("GitHub " + r.status);
+  }
+  localStorage.setItem("ghtoken", t);
+  return (await r.json()).content.sha;
+}
+async function commit() {
+  const t = token();
+  if (!t) throw new Error("ما كو مفتاح");
+  sha = await ghPut(t, { subjects: S, professors: P, lectures: L }, sha);
+}
+
+// ---- ترتيب ----
+const ORD = ["اولي","ثاني","ثالث","رابع","خامس","سادس","سابع","ثامن","تاسع","عاشر"];
+const ordNum = t => {
+  let n = String(t || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
+  const d = n.match(/\d+/);
+  if (d) return +d[0];
+  const i = ORD.findIndex(w => n.includes(w));
+  return i < 0 ? Infinity : i + 1;
+};
+const baseKey = l => (typeof l.order === "number" ? l.order : 1e6 + ordNum(l.title));
+function sortAll() {
+  S.sort((a, b) => (a.name || "").localeCompare(b.name || "", "ar"));
+  L.sort((a, b) => baseKey(a) - baseKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
+}
+let dirty = false;
 function setDirty(v) { dirty = v; $("saveO").classList.toggle("dirty", v); }
 
 onAuthStateChanged(auth, u => {
@@ -94,21 +145,29 @@ onAuthStateChanged(auth, u => {
   load();
 });
 
+async function loadFirestore() {
+  const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
+  const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
+  S = m(qs[0]).map(x => ({ id: x.id, name: x.name || "", term: x.term || "" }));
+  P = m(qs[1]).map(x => ({ id: x.id, name: x.name || "", photo: x.photo || "", subjectId: x.subjectId }));
+  L = m(qs[2]).map(x => { const o = { id: x.id, title: x.title || "", url: x.url || "", desc: x.desc || "", subjectId: x.subjectId, professorId: x.professorId }; if (typeof x.order === "number") o.order = x.order; return o; });
+}
+
 async function load() {
-  try {
-    const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
-    const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
-    S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
-    S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
-    L.sort((a,b) => {
-      const ao = typeof a.order === "number", bo = typeof b.order === "number";
-      if (ao && bo) return a.order - b.order;
-      if (ao !== bo) return ao ? -1 : 1;
-      return ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0);
-    });
-    setDirty(false);
-    render();
-  } catch (e) { alert("خطأ بتحميل البيانات: " + e.code); }
+  migrated = false;
+  const t = localStorage.getItem("ghtoken");
+  if (t) {
+    try {
+      const r = await ghGet(t);
+      if (r.data) { S = r.data.subjects || []; P = r.data.professors || []; L = r.data.lectures || []; sha = r.sha; migrated = true; }
+    } catch (e) { if (/401|403/.test(e.message)) localStorage.removeItem("ghtoken"); }
+  }
+  if (!migrated) {
+    try { await loadFirestore(); } catch (e) { alert("خطأ بتحميل البيانات: " + (e.code || e.message)); }
+  }
+  sortAll();
+  setDirty(false);
+  render();
 }
 
 function opts(arr, label) {
@@ -120,6 +179,7 @@ function fillProfs() {
 $("lSub").onchange = fillProfs;
 
 function render() {
+  $("mig").style.display = migrated ? "none" : "block";
   const sv = $("lSub").value;
   $("pSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
   $("lSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
@@ -135,90 +195,58 @@ function render() {
     `</div>`).join("") || "<p>ما كو محتوى بعد.</p>";
 }
 
-async function add(name, data) {
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 40000);
-  try {
-    const token = await auth.currentUser.getIdToken();
-    const fields = {};
-    for (const [k, v] of Object.entries(data)) {
-      fields[k] = typeof v === "number" ? { integerValue: String(v) } : { stringValue: String(v ?? "") };
-    }
-    fields.createdAt = { timestampValue: new Date().toISOString() };
-    const url = "https://firestore.googleapis.com/v1/projects/" + firebaseConfig.projectId + "/databases/(default)/documents/" + name;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-      body: JSON.stringify({ fields }),
-      signal: ctl.signal
-    });
-    if (!res.ok) {
-      let msg = res.status;
-      try { const j = await res.json(); msg = res.status + " " + ((j.error && j.error.message) || ""); } catch (_) {}
-      throw new Error(msg);
-    }
-    clearTimeout(timer);
-    await load();
-    return true;
-  } catch (e) {
-    clearTimeout(timer);
-    alert("فشلت الإضافة: " + (e.name === "AbortError" ? "انتهت المهلة، النت ضعيف" : e.message));
-    return false;
-  }
+// ينفّذ التعديل بالذاكرة ثم يحفظه بـ GitHub
+async function act(fn) {
+  if (!migrated) { alert("انقل البيانات إلى GitHub أولاً (الزر فوق)."); return false; }
+  fn();
+  sortAll();
+  try { await commit(); setDirty(false); render(); return true; }
+  catch (e) { alert("فشل الحفظ: " + e.message); await load(); return false; }
 }
+
+$("migBtn").onclick = async () => {
+  const btn = $("migBtn");
+  btn.disabled = true; btn.textContent = "⏳ جاري النقل...";
+  try {
+    const t = token();
+    if (!t) throw new Error("ما كو مفتاح");
+    await loadFirestore();
+    let map = null;
+    try { const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" }); if (r.ok) map = await r.json(); } catch (_) {}
+    L.forEach(l => { if (map && typeof map[l.id] === "number") l.order = map[l.id]; });
+    sortAll();
+    L.forEach((l, i) => { l.order = i; });
+    const cur = await ghGet(t);
+    sha = await ghPut(t, { subjects: S, professors: P, lectures: L }, cur.sha);
+    migrated = true;
+    alert("تم نقل البيانات ✅");
+    render();
+  } catch (e) { alert("فشل النقل: " + e.message); }
+  btn.disabled = false; btn.textContent = "📦 نقل البيانات الآن";
+};
 
 $("addS").onclick = async () => {
   if (!val("sName")) return alert("اكتب اسم المادة");
-  if (await add("subjects", { name: val("sName"), term: val("sTerm") })) { $("sName").value = ""; $("sTerm").value = ""; }
+  const o = { id: uid(), name: val("sName"), term: val("sTerm") };
+  if (await act(() => S.push(o))) { $("sName").value = ""; $("sTerm").value = ""; }
 };
 $("addP").onclick = async () => {
   if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
-  if (await add("professors", { name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value })) { $("pName").value = ""; $("pPhoto").value = ""; }
+  const o = { id: uid(), name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value };
+  if (await act(() => P.push(o))) { $("pName").value = ""; $("pPhoto").value = ""; }
 };
 $("addL").onclick = async () => {
   if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
-  if (await add("lectures", { title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: L.length })) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; }
+  const mx = L.reduce((m, l) => Math.max(m, typeof l.order === "number" ? l.order : -1), -1);
+  const o = { id: uid(), title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: mx + 1 };
+  if (await act(() => L.push(o))) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; }
 };
 
 $("saveO").onclick = async () => {
   const btn = $("saveO");
   btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 40000);
-  try {
-    const token = await auth.currentUser.getIdToken();
-    const base = "projects/" + firebaseConfig.projectId + "/databases/(default)/documents";
-    const writes = L.map((l, i) => ({
-      update: { name: base + "/lectures/" + l.id, fields: { order: { integerValue: String(i) } } },
-      updateMask: { fieldPaths: ["order"] }
-    }));
-    const res = await fetch("https://firestore.googleapis.com/v1/" + base + ":commit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-      body: JSON.stringify({ writes }),
-      signal: ctl.signal
-    });
-    if (!res.ok) {
-      let msg = res.status;
-      try { const j = await res.json(); msg = res.status + " " + ((j.error && j.error.message) || ""); } catch (_) {}
-      throw new Error(msg);
-    }
-    L.forEach((l, i) => { l.order = i; });
-    setDirty(false);
-    alert("تم حفظ الترتيب ✅");
-  } catch (err) {
-    alert("فشل حفظ الترتيب: " + (err.name === "AbortError" ? "انتهت المهلة، النت ضعيف" : err.message));
-  }
-  clearTimeout(timer);
+  await act(() => { L.forEach((l, i) => { l.order = i; }); });
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
-};
-
-$("copyO").onclick = async () => {
-  const obj = {};
-  L.forEach((l, i) => { obj[l.id] = i; });
-  const text = JSON.stringify(obj, null, 1);
-  try { await navigator.clipboard.writeText(text); alert("تم نسخ الترتيب ✅\nالصقه بملف order.json على GitHub واحفظ (Commit)."); }
-  catch (_) { prompt("انسخ هذا النص يدوياً والصقه بملف order.json:", text); }
 };
 
 $("list").onclick = async e => {
@@ -233,31 +261,29 @@ $("list").onclick = async e => {
     if (!other) return;
     const a = L.indexOf(cur), c = L.indexOf(other);
     [L[a], L[c]] = [L[c], L[a]];
+    L.forEach((l, i) => { l.order = i; });
     setDirty(true);
     render();
     return;
   }
   if (t === "ph") {
-    const cur = (P.find(x => x.id === id) || {}).photo || "";
-    const name = prompt("اكتب اسم ملف الصورة (مثلاً: IMG_20261026_140950_938.jpg)", cur);
+    const p = P.find(x => x.id === id);
+    const name = prompt("اكتب اسم ملف الصورة (مثلاً: IMG_20261026_140950_938.jpg)", (p && p.photo) || "");
     if (name === null) return;
-    try { await updateDoc(doc(db, "professors", id), { photo: name.trim() }); await load(); }
-    catch (err) { alert("فشل تحديث الصورة: " + err.code); }
+    await act(() => { p.photo = name.trim(); });
     return;
   }
   if (!confirm("متأكد من الحذف؟")) return;
-  const del = (n, i) => deleteDoc(doc(db, n, i));
-  try {
+  await act(() => {
     if (t === "s") {
-      for (const p of P.filter(x => x.subjectId === id)) await del("professors", p.id);
-      for (const l of L.filter(x => x.subjectId === id)) await del("lectures", l.id);
-      await del("subjects", id);
+      P = P.filter(x => x.subjectId !== id);
+      L = L.filter(x => x.subjectId !== id);
+      S = S.filter(x => x.id !== id);
     } else if (t === "p") {
-      for (const l of L.filter(x => x.professorId === id)) await del("lectures", l.id);
-      await del("professors", id);
-    } else await del("lectures", id);
-    await load();
-  } catch (err) { alert("فشل الحذف: " + err.code); }
+      L = L.filter(x => x.professorId !== id);
+      P = P.filter(x => x.id !== id);
+    } else L = L.filter(x => x.id !== id);
+  });
 };
 </script>
 </body>
