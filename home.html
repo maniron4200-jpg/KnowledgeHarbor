@@ -143,16 +143,32 @@ function ytEmbed(url) {
   return m ? `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" allowfullscreen></iframe>` : "";
 }
 
+// يدمج المواد المتشابهة بالاسم (كل الفصول) ببطاقة وحدة
+function groups() {
+  const m = new Map();
+  S.forEach(s => {
+    const key = String(s.name || "").trim();
+    if (!m.has(key)) m.set(key, { key, name: key, ids: [], terms: [] });
+    const g = m.get(key);
+    g.ids.push(s.id);
+    const t = String(s.term || "").trim();
+    if (t && !g.terms.includes(t)) g.terms.push(t);
+  });
+  return [...m.values()];
+}
+
 function render() {
   const app = $("app");
   if (!sel.s) {
-    app.innerHTML = "<h2>📚 المواد الدراسية</h2>" + (S.map(s =>
-      `<button class="item" data-s="${s.id}"><span class="ico">${icon(s.name)}</span><span>${esc(s.name)}<small>🗓️ ${esc(s.term)}</small></span></button>`).join("") || "<p>ما كو مواد بعد.</p>");
+    app.innerHTML = "<h2>📚 المواد الدراسية</h2>" + (groups().map(g =>
+      `<button class="item" data-s="${esc(g.key)}"><span class="ico">${icon(g.name)}</span><span>${esc(g.name)}<small>🗓️ ${esc(g.terms.join(" • "))}</small></span></button>`).join("") || "<p>ما كو مواد بعد.</p>");
   } else if (!sel.p) {
-    const s = S.find(x => x.id === sel.s);
-    app.innerHTML = `<button class="back" data-back="s">→ رجوع للمواد</button><h2>${icon(s?.name)} ${esc(s?.name)}</h2>` +
-      (P.filter(p => p.subjectId === sel.s).map(p =>
-        `<button class="item" data-p="${p.id}"><span class="ico">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"}</span><span>${esc(p.name)}</span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
+    const g = groups().find(x => x.key === sel.s) || { name: "", ids: [], terms: [] };
+    const termOf = p => { const s = S.find(x => x.id === p.subjectId); return s ? String(s.term || "").trim() : ""; };
+    const profs = P.filter(p => g.ids.includes(p.subjectId)).sort((a, b) => g.terms.indexOf(termOf(a)) - g.terms.indexOf(termOf(b)));
+    app.innerHTML = `<button class="back" data-back="s">→ رجوع للمواد</button><h2>${icon(g.name)} ${esc(g.name)}</h2>` +
+      (profs.map(p =>
+        `<button class="item" data-p="${p.id}"><span class="ico">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"}</span><span>${esc(p.name)}${g.terms.length > 1 ? `<small>🗓️ ${esc(termOf(p))}</small>` : ""}</span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
   } else {
     const p = P.find(x => x.id === sel.p);
     app.innerHTML = `<button class="back" data-back="p">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(p?.name)}</h2>` +
