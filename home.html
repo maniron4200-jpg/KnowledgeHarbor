@@ -62,10 +62,16 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [], sel = { s: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false;
+let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false;
 
 const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
 const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
+
+// توحيد الكتابة: الأحياء = الاحياء = احياء، وإزالة التشكيل والمسافات الزائدة
+const norm = n => String(n || "")
+  .replace(/[\u064B-\u0652\u0640]/g, "")
+  .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+  .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
 
 onAuthStateChanged(auth, async u => {
   if (!u) { location.replace("login.html"); return; }
@@ -106,7 +112,6 @@ const ordNum = t => {
   return i < 0 ? Infinity : i + 1;
 };
 const baseKey = l => (typeof l.order === "number" ? l.order : ordNum(l.title));
-// إذا المحتوى جاي من data.json يُستخدم حقل order بالمحاضرة. وإلا يُستخدم order.json القديم.
 const lecKey = l => usingData
   ? (typeof l.order === "number" ? l.order : 1e6 + ordNum(l.title))
   : ((orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l));
@@ -143,35 +148,56 @@ function ytEmbed(url) {
   return m ? `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" allowfullscreen></iframe>` : "";
 }
 
-// يدمج المواد المتشابهة بالاسم (كل الفصول) ببطاقة وحدة
+const termKey = t => { const n = ordNum(t); return isFinite(n) ? "n" + n : norm(t); };
+const termOf = p => { const s = S.find(x => x.id === p.subjectId); return s ? String(s.term || "").trim() : ""; };
+
+// المادة: كل الكتابات المتشابهة (الأحياء/الاحياء) ببطاقة وحدة
 function groups() {
   const m = new Map();
   S.forEach(s => {
-    const key = String(s.name || "").trim();
-    if (!m.has(key)) m.set(key, { key, name: key, ids: [], terms: [] });
+    const key = norm(s.name);
+    if (!m.has(key)) m.set(key, { key, name: String(s.name || "").trim(), ids: [], terms: [] });
     const g = m.get(key);
     g.ids.push(s.id);
     const t = String(s.term || "").trim();
-    if (t && !g.terms.includes(t)) g.terms.push(t);
+    if (t && !g.terms.some(x => termKey(x) === termKey(t))) g.terms.push(t);
   });
+  return [...m.values()];
+}
+
+// المدرسين داخل المادة: نفس الاسم = مدرس واحد، وفصوله داخله
+function teachers(g) {
+  const m = new Map();
+  P.filter(p => g.ids.includes(p.subjectId)).forEach(p => {
+    const key = norm(p.name);
+    if (!m.has(key)) m.set(key, { key, name: String(p.name || "").trim(), photo: p.photo || "", profs: [] });
+    const t = m.get(key);
+    if (!t.photo && p.photo) t.photo = p.photo;
+    t.profs.push({ id: p.id, term: termOf(p) });
+  });
+  m.forEach(t => t.profs.sort((a, b) => ordNum(a.term) - ordNum(b.term)));
   return [...m.values()];
 }
 
 function render() {
   const app = $("app");
+  const g = sel.s ? (groups().find(x => x.key === sel.s) || { name: "", ids: [], terms: [] }) : null;
+  const tch = g && sel.t ? teachers(g).find(x => x.key === sel.t) : null;
   if (!sel.s) {
     app.innerHTML = "<h2>📚 المواد الدراسية</h2>" + (groups().map(g =>
       `<button class="item" data-s="${esc(g.key)}"><span class="ico">${icon(g.name)}</span><span>${esc(g.name)}<small>🗓️ ${esc(g.terms.join(" • "))}</small></span></button>`).join("") || "<p>ما كو مواد بعد.</p>");
-  } else if (!sel.p) {
-    const g = groups().find(x => x.key === sel.s) || { name: "", ids: [], terms: [] };
-    const termOf = p => { const s = S.find(x => x.id === p.subjectId); return s ? String(s.term || "").trim() : ""; };
-    const profs = P.filter(p => g.ids.includes(p.subjectId)).sort((a, b) => g.terms.indexOf(termOf(a)) - g.terms.indexOf(termOf(b)));
+  } else if (!sel.t) {
     app.innerHTML = `<button class="back" data-back="s">→ رجوع للمواد</button><h2>${icon(g.name)} ${esc(g.name)}</h2>` +
-      (profs.map(p =>
-        `<button class="item" data-p="${p.id}"><span class="ico">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"}</span><span>${esc(p.name)}${g.terms.length > 1 ? `<small>🗓️ ${esc(termOf(p))}</small>` : ""}</span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
+      (teachers(g).map(t =>
+        `<button class="item" data-t="${esc(t.key)}"><span class="ico">${t.photo ? `<img src="${esc(t.photo)}" alt="">` : "👨‍🏫"}</span><span>${esc(t.name)}<small>🗓️ ${esc(t.profs.map(x => x.term).filter(Boolean).join(" • "))}</small></span></button>`).join("") || "<p>ما كو أساتذة بعد.</p>");
+  } else if (!sel.p) {
+    app.innerHTML = `<button class="back" data-back="t">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(tch?.name)}</h2>` +
+      ((tch ? tch.profs : []).map(f =>
+        `<button class="item" data-p="${f.id}"><span class="ico">🗓️</span><span>${esc(f.term || "المحاضرات")}<small>🎬 ${L.filter(l => l.professorId === f.id).length} محاضرة</small></span></button>`).join("") || "<p>ما كو فصول بعد.</p>");
   } else {
     const p = P.find(x => x.id === sel.p);
-    app.innerHTML = `<button class="back" data-back="p">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(p?.name)}</h2>` +
+    const multi = tch && tch.profs.length > 1;
+    app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
       (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
       (L.filter(l => l.professorId === sel.p).map(l =>
         `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${ytEmbed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">▶️ فتح على يوتيوب</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
@@ -240,10 +266,20 @@ $("app").onclick = e => {
   if (!b) return;
   if (b.id === "saveO") { saveOrder(); return; }
   if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
-  if (b.dataset.s) sel = { s: b.dataset.s, p: null };
+  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
+  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
+  else if (b.dataset.t) {
+    sel.t = b.dataset.t; sel.p = null;
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length === 1) sel.p = t.profs[0].id; // فصل واحد: ادخل للمحاضرات مباشرة
+  }
   else if (b.dataset.p) sel.p = b.dataset.p;
-  else if (b.dataset.back === "s") sel = { s: null, p: null };
-  else if (b.dataset.back === "p") sel.p = null;
+  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
+  else if (b.dataset.back === "t") sel.t = sel.p = null;
+  else if (b.dataset.back === "p") {
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
+  }
   else return;
   render();
 };
