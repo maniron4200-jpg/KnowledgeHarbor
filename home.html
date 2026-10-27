@@ -62,7 +62,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [], sel = { s: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false;
+let S = [], P = [], L = [], sel = { s: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false;
 
 const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
 const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
@@ -106,23 +106,36 @@ const ordNum = t => {
   return i < 0 ? Infinity : i + 1;
 };
 const baseKey = l => (typeof l.order === "number" ? l.order : ordNum(l.title));
-// الترتيب المحفوظ بملف order.json له الأولوية، وأي محاضرة غير موجودة فيه تنزل للآخر
-const lecKey = l => (orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l);
+// إذا المحتوى جاي من data.json يُستخدم حقل order بالمحاضرة. وإلا يُستخدم order.json القديم.
+const lecKey = l => usingData
+  ? (typeof l.order === "number" ? l.order : 1e6 + ordNum(l.title))
+  : ((orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l));
 const sortL = () => L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
 
 async function load() {
   try {
+    usingData = false;
     try {
-      const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" });
-      if (r.ok) orderMap = await r.json();
-    } catch (e) { orderMap = null; }
-    const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
-    const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
-    S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
+      const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+      if (r.ok) {
+        const d = await r.json();
+        S = d.subjects || []; P = d.professors || []; L = d.lectures || [];
+        usingData = true; orderMap = null;
+      }
+    } catch (e) { usingData = false; }
+    if (!usingData) {
+      try {
+        const r = await fetch("order.json?t=" + Date.now(), { cache: "no-store" });
+        if (r.ok) orderMap = await r.json();
+      } catch (e) { orderMap = null; }
+      const qs = await Promise.all(["subjects","professors","lectures"].map(n => getDocs(collection(db, n))));
+      const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
+      S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
+    }
     sortL();
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
     render();
-  } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + e.code; }
+  } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + (e.code || e.message); }
 }
 
 function ytEmbed(url) {
@@ -158,8 +171,8 @@ function move(id, dir) {
   if (i < 0 || j < 0 || j >= list.length) return;
   const a = L.indexOf(list[i]), c = L.indexOf(list[j]);
   [L[a], L[c]] = [L[c], L[a]];
-  orderMap = {};
-  L.forEach((l, k) => { orderMap[l.id] = k; });
+  if (usingData) { L.forEach((l, k) => { l.order = k; }); }
+  else { orderMap = {}; L.forEach((l, k) => { orderMap[l.id] = k; }); }
   dirty = true;
   render();
 }
@@ -174,17 +187,24 @@ async function saveOrder() {
   const owner = location.hostname.split(".")[0];
   const seg = location.pathname.split("/").filter(Boolean)[0];
   const repo = (seg && !seg.includes(".")) ? seg : owner + ".github.io";
-  const api = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/order.json";
+  const api = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + (usingData ? "data.json" : "order.json");
   const h = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
   const map = {};
   L.forEach((l, i) => { map[l.id] = i; });
   btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
   try {
-    let sha;
+    let sha, out = map;
     const g = await fetch(api + "?t=" + Date.now(), { headers: h, cache: "no-store" });
-    if (g.ok) sha = (await g.json()).sha;
-    else if (g.status !== 404) throw new Error("GitHub " + g.status);
-    const body = { message: "update lectures order", content: btoa(unescape(encodeURIComponent(JSON.stringify(map)))) };
+    if (g.ok) {
+      const j = await g.json();
+      sha = j.sha;
+      if (usingData) {
+        const cur = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, "")))));
+        (cur.lectures || []).forEach(l => { if (typeof map[l.id] === "number") l.order = map[l.id]; });
+        out = cur;
+      }
+    } else if (g.status !== 404 || usingData) throw new Error("GitHub " + g.status);
+    const body = { message: "update lectures order", content: btoa(unescape(encodeURIComponent(JSON.stringify(out)))) };
     if (sha) body.sha = sha;
     const r = await fetch(api, { method: "PUT", headers: { ...h, "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!r.ok) throw new Error("GitHub " + r.status);
