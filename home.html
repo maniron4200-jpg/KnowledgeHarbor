@@ -46,6 +46,13 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .quote{background:var(--soft);border:2px dashed var(--gold);border-radius:14px;padding:12px 14px;text-align:center;font-weight:700;font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:14px}
 .quote small{display:block;color:var(--gold);font-weight:800;margin-top:2px}
 iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
+.lec.done{border-right-color:#2e7d32;background:#f4fbf4}
+.chk{width:100%;margin-top:10px;padding:10px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
+.chk.on{background:#2e7d32;border-color:#2e7d32;color:#fff}
+.prog{margin-bottom:12px}
+.prog .goal{margin:0 0 6px;font-size:13px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:9;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
@@ -55,6 +62,7 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 </header>
 <div style="max-width:640px;margin:0 auto;padding:18px 16px 0"><div class="quote">✨ في مرسى المعرفة، كل ساعة تدرسها اليوم هي خطوة تقرّبك من حلمك، فاصبر وواصل، فالنجاح يبدأ بجلسة وحدة. ✨<small>🎓 مرسى المعرفة</small></div></div>
 <div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
+<div class="toast" id="toast"></div>
 <main id="app">⏳ جارٍ التحميل...</main>
 
 <script type="module">
@@ -222,14 +230,15 @@ function render() {
   } else if (!sel.p) {
     app.innerHTML = `<button class="back" data-back="t">→ رجوع للأساتذة</button><h2>👨‍🏫 ${esc(tch?.name)}</h2>` +
       ((tch ? tch.profs : []).map(f =>
-        `<button class="item" data-p="${f.id}"><span class="ico">🗓️</span><span>${esc(f.term || "المحاضرات")}<small>🎬 ${L.filter(l => l.professorId === f.id).length} محاضرة</small></span></button>`).join("") || "<p>ما كو فصول بعد.</p>");
+        `<button class="item" data-p="${f.id}"><span class="ico">🗓️</span><span>${esc(f.term || "المحاضرات")}<small>🎬 ${L.filter(l => l.professorId === f.id).length} محاضرة • ✅ ${L.filter(l => l.professorId === f.id && getDone()[l.id]).length} منجزة</small></span></button>`).join("") || "<p>ما كو فصول بعد.</p>");
   } else {
     const p = P.find(x => x.id === sel.p);
     const multi = tch && tch.profs.length > 1;
     app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
       (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
+      progressHtml() +
       (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
+        `<div class="lec ${getDone()[l.id] ? "done" : ""}"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}<button class="chk ${getDone()[l.id] ? "on" : ""}" data-done="${l.id}">${getDone()[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
     if ($("saveO")) $("saveO").classList.toggle("dirty", dirty);
   }
 }
@@ -290,6 +299,34 @@ async function saveOrder() {
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 }
 
+// ---- علامة إنجاز المحاضرات ----
+const DK = () => "done_" + (me ? me.uid : "x");
+const getDone = () => { try { return JSON.parse(localStorage.getItem(DK())) || {}; } catch (e) { return {}; } };
+let tt;
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200); }
+function progressHtml() {
+  const lecs = L.filter(l => l.professorId === sel.p);
+  if (!lecs.length) return "";
+  const dn = getDone(), k = lecs.filter(l => dn[l.id]).length, pct = Math.round(k / lecs.length * 100);
+  return `<div class="prog"><div class="goal"><span>✅ أنجزت ${k} من ${lecs.length} محاضرة</span><span>${pct}%</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+}
+function toggleDone(id, btn) {
+  const dn = getDone();
+  if (dn[id]) delete dn[id]; else dn[id] = 1;
+  localStorage.setItem(DK(), JSON.stringify(dn));
+  const card = btn.closest(".lec");
+  card.classList.toggle("done", !!dn[id]);
+  btn.classList.toggle("on", !!dn[id]);
+  btn.textContent = dn[id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة";
+  const pr = document.querySelector(".prog");
+  if (pr) pr.outerHTML = progressHtml();
+  renderStats();
+  if (dn[id]) {
+    const lecs = L.filter(l => l.professorId === sel.p);
+    toast(lecs.every(l => dn[l.id]) ? "🏆 ممتاز! خلصت كل محاضرات هذا الفصل" : ["👏 أحسنت!", "🌟 استمر يا بطل!", "🔥 إنجاز رائع!"][Math.floor(Math.random() * 3)]);
+  }
+}
+
 // ---- شريط الجلسات والساعات والإنجاز ----
 const SK = () => "study_" + (me ? me.uid : "x");
 const RK = () => "run_" + (me ? me.uid : "x");
@@ -298,13 +335,13 @@ const putStudy = d => localStorage.setItem(SK(), JSON.stringify(d));
 const today = () => new Date().toLocaleDateString("en-CA");
 const fmt = n => [Math.floor(n / 3600), Math.floor(n % 3600 / 60), n % 60].map(x => String(x).padStart(2, "0")).join(":");
 function renderStats() {
-  const d = getStudy();
+  const d = getStudy(), dn = getDone();
   const run = +localStorage.getItem(RK()) || 0;
   const total = d.sessions.reduce((a, s) => a + s.sec, 0);
   const td = d.sessions.filter(s => s.d === today()).reduce((a, s) => a + s.sec, 0);
   const pct = Math.min(100, Math.round(td / 3600 / d.goal * 100));
   $("statsWrap").innerHTML =
-    `<div class="stats"><div class="stat"><b>${d.sessions.length}</b><small>🎯 الجلسات</small></div><div class="stat"><b>${(total / 3600).toFixed(1)}</b><small>⏱️ الساعات</small></div><div class="stat"><b>${pct}%</b><small>🏆 الإنجاز اليوم</small></div></div>` +
+    `<div class="stats"><div class="stat"><b>${d.sessions.length}</b><small>🎯 الجلسات</small></div><div class="stat"><b>${(total / 3600).toFixed(1)}</b><small>⏱️ الساعات</small></div><div class="stat"><b>${pct}%</b><small>🏆 الإنجاز اليوم</small></div><div class="stat"><b>${L.filter(l => dn[l.id]).length}/${L.length}</b><small>✅ المحاضرات</small></div></div>` +
     `<div class="bar"><i style="width:${pct}%"></i></div>` +
     `<div class="goal"><span>الهدف اليومي: ${d.goal} ساعة</span><button id="goalBtn">✏️ تغيير</button></div>` +
     `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button>`;
@@ -337,6 +374,7 @@ $("app").onclick = e => {
   const b = e.target.closest("button");
   if (!b) return;
   if (b.id === "saveO") { saveOrder(); return; }
+  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
   if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
   const g = sel.s ? groups().find(x => x.key === sel.s) : null;
   if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
