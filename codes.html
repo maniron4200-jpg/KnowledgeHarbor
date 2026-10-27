@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرسى المعرفة – أكواد الطلاب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e;--ok:#2e7d32}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
+header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
+header h1{margin:0;font-size:20px;color:var(--gold)}
+header a{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:13px}
+main{max-width:640px;margin:0 auto;padding:18px 16px}
+.card{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(201,162,39,.12)}
+h2{margin:0 0 10px;font-size:17px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+input[type=text]{width:100%;padding:11px;margin:5px 0;border:1.5px solid var(--line);border-radius:10px;font:15px Tajawal,sans-serif;color:var(--ink)}
+.tk{display:flex;align-items:center;gap:8px;padding:8px 4px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
+.tk input{width:20px;height:20px;margin:0;accent-color:var(--gold)}
+.add{width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
+.cancel{background:var(--soft);color:var(--ink);border:2px solid var(--gold)}
+.st{border:2px solid var(--line);border-right:5px solid var(--gold);border-radius:12px;padding:12px;margin-bottom:10px}
+.st.off{border-right-color:var(--err);background:#fdf3f2}
+.code{direction:ltr;display:inline-block;font:800 18px monospace;letter-spacing:1px;background:var(--soft);border:1px dashed var(--gold);border-radius:8px;padding:4px 10px;margin:6px 0}
+.st p{margin:4px 0;font-size:13px;color:#7a6c47}
+.b{margin-top:6px}
+.b button{margin:3px 0 0 4px;padding:6px 10px;border:2px solid var(--gold);background:var(--soft);border-radius:8px;font:700 13px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
+.b .del{background:var(--err);border-color:var(--err);color:#fff}
+</style>
+</head>
+<body>
+<header><h1>🔑 أكواد الطلاب</h1><a href="home.html">🏠 الرئيسية</a></header>
+<main>
+  <div class="card">
+    <h2 id="formTitle">➕ طالب جديد</h2>
+    <input type="text" id="name" placeholder="اسم الطالب">
+    <p style="margin:8px 0 2px;font-weight:700">المدرسين المسموحين:</p>
+    <div id="teachers">⏳ جارٍ التحميل...</div>
+    <button class="add" id="save">🔑 إنشاء الكود</button>
+    <button class="add cancel" id="cancel" style="display:none">إلغاء التعديل</button>
+  </div>
+  <div class="card">
+    <h2>👥 الطلاب</h2>
+    <div id="list">⏳ جارٍ التحميل...</div>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
+  authDomain: "knowledgeharbor-30476.firebaseapp.com",
+  projectId: "knowledgeharbor-30476",
+  storageBucket: "knowledgeharbor-30476.firebasestorage.app",
+  messagingSenderId: "280788802817",
+  appId: "1:280788802817:web:f2a7aea087fab122790f00",
+  measurementId: "G-KSD4JSVTGK"
+};
+const ADMIN = "maniron4200@gmail.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = n => String(n || "")
+  .replace(/[\u064B-\u0652\u0640]/g, "")
+  .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+  .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
+const gen = () => {
+  const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const s = [...crypto.getRandomValues(new Uint8Array(8))].map(x => a[x % 32]).join("");
+  return s.slice(0, 4) + "-" + s.slice(4);
+};
+
+let T = [], CODES = [], editing = null;
+
+onAuthStateChanged(auth, u => {
+  if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
+  document.body.style.display = "block";
+  init();
+});
+
+async function init() {
+  await loadTeachers();
+  await loadCodes();
+}
+
+// قائمة المدرسين من data.json، بنفس مفتاح التجميع المستخدم بالصفحة الرئيسية
+async function loadTeachers() {
+  try {
+    const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    const S = d.subjects || [], P = d.professors || [];
+    const gm = new Map();
+    S.forEach(s => {
+      const k = norm(s.name);
+      if (!gm.has(k)) gm.set(k, { k, name: String(s.name || "").trim(), ids: [] });
+      gm.get(k).ids.push(s.id);
+    });
+    T = [];
+    gm.forEach(g => {
+      const seen = new Set();
+      P.filter(p => g.ids.includes(p.subjectId)).forEach(p => {
+        const tk = norm(p.name);
+        if (seen.has(tk)) return;
+        seen.add(tk);
+        T.push({ k: g.k + "|" + tk, label: g.name + " – " + String(p.name || "").trim() });
+      });
+    });
+    renderTeachers([]);
+  } catch (e) {
+    $("teachers").textContent = "تعذّر تحميل المدرسين من data.json. انقل البيانات لـ GitHub من لوحة التحكم أولاً.";
+  }
+}
+function renderTeachers(sel) {
+  $("teachers").innerHTML = T.map(t =>
+    `<label class="tk"><input type="checkbox" value="${esc(t.k)}" ${sel.includes(t.k) ? "checked" : ""}> ${esc(t.label)}</label>`).join("") || "<p>ما كو مدرسين بعد.</p>";
+}
+
+async function loadCodes() {
+  try {
+    const q = await getDocs(collection(db, "codes"));
+    CODES = q.docs.map(d => ({ code: d.id, ...d.data() })).sort((a, b) => (b.created || 0) - (a.created || 0));
+    renderList();
+  } catch (e) { $("list").textContent = "تعذّر تحميل الأكواد: " + (e.code || e.message); }
+}
+function renderList() {
+  const lab = k => (T.find(t => t.k === k) || { label: k }).label;
+  $("list").innerHTML = CODES.map(c =>
+    `<div class="st ${c.active ? "" : "off"}"><b>👤 ${esc(c.name)}</b><br><span class="code">${esc(c.code)}</span>` +
+    `<p>${c.active ? "🟢 مفعّل" : "⛔ معطّل"} • ${c.uid ? "🔗 مرتبط بحساب " + esc(c.email || "") : "⏳ ما انستخدم بعد"}</p>` +
+    `<p>📚 ${(c.teachers || []).map(k => esc(lab(k))).join(" • ") || "لا يوجد"}</p>` +
+    `<div class="b"><button data-a="copy" data-c="${esc(c.code)}">📋 نسخ</button><button data-a="edit" data-c="${esc(c.code)}">✏️ تعديل</button><button data-a="tog" data-c="${esc(c.code)}">${c.active ? "⛔ تعطيل" : "🟢 تفعيل"}</button>${c.uid ? `<button data-a="unlink" data-c="${esc(c.code)}">🔓 فك الربط</button>` : ""}<button class="del" data-a="del" data-c="${esc(c.code)}">🗑️ حذف</button></div></div>`).join("") || "<p>ما كو طلاب بعد.</p>";
+}
+
+function resetForm() {
+  editing = null;
+  $("name").value = "";
+  $("formTitle").textContent = "➕ طالب جديد";
+  $("save").textContent = "🔑 إنشاء الكود";
+  $("cancel").style.display = "none";
+  renderTeachers([]);
+}
+$("cancel").onclick = resetForm;
+
+$("save").onclick = async () => {
+  const name = $("name").value.trim();
+  const ts = [...document.querySelectorAll(".tk input:checked")].map(x => x.value);
+  if (!name) return alert("اكتب اسم الطالب");
+  if (!ts.length) return alert("اختر مدرس واحد على الأقل");
+  const btn = $("save");
+  btn.disabled = true;
+  try {
+    if (editing) {
+      await updateDoc(doc(db, "codes", editing), { name, teachers: ts });
+      alert("تم حفظ التعديل ✅");
+    } else {
+      const code = gen();
+      await setDoc(doc(db, "codes", code), { name, teachers: ts, active: true, uid: null, email: null, created: Date.now() });
+      try { await navigator.clipboard.writeText(code); } catch (_) {}
+      alert("كود " + name + ":\n" + code + "\n(اننسخ إذا المتصفح سمح)");
+    }
+    resetForm();
+    await loadCodes();
+  } catch (e) { alert("فشل الحفظ: " + (e.code || e.message)); }
+  btn.disabled = false;
+};
+
+$("list").onclick = async e => {
+  const b = e.target.closest("button[data-a]");
+  if (!b) return;
+  const { a, c } = b.dataset;
+  const row = CODES.find(x => x.code === c);
+  try {
+    if (a === "copy") {
+      try { await navigator.clipboard.writeText(c); alert("تم نسخ الكود"); } catch (_) { prompt("انسخ الكود:", c); }
+      return;
+    }
+    if (a === "edit") {
+      editing = c;
+      $("name").value = row.name || "";
+      $("formTitle").textContent = "✏️ تعديل: " + (row.name || "");
+      $("save").textContent = "💾 حفظ التعديل";
+      $("cancel").style.display = "";
+      renderTeachers(row.teachers || []);
+      scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (a === "tog") await updateDoc(doc(db, "codes", c), { active: !row.active });
+    else if (a === "unlink") {
+      if (!confirm("فك ربط الكود؟ الطالب يقدر يدخله من حساب جديد.")) return;
+      await updateDoc(doc(db, "codes", c), { uid: null, email: null });
+    } else if (a === "del") {
+      if (!confirm("حذف كود " + row.name + " نهائياً؟")) return;
+      await deleteDoc(doc(db, "codes", c));
+    }
+    await loadCodes();
+  } catch (err) { alert("فشلت العملية: " + (err.code || err.message)); }
+};
+</script>
+</body>
+</html>
