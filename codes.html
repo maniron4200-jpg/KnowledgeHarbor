@@ -42,6 +42,7 @@ input[type=text]{width:100%;padding:11px;margin:5px 0;border:1.5px solid var(--l
   </div>
   <div class="card">
     <h2>👥 الطلاب</h2>
+    <input type="text" id="q" placeholder="🔍 ابحث باسم الطالب أو الكود">
     <div id="list">⏳ جارٍ التحميل...</div>
   </div>
 </main>
@@ -75,6 +76,7 @@ const gen = () => {
   const s = [...crypto.getRandomValues(new Uint8Array(8))].map(x => a[x % 32]).join("");
   return s.slice(0, 4) + "-" + s.slice(4);
 };
+const msgFor = (name, code) => "أهلاً " + name + " 🎓\nكودك لمنصة مرسى المعرفة:\n" + code + "\nسجّل دخول بحسابك واكتب الكود (لا تشاركه مع أحد).";
 
 let T = [], CODES = [], editing = null;
 
@@ -131,12 +133,15 @@ async function loadCodes() {
 }
 function renderList() {
   const lab = k => (T.find(t => t.k === k) || { label: k }).label;
-  $("list").innerHTML = CODES.map(c =>
+  const f = norm($("q").value);
+  const rows = CODES.filter(c => !f || norm(c.name).includes(f) || String(c.code).toLowerCase().includes(f));
+  $("list").innerHTML = rows.map(c =>
     `<div class="st ${c.active ? "" : "off"}"><b>👤 ${esc(c.name)}</b><br><span class="code">${esc(c.code)}</span>` +
     `<p>${c.active ? "🟢 مفعّل" : "⛔ معطّل"} • ${c.uid ? "🔗 مرتبط بحساب " + esc(c.email || "") : "⏳ ما انستخدم بعد"}</p>` +
     `<p>📚 ${(c.teachers || []).map(k => esc(lab(k))).join(" • ") || "لا يوجد"}</p>` +
-    `<div class="b"><button data-a="copy" data-c="${esc(c.code)}">📋 نسخ</button><button data-a="edit" data-c="${esc(c.code)}">✏️ تعديل</button><button data-a="tog" data-c="${esc(c.code)}">${c.active ? "⛔ تعطيل" : "🟢 تفعيل"}</button>${c.uid ? `<button data-a="unlink" data-c="${esc(c.code)}">🔓 فك الربط</button>` : ""}<button class="del" data-a="del" data-c="${esc(c.code)}">🗑️ حذف</button></div></div>`).join("") || "<p>ما كو طلاب بعد.</p>";
+    `<div class="b"><button data-a="copy" data-c="${esc(c.code)}">📋 نسخ رسالة</button><button data-a="edit" data-c="${esc(c.code)}">✏️ تعديل</button><button data-a="tog" data-c="${esc(c.code)}">${c.active ? "⛔ تعطيل" : "🟢 تفعيل"}</button>${c.uid ? `<button data-a="unlink" data-c="${esc(c.code)}">🔓 فك الربط</button>` : ""}<button class="del" data-a="del" data-c="${esc(c.code)}">🗑️ حذف</button></div></div>`).join("") || "<p>ما كو طلاب.</p>";
 }
+$("q").oninput = renderList;
 
 function resetForm() {
   editing = null;
@@ -162,8 +167,8 @@ $("save").onclick = async () => {
     } else {
       const code = gen();
       await setDoc(doc(db, "codes", code), { name, teachers: ts, active: true, uid: null, email: null, created: Date.now() });
-      try { await navigator.clipboard.writeText(code); } catch (_) {}
-      alert("كود " + name + ":\n" + code + "\n(اننسخ إذا المتصفح سمح)");
+      try { await navigator.clipboard.writeText(msgFor(name, code)); } catch (_) {}
+      alert("كود " + name + ":\n" + code + "\n(اننسخت رسالة جاهزة إذا المتصفح سمح)");
     }
     resetForm();
     await loadCodes();
@@ -178,7 +183,8 @@ $("list").onclick = async e => {
   const row = CODES.find(x => x.code === c);
   try {
     if (a === "copy") {
-      try { await navigator.clipboard.writeText(c); alert("تم نسخ الكود"); } catch (_) { prompt("انسخ الكود:", c); }
+      const m = msgFor(row.name, c);
+      try { await navigator.clipboard.writeText(m); alert("تم نسخ الرسالة ✅"); } catch (_) { prompt("انسخ الرسالة:", m); }
       return;
     }
     if (a === "edit") {
