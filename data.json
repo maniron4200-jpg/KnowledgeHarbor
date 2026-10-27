@@ -2772,6 +2772,15 @@
    "subjectId": "290e954b3eb74d5385bc",
    "professorId": "1267cf50b1c740ecb199",
    "order": 290
+  },
+  {
+   "id": "25c7c94d03ef405ab970",
+   "title": "الاولى",
+   "url": "https://youtu.be/2Bw6uo7pTiU?si=8Uh7KU4YhRV976c8",
+   "desc": "",
+   "subjectId": "aebc82aaa4d845efbb1b",
+   "professorId": "c1cbf571bd0643f0898e",
+   "order": 291
   }
  ]
 }
