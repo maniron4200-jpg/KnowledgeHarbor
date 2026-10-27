@@ -1,11 +1,6 @@
 {
  "subjects": [
   {
-   "id": "2fc265ed52444e41b537",
-   "name": "احياء",
-   "term": "الثاني"
-  },
-  {
    "id": "uln80vckuITAouLDHdsK",
    "name": "الأحياء",
    "term": "الفصل الأول"
@@ -86,12 +81,6 @@
    "name": "فاضل الهاشمي",
    "photo": "IMG_20261027_084546_638.jpg",
    "subjectId": "1QHhFFqpAXx7WA9iCdC4"
-  },
-  {
-   "id": "cf5ae1de08c5420bbf69",
-   "name": "سالم ال منصور",
-   "photo": "",
-   "subjectId": "2fc265ed52444e41b537"
   }
  ],
  "lectures": [
