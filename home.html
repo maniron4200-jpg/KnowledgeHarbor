@@ -153,74 +153,6 @@ header h1{margin:0;font-size:25px;font-weight:800;color:#fff}
 .stat b{color:var(--navy)}
 main h2{display:flex;align-items:center;justify-content:center;gap:12px;border:0;color:var(--navy);font-weight:800}
 main h2::before,main h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-
-/* ===== Knowledge Harbor: premium lighthouse redesign ===== */
-:root{--ink:#10264b;--gold:#c89d32;--gold2:#f0cf72;--soft:#f6f0e4;--line:#e7dcc4;--bg:#f7f4ed;--card:#fffefa;--muted:#a19479;--muted2:#756b5a;--donebg:#eef6ee;--navy:#10264b}
-:root[data-theme=dark]{--ink:#f6edda;--gold:#d9b85d;--gold2:#f2d782;--soft:#182a49;--line:#34476a;--bg:#09172d;--card:#112341;--muted:#b5b9c3;--muted2:#d2d5dc;--donebg:#183326;--navy:#f2d782}
-body{background:radial-gradient(ellipse at 50% -10%,rgba(218,184,93,.14),transparent 38%),var(--bg);color:var(--ink)}
-header{height:205px;margin:0 0 18px;background:#091a39;overflow:visible;box-shadow:0 10px 28px rgba(8,24,52,.18)}
-header .hbg{opacity:.96}
-.hrow{padding:20px 18px 0;align-items:center}
-.brand{gap:14px}
-.logo{width:76px;height:76px;border-radius:22px;background:#fff;border:2px solid #e9c66c;box-shadow:0 0 26px rgba(231,193,98,.28)}
-.logo img{width:60px;height:60px}
-.vsep{height:62px}
-header h1{font-size:clamp(23px,5vw,30px);letter-spacing:-.4px}
-.en{font-size:14px;letter-spacing:2px;text-transform:uppercase}
-#menuBtn,#bellBtn{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.09);border:1px solid rgba(237,202,116,.7);backdrop-filter:blur(12px)}
-#menu{top:82px;border:1px solid var(--gold);box-shadow:0 18px 40px rgba(0,0,0,.24);backdrop-filter:blur(18px)}
-main{max-width:720px;padding:12px 18px 30px}
-#annWrap,#starWrap,#statsWrap,#statsWrap2{max-width:720px!important;padding-left:18px!important;padding-right:18px!important}
-.stats{gap:10px;margin:0 0 14px}
-.stat{min-width:0;padding:15px 6px 13px;border:1px solid rgba(193,166,105,.34);border-radius:22px;background:linear-gradient(155deg,rgba(255,255,255,.98),rgba(249,245,235,.92));box-shadow:0 8px 22px rgba(30,43,67,.07);position:relative;overflow:hidden}
-.stat:before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
-.stat b{font-size:clamp(20px,5vw,29px);color:#13294d;font-weight:800}
-.stat small{font-size:12px;color:#8c8068}
-.streak{min-height:82px;padding:14px 18px;border:1px solid #e5d9bd;border-right:5px solid var(--gold);border-radius:23px;background:linear-gradient(110deg,#fffefa,#f4ead7);box-shadow:0 8px 22px rgba(30,43,67,.07);color:#14294d;font-size:17px;margin:0 0 14px}
-.streak b{font-size:28px;color:#c69a2c}
-.streak small{font-size:13px;color:#8d826f}
-.bar{height:13px;background:#eae2d2;border:0;border-radius:20px;margin:0 0 7px;overflow:hidden}
-.bar i{border-radius:20px;background:linear-gradient(90deg,#b98b25,#f0d27a)}
-.goal{font-size:13px;color:#857b68;margin:8px 4px 16px}
-.goal button{font-size:13px}
-#focus{position:relative;isolation:isolate;max-width:100%;min-height:420px;padding:22px 18px 20px;gap:17px;border:1px solid rgba(238,204,119,.7);border-radius:34px;background:radial-gradient(circle at 50% 30%,rgba(55,91,145,.55),transparent 35%),linear-gradient(145deg,#071936 0%,#102b54 52%,#071832 100%);box-shadow:0 18px 42px rgba(8,25,54,.22),inset 0 1px 0 rgba(255,255,255,.22);overflow:hidden}
-#focus:before{content:"";position:absolute;z-index:-1;width:240px;height:240px;border:1px solid rgba(229,190,93,.16);border-radius:50%;top:12px;left:50%;transform:translateX(-50%);box-shadow:0 0 0 18px rgba(255,255,255,.018),0 0 0 38px rgba(255,255,255,.015)}
-#focus:after{content:"⚓";position:absolute;z-index:-1;right:22px;bottom:28px;font-size:90px;color:rgba(174,198,230,.08);transform:rotate(-12deg)}
-#focus .ftop{max-width:none;color:#efd17b;font-size:14px}
-#focus .ft{font-size:clamp(42px,10vw,62px);letter-spacing:2px;color:#f2d477;text-shadow:0 0 22px rgba(241,202,103,.2);padding:10px 0}
-#focus .fbarw,#focus .fchain{max-width:none}
-#focus .fbar{height:12px;background:#213a63;border:1px solid rgba(255,255,255,.08)}
-#focus .fbar i{background:linear-gradient(90deg,#b9892d,#f4d67d);box-shadow:0 0 12px rgba(240,205,111,.5)}
-#focus .fbl{color:#b9c8df}
-#focus .fchain{background:rgba(35,61,101,.72);border:1px solid rgba(177,199,229,.1);border-radius:22px;padding:13px 15px}
-#focus .fch{font-size:14px}
-#focus .nd{width:30px;height:30px;border-color:#526b91;background:#12294d}
-#focus .nd.on{background:#efcf70;border-color:#efcf70;box-shadow:0 0 14px rgba(239,207,112,.3)}
-#focus .ln{background:#526b91}
-#focus .ln.on{background:#e9c66c}
-#focus .fchips{max-width:none;gap:8px}
-#focus .fchips button{border:1px solid #50698f;background:rgba(7,24,50,.62);color:#f1f4fa;border-radius:14px;padding:9px 14px;font-size:13px}
-#focus .fchips button.on{background:linear-gradient(135deg,#f4d77d,#c89b36);border-color:#f1d27a;color:#10264b;box-shadow:0 4px 14px rgba(222,183,85,.22)}
-#focus .frow{width:100%;justify-content:center}
-#focus .frow button{min-width:190px;padding:13px 34px;border-radius:17px;background:linear-gradient(135deg,#f4d982,#d5a83f);border:1px solid #f6df9a;color:#10264b;font-size:17px;box-shadow:0 8px 20px rgba(205,162,62,.2)}
-#focus button.end{background:#b3261e}
-main h2{justify-content:flex-start;text-align:right;font-size:23px;margin:22px 0 14px;color:var(--navy)}
-main h2:before{display:none}main h2:after{flex:0 0 5px;height:27px;border-radius:8px;background:linear-gradient(#f1d47a,#b78c2d)}
-.item{border:1px solid #e6dcc8;background:linear-gradient(120deg,#fffefa,#f7f0e2);border-radius:22px;padding:15px 17px;box-shadow:0 7px 18px rgba(26,41,69,.07);color:#12294e}
-.item .ico{background:#f5ecd7;border:1px solid #e7d8b3;color:#b78d31}
-.item small{color:#8f836e}
-.cont{border:1px solid rgba(226,195,121,.6);background:linear-gradient(135deg,#10264b,#193862);color:#f5d985;border-radius:16px;padding:13px 16px;box-shadow:0 7px 18px rgba(10,28,57,.14)}
-#searchWrap{max-width:720px;padding:0 18px;margin:16px auto}
-#q{border:1px solid #e3d7bd;border-radius:18px;padding:15px 18px;background:var(--card);box-shadow:0 6px 18px rgba(30,43,67,.06)}
-.lec,.lbrow,.sbox{border-radius:18px;box-shadow:0 5px 16px rgba(30,43,67,.05)}
-.gate{border-radius:22px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(30,43,67,.07)}
-#sheet .box{border-radius:26px 26px 0 0}
-@media(max-width:430px){header{height:190px}.hrow{padding:17px 13px 0}.logo{width:64px;height:64px;border-radius:19px}.logo img{width:51px;height:51px}header h1{font-size:22px}.en{font-size:11px;letter-spacing:1.4px}.hbtns{gap:7px}#bellBtn,#menuBtn{width:42px;height:42px}.stats{gap:7px}.stat{padding:12px 3px 10px;border-radius:18px}.stat small{font-size:11px}.streak{padding:12px 13px;font-size:15px}.streak small{font-size:11px}#focus{padding:19px 13px;border-radius:27px;min-height:390px}#focus .ft{font-size:43px}#focus .fchips{gap:6px}#focus .fchips button{padding:8px 10px;font-size:12px}main{padding-left:14px;padding-right:14px}}
-:root[data-theme=dark] .stat,:root[data-theme=dark] .streak,:root[data-theme=dark] .item{background:linear-gradient(145deg,#142847,#0d1d36);border-color:#354968;color:#f2ead9}
-:root[data-theme=dark] .stat b,:root[data-theme=dark] main h2{color:#f0d17a}
-:root[data-theme=dark] .stat small,:root[data-theme=dark] .item small{color:#b9b4a8}
-:root[data-theme=dark] .bar{background:#263b5b}
-
 </style>
 </head>
 <body>
@@ -977,4 +909,95 @@ async function openBoard(tab) {
     if (mi >= 20) html += `<p class="note" style="text-align:center">• • •</p>` + row(ranked[mi], mi);
     openSheet(`<h2>🏆 لوحة الترتيب</h2><div class="tabs"><button data-tab="w" class="${tab === "w" ? "on" : ""}">📅 هذا الأسبوع</button><button data-tab="a" class="${tab === "a" ? "on" : ""}">🏅 الإجمالي</button></div>` +
       (html || "<p>ما كو نشاط بعد، كن أول واحد! 🚀</p>") +
-      `<p class="note">النقاط: كل ساعة دراسة = 10 • كل محاضرة منجزة = 2 • كل يوم بالسلسلة = 3. الأسبوع يبدأ من السبت.</p><div class="row">${isAdmin ? "" : '<button class="chk" id="nickEdit">✏️ ملفي الشخصي</button>'}<button class="chk" id="sheetX"
+      `<p class="note">النقاط: كل ساعة دراسة = 10 • كل محاضرة منجزة = 2 • كل يوم بالسلسلة = 3. الأسبوع يبدأ من السبت.</p><div class="row">${isAdmin ? "" : '<button class="chk" id="nickEdit">✏️ ملفي الشخصي</button>'}<button class="chk" id="sheetX">إغلاق</button></div>`);
+  } catch (e) {
+    openSheet(`<h2>🏆 لوحة الترتيب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`);
+  }
+}
+
+// ---- شريط الجلسات والساعات والإنجاز ----
+const SK = () => "study_" + (me ? me.uid : "x");
+const RK = () => "run_" + (me ? me.uid : "x");
+const getStudy = () => { try { return JSON.parse(localStorage.getItem(SK())) || { sessions: [], goal: 2 }; } catch (e) { return { sessions: [], goal: 2 }; } };
+const putStudy = d => localStorage.setItem(SK(), JSON.stringify(d));
+const dayStr = dt => dt.toLocaleDateString("en-CA");
+const today = () => dayStr(new Date());
+const fmt = n => [Math.floor(n / 3600), Math.floor(n % 3600 / 60), n % 60].map(x => String(x).padStart(2, "0")).join(":");
+
+// سلسلة الأيام المتتالية: يوم يُحسب إذا فيه جلسة وحدة على الأقل
+function calcStreak(sessions) {
+  const days = new Set(sessions.map(s => s.d));
+  const dt = new Date();
+  const studiedToday = days.has(dayStr(dt));
+  if (!studiedToday) dt.setDate(dt.getDate() - 1);
+  let n = 0;
+  while (days.has(dayStr(dt))) { n++; dt.setDate(dt.getDate() - 1); }
+  return { n, studiedToday };
+}
+
+function renderStats() {
+  const d = getStudy(), dn = getDone();
+  const run = +localStorage.getItem(RK()) || 0;
+  const total = d.sessions.reduce((a, s) => a + s.sec, 0);
+  const td = d.sessions.filter(s => s.d === today()).reduce((a, s) => a + s.sec, 0);
+  const pct = Math.min(100, Math.round(td / 3600 / d.goal * 100));
+  const st = calcStreak(d.sessions);
+  const hint = st.n === 0 ? "ابدأ جلسة اليوم وابدأ سلسلتك" : (st.studiedToday ? "أحسنت، سلسلتك محفوظة اليوم ✅" : "ادرس اليوم لتحافظ على السلسلة");
+  const rt = resumeTarget();
+  $("statsWrap").innerHTML =
+    `<div class="stats"><div class="stat"><b>${d.sessions.length}</b><small>🎯 الجلسات</small></div><div class="stat"><b>${(total / 3600).toFixed(1)}</b><small>⏱️ الساعات</small></div><div class="stat"><b>${pct}%</b><small>🏆 الإنجاز اليوم</small></div><div class="stat"><b>${L.filter(l => dn[l.id]).length}/${L.length}</b><small>✅ المحاضرات</small></div></div>` +
+    `<div class="streak">🔥 <b>${st.n}</b> ${st.n === 1 ? "يوم" : "أيام"} متتالية<small>${hint}</small></div>` +
+    `<div class="bar"><i style="width:${pct}%"></i></div>` +
+    `<div class="goal"><span>الهدف اليومي: ${d.goal} ساعة</span><button id="goalBtn">✏️ تغيير</button></div>` +
+    "";
+  $("statsWrap2").innerHTML = "" +
+    (rt ? `<button class="cont" id="contBtn" data-lid="${esc(rt.id)}">⏯️ كمّل من وين وقفت: ${esc(rt.title)}</button>` : "") +
+    `<button class="cont" id="lbBtn">🏆 لوحة الترتيب</button>`;
+  tickFocus();
+}
+setInterval(() => {
+  const run = +localStorage.getItem(RK()) || 0, t = $("timer");
+  if (run && t) t.textContent = fmt(Math.floor((Date.now() - run) / 1000));
+  if (run) tickFocus();
+}, 1000);
+const statsClick = e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "contBtn") { goTo(b.dataset.lid); return; }
+  if (b.id === "lbBtn") { openBoard("w"); return; }
+  if (b.id === "goalBtn") {
+    const d = getStudy();
+    const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
+    if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); }
+  }
+};
+$("statsWrap").onclick = statsClick;
+$("statsWrap2").onclick = statsClick;
+
+$("app").onclick = e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "saveO") { saveOrder(); return; }
+  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
+  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
+  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
+  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
+  else if (b.dataset.t) {
+    sel.t = b.dataset.t; sel.p = null;
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length === 1) sel.p = t.profs[0].id; // فصل واحد: ادخل للمحاضرات مباشرة
+  }
+  else if (b.dataset.p) sel.p = b.dataset.p;
+  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
+  else if (b.dataset.back === "t") sel.t = sel.p = null;
+  else if (b.dataset.back === "p") {
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
+  }
+  else return;
+  render();
+  renderStats();
+};
+</script>
+</body>
+</html>
