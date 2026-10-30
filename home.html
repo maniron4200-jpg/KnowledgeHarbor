@@ -5,28 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>مرسى المعرفة – الرئيسية</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")||"light"}catch(e){}</script>
 <style>
-:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e}
+:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e;--bg:#fffefa;--card:#fff;--muted:#9a8650;--muted2:#7a6c47;--donebg:#f4fbf4}
+:root[data-theme=dark]{--ink:#f3e9c8;--soft:#2e2713;--line:#4a3f1c;--bg:#16130b;--card:#221d10;--muted:#bfae78;--muted2:#c9bb8c;--donebg:#16271a}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
-header{background:#fff;color:var(--ink);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
+body{margin:0;min-height:100vh;font-family:Tajawal,Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:none}
+header{position:relative;background:var(--card);color:var(--ink);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
 header h1{margin:0;font-size:20px;color:var(--gold)}
-header a,#out{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:0;border-radius:10px;padding:8px 12px;font:700 13px Tajawal,sans-serif;cursor:pointer;text-decoration:none}
+#menuBtn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:0;border-radius:10px;width:42px;height:38px;font-size:20px;cursor:pointer}
+#menu{display:none;position:absolute;left:16px;top:60px;z-index:20;background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:6px;min-width:170px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#menu.open{display:block}
+#menu a,#menu button{display:block;width:100%;text-align:right;background:none;border:0;border-radius:10px;padding:10px 12px;font:700 14px Tajawal,sans-serif;color:var(--ink);cursor:pointer;text-decoration:none}
+#menu a:active,#menu button:active{background:var(--soft)}
 main{max-width:640px;margin:0 auto;padding:18px 16px}
 h2{margin:0 0 14px;color:var(--ink);font-size:20px;padding-bottom:8px;border-bottom:2px solid var(--line)}
-.item{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:#fff;border:2px solid var(--gold);border-radius:14px;padding:12px 14px;margin-bottom:10px;font:700 16px Tajawal,sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(201,162,39,.12)}
+.item{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:12px 14px;margin-bottom:10px;font:700 16px Tajawal,sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(201,162,39,.12)}
 .item:active{background:var(--soft)}
-.item small{display:block;color:#9a8650;font-weight:400;margin-top:2px}
+.item small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
 .ico{flex:none;width:46px;height:46px;border-radius:50%;background:var(--soft);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:23px;overflow:hidden}
 .ico img{width:100%;height:100%;object-fit:cover}
 .back{background:none;border:0;color:var(--gold);font:700 15px Tajawal,sans-serif;cursor:pointer;padding:0 0 10px}
-.lec{background:#fff;border:2px solid var(--line);border-right:5px solid var(--gold);border-radius:12px;padding:14px;margin-bottom:12px}
+.lec{background:var(--card);border:2px solid var(--line);border-right:5px solid var(--gold);border-radius:12px;padding:14px;margin-bottom:12px}
 .lec h3{margin:0 0 6px;font-size:16px}
-.lec p{margin:6px 0 0;font-size:14px;color:#7a6c47}
+.lec p{margin:6px 0 0;font-size:14px;color:var(--muted2)}
+.lec.hl{animation:hl 1.8s ease}
+@keyframes hl{0%,60%{box-shadow:0 0 0 4px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
 iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .lec a{color:var(--gold);font-weight:700}
-.gate{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:20px}
-.gate input{width:100%;padding:12px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;font:16px Tajawal,sans-serif}
+.gate{background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:20px}
+.gate input{width:100%;padding:12px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;font:16px Tajawal,sans-serif;background:var(--bg);color:var(--ink)}
 .err{color:var(--err);font-weight:700;min-height:22px}
 .mv{display:flex;gap:8px;margin-top:10px}
 .mv button{flex:1;padding:8px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
@@ -34,34 +42,49 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .save{width:100%;padding:12px;margin-bottom:14px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
 .save.dirty{outline:3px solid var(--err)}
 .stats{display:flex;gap:8px;margin-bottom:10px}
-.stat{flex:1;background:#fff;border:2px solid var(--gold);border-radius:14px;padding:10px 4px;text-align:center;box-shadow:0 2px 8px rgba(201,162,39,.12)}
+.stat{flex:1;background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:10px 4px;text-align:center;box-shadow:0 2px 8px rgba(201,162,39,.12)}
 .stat b{display:block;font-size:22px;color:var(--gold)}
-.stat small{color:#9a8650;font-size:12px}
+.stat small{color:var(--muted);font-size:12px}
+.streak{display:flex;align-items:center;gap:8px;background:var(--soft);border:2px solid var(--gold);border-radius:14px;padding:8px 12px;margin-bottom:10px;font-weight:800;font-size:14px}
+.streak b{color:var(--gold);font-size:20px}
+.streak small{margin-right:auto;color:var(--muted);font-weight:400;font-size:12px}
 .bar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(135deg,var(--gold),var(--gold2))}
-.goal{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#9a8650;margin:6px 0 10px}
+.goal{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin:6px 0 10px}
 .goal button{background:none;border:0;color:var(--gold);font:700 12px Tajawal,sans-serif;cursor:pointer}
 .sess{width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 16px Tajawal,sans-serif;cursor:pointer}
 .sess.run{background:var(--err)}
+.cont{width:100%;margin-top:8px;padding:11px 12px;border:2px solid var(--gold);border-radius:12px;background:var(--soft);color:var(--ink);font:800 14px Tajawal,sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cont:active{background:var(--gold2)}
 .quote{background:var(--soft);border:2px dashed var(--gold);border-radius:14px;padding:12px 14px;text-align:center;font-weight:700;font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:14px}
 .quote small{display:block;color:var(--gold);font-weight:800;margin-top:2px}
+#searchWrap{display:none;max-width:640px;margin:14px auto 0;padding:0 16px}
+#q{width:100%;padding:12px 14px;border:2px solid var(--gold);border-radius:14px;font:700 15px Tajawal,sans-serif;background:var(--card);color:var(--ink)}
+#results{margin-top:10px}
 iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
-.lec.done{border-right-color:#2e7d32;background:#f4fbf4}
+.lec.done{border-right-color:#2e7d32;background:var(--donebg)}
 .chk{width:100%;margin-top:10px;padding:10px;border:2px solid var(--gold);background:var(--soft);border-radius:10px;font:700 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
 .chk.on{background:#2e7d32;border-color:#2e7d32;color:#fff}
 .prog{margin-bottom:12px}
 .prog .goal{margin:0 0 6px;font-size:13px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:9;white-space:nowrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:99;white-space:nowrap}
 .toast.show{opacity:1}
 </style>
 </head>
 <body>
 <header>
   <h1>🎓 مرسى المعرفة</h1>
-  <span><a id="codesLink" href="codes.html" style="display:none">🔑 الأكواد</a> <a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a> <button id="out">🚪 خروج</button></span>
+  <button id="menuBtn" aria-label="القائمة">☰</button>
+  <div id="menu">
+    <a id="codesLink" href="codes.html" style="display:none">🔑 الأكواد</a>
+    <a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a>
+    <button id="themeBtn">🌙 الوضع الليلي</button>
+    <button id="out">🚪 خروج</button>
+  </div>
 </header>
 <div style="max-width:640px;margin:0 auto;padding:18px 16px 0"><div class="quote">✨ في مرسى المعرفة، كل ساعة تدرسها اليوم هي خطوة تقرّبك من حلمك، فاصبر وواصل، فالنجاح يبدأ بجلسة وحدة. ✨<small>🎓 مرسى المعرفة</small></div></div>
 <div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
+<div id="searchWrap"><input id="q" type="search" placeholder="🔍 ابحث عن محاضرة..." autocomplete="off"><div id="results"></div></div>
 <div class="toast" id="toast"></div>
 <main id="app">⏳ جارٍ التحميل...</main>
 
@@ -95,6 +118,19 @@ const norm = n => String(n || "")
   .replace(/[\u064B-\u0652\u0640]/g, "")
   .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
   .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
+
+// ---- القائمة العلوية والوضع الليلي ----
+const themeNow = () => document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+const syncThemeBtn = () => { $("themeBtn").textContent = themeNow() === "dark" ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي"; };
+syncThemeBtn();
+$("themeBtn").onclick = () => {
+  const t = themeNow() === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("theme", t); } catch (e) {}
+  syncThemeBtn();
+};
+$("menuBtn").onclick = e => { e.stopPropagation(); $("menu").classList.toggle("open"); };
+document.addEventListener("click", e => { if (!e.target.closest("#menu")) $("menu").classList.remove("open"); });
 
 // ---- الدخول بكود الطالب ----
 // يرجع قائمة المدرسين المسموحين للطالب، أو null إذا ما عنده كود صالح
@@ -197,6 +233,7 @@ async function load() {
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
     render();
     renderStats();
+    $("searchWrap").style.display = "block";
   } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + (e.code || e.message); }
 }
 
@@ -267,11 +304,12 @@ function render() {
   } else {
     const p = P.find(x => x.id === sel.p);
     const multi = tch && tch.profs.length > 1;
+    setLast(sel.p);
     app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
       (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
       progressHtml() +
       (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec ${getDone()[l.id] ? "done" : ""}"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}<button class="chk ${getDone()[l.id] ? "on" : ""}" data-done="${l.id}">${getDone()[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${l.id}">⬆️ للأعلى</button><button data-mv="down" data-id="${l.id}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
+        `<div class="lec ${getDone()[l.id] ? "done" : ""}" data-lid="${esc(l.id)}"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}<button class="chk ${getDone()[l.id] ? "on" : ""}" data-done="${esc(l.id)}">${getDone()[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${esc(l.id)}">⬆️ للأعلى</button><button data-mv="down" data-id="${esc(l.id)}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
     if ($("saveO")) $("saveO").classList.toggle("dirty", dirty);
   }
 }
@@ -353,6 +391,7 @@ function toggleDone(id, btn) {
   btn.textContent = dn[id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة";
   const pr = document.querySelector(".prog");
   if (pr) pr.outerHTML = progressHtml();
+  if (dn[id]) setLast(sel.p, id);
   renderStats();
   if (dn[id]) {
     const lecs = L.filter(l => l.professorId === sel.p);
@@ -360,24 +399,91 @@ function toggleDone(id, btn) {
   }
 }
 
+// ---- كمّل من وين وقفت ----
+const LK = () => "last_" + (me ? me.uid : "x");
+const getLast = () => { try { return JSON.parse(localStorage.getItem(LK())) || null; } catch (e) { return null; } };
+function setLast(p, l) {
+  const cur = getLast();
+  const keep = cur && cur.p === p ? cur.l : null;
+  try { localStorage.setItem(LK(), JSON.stringify({ p, l: l || keep || null })); } catch (e) {}
+}
+function resumeTarget() {
+  const last = getLast();
+  if (!last || !last.p) return null;
+  const list = L.filter(l => l.professorId === last.p);
+  if (!list.length) return null;
+  const dn = getDone();
+  let start = last.l ? list.findIndex(l => l.id === last.l) : 0;
+  if (start < 0) start = 0;
+  return list.slice(start).find(l => !dn[l.id]) || list.find(l => !dn[l.id]) || list[start] || list[0];
+}
+
+// الانتقال مباشرة لمحاضرة (يستخدمه البحث وزر الكمّل)
+function goTo(id) {
+  const l = L.find(x => x.id === id); if (!l) return;
+  const p = P.find(x => x.id === l.professorId); if (!p) return;
+  const s = S.find(x => x.id === p.subjectId); if (!s) return;
+  sel = { s: norm(s.name), t: norm(p.name), p: p.id };
+  $("q").value = ""; $("results").innerHTML = ""; $("app").style.display = "";
+  render();
+  renderStats();
+  const el = [...document.querySelectorAll(".lec")].find(x => x.dataset.lid === id);
+  if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("hl"); }
+}
+
+// ---- البحث عن محاضرة ----
+$("q").oninput = () => {
+  const q = norm($("q").value);
+  const box = $("results");
+  if (!q) { box.innerHTML = ""; $("app").style.display = ""; return; }
+  $("app").style.display = "none";
+  const hits = L.filter(l => norm(l.title).includes(q) || norm(l.desc).includes(q)).slice(0, 30);
+  box.innerHTML = hits.map(l => {
+    const p = P.find(x => x.id === l.professorId), s = p && S.find(x => x.id === p.subjectId);
+    return `<button class="item" data-go="${esc(l.id)}"><span class="ico">${icon(s ? s.name : "")}</span><span>${esc(l.title)}<small>${esc(s ? s.name : "")} • ${esc(p ? p.name : "")}${s && s.term ? " • " + esc(s.term) : ""}</small></span></button>`;
+  }).join("") || "<p>ما لقيت محاضرة بهذا الاسم 🔍</p>";
+};
+$("results").onclick = e => {
+  const b = e.target.closest("button");
+  if (b && b.dataset.go) goTo(b.dataset.go);
+};
+
 // ---- شريط الجلسات والساعات والإنجاز ----
 const SK = () => "study_" + (me ? me.uid : "x");
 const RK = () => "run_" + (me ? me.uid : "x");
 const getStudy = () => { try { return JSON.parse(localStorage.getItem(SK())) || { sessions: [], goal: 2 }; } catch (e) { return { sessions: [], goal: 2 }; } };
 const putStudy = d => localStorage.setItem(SK(), JSON.stringify(d));
-const today = () => new Date().toLocaleDateString("en-CA");
+const dayStr = dt => dt.toLocaleDateString("en-CA");
+const today = () => dayStr(new Date());
 const fmt = n => [Math.floor(n / 3600), Math.floor(n % 3600 / 60), n % 60].map(x => String(x).padStart(2, "0")).join(":");
+
+// سلسلة الأيام المتتالية: يوم يُحسب إذا فيه جلسة وحدة على الأقل
+function calcStreak(sessions) {
+  const days = new Set(sessions.map(s => s.d));
+  const dt = new Date();
+  const studiedToday = days.has(dayStr(dt));
+  if (!studiedToday) dt.setDate(dt.getDate() - 1);
+  let n = 0;
+  while (days.has(dayStr(dt))) { n++; dt.setDate(dt.getDate() - 1); }
+  return { n, studiedToday };
+}
+
 function renderStats() {
   const d = getStudy(), dn = getDone();
   const run = +localStorage.getItem(RK()) || 0;
   const total = d.sessions.reduce((a, s) => a + s.sec, 0);
   const td = d.sessions.filter(s => s.d === today()).reduce((a, s) => a + s.sec, 0);
   const pct = Math.min(100, Math.round(td / 3600 / d.goal * 100));
+  const st = calcStreak(d.sessions);
+  const hint = st.n === 0 ? "ابدأ جلسة اليوم وابدأ سلسلتك" : (st.studiedToday ? "أحسنت، سلسلتك محفوظة اليوم ✅" : "ادرس اليوم لتحافظ على السلسلة");
+  const rt = resumeTarget();
   $("statsWrap").innerHTML =
     `<div class="stats"><div class="stat"><b>${d.sessions.length}</b><small>🎯 الجلسات</small></div><div class="stat"><b>${(total / 3600).toFixed(1)}</b><small>⏱️ الساعات</small></div><div class="stat"><b>${pct}%</b><small>🏆 الإنجاز اليوم</small></div><div class="stat"><b>${L.filter(l => dn[l.id]).length}/${L.length}</b><small>✅ المحاضرات</small></div></div>` +
+    `<div class="streak">🔥 <b>${st.n}</b> ${st.n === 1 ? "يوم" : "أيام"} متتالية<small>${hint}</small></div>` +
     `<div class="bar"><i style="width:${pct}%"></i></div>` +
     `<div class="goal"><span>الهدف اليومي: ${d.goal} ساعة</span><button id="goalBtn">✏️ تغيير</button></div>` +
-    `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button>`;
+    `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button>` +
+    (rt ? `<button class="cont" id="contBtn" data-lid="${esc(rt.id)}">⏯️ كمّل من وين وقفت: ${esc(rt.title)}</button>` : "");
 }
 setInterval(() => {
   const run = +localStorage.getItem(RK()) || 0, t = $("timer");
@@ -386,6 +492,7 @@ setInterval(() => {
 $("statsWrap").onclick = e => {
   const b = e.target.closest("button");
   if (!b) return;
+  if (b.id === "contBtn") { goTo(b.dataset.lid); return; }
   if (b.id === "goalBtn") {
     const d = getStudy();
     const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
@@ -396,7 +503,7 @@ $("statsWrap").onclick = e => {
     else {
       const sec = Math.floor((Date.now() - run) / 1000);
       localStorage.removeItem(RK());
-      if (sec >= 60) { const d = getStudy(); d.sessions.push({ d: today(), sec }); putStudy(d); }
+      if (sec >= 60) { const d = getStudy(); d.sessions.push({ d: today(), sec }); putStudy(d); toast("🔥 انحسبت الجلسة وسلسلتك مستمرة"); }
       else alert("الجلسة أقل من دقيقة، ما انحسبت.");
     }
     renderStats();
@@ -425,6 +532,7 @@ $("app").onclick = e => {
   }
   else return;
   render();
+  renderStats();
 };
 </script>
 </body>
