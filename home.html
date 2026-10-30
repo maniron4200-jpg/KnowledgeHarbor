@@ -89,6 +89,13 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .lbrow .nm small{display:block;color:var(--muted);font-weight:400;font-size:12px}
 .lbrow b{color:var(--gold);font-size:15px;white-space:nowrap}
 .lbrow.idle{opacity:.7}
+.av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--soft);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.big{width:84px;height:84px;font-size:42px;margin:6px auto}
+.tt{font-style:normal;font-size:11px;background:var(--soft);color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:0 6px;margin-right:6px;font-weight:800;white-space:nowrap}
+.emos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.emos button{padding:6px 10px;border:2px solid var(--line);background:var(--card);border-radius:10px;font:700 14px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
+.upl{display:block;flex:1;text-align:center;cursor:pointer;margin:10px 0 0}
 #focus{display:none;position:fixed;inset:0;z-index:60;background:#0f0c05;color:#f3e9c8;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px}
 #focus.open{display:flex}
 #focus .ft{font-size:64px;font-weight:800;color:#e8c964;letter-spacing:2px;direction:ltr;font-variant-numeric:tabular-nums}
@@ -500,6 +507,8 @@ $("sheet").onclick = e => {
   if (!b) return;
   if (b.dataset.tab) openBoard(b.dataset.tab);
   else if (b.id === "nickEdit") askNick(() => openBoard("w"));
+  else if (b.dataset.emo !== undefined) { tmpEmo = b.dataset.emo; tmpPhoto = ""; showPrev(); }
+  else if (b.dataset.ttl !== undefined) { $("ttlIn").value = b.dataset.ttl; }
   else if (b.dataset.star !== undefined) pickStar(+b.dataset.star);
   else if (b.id === "starOff") clearStar();
   else if (b.id === "sheetX" || b.id === "annCancel") closeSheet();
@@ -566,7 +575,7 @@ async function loadStar() {
     const s = await getDoc(doc(db, "settings", "star"));
     if (!s.exists() || !s.data().active) { w.innerHTML = ""; return; }
     const a = s.data();
-    w.innerHTML = `<div class="star"><span class="em">🌟</span><span><b>طالب الأسبوع: ${esc(a.name)}</b><small>⏱️ ${esc(a.hours)} ساعة هذا الأسبوع${a.note ? " • " + esc(a.note) : ""}</small></span></div>`;
+    w.innerHTML = `<div class="star"><span class="em">🌟</span><span class="av">${avHtml(a)}</span><span><b>طالب الأسبوع: ${esc(a.name)}${a.title ? `<i class="tt">${esc(a.title)}</i>` : ""}</b><small>⏱️ ${esc(a.hours)} ساعة هذا الأسبوع${a.note ? " • " + esc(a.note) : ""}</small></span></div>`;
   } catch (e) {}
 }
 $("starBtn").onclick = async () => {
@@ -588,7 +597,7 @@ async function pickStar(i) {
   const note = prompt("رسالة تهنئة قصيرة (اختياري):", "");
   if (note === null) return;
   try {
-    await setDoc(doc(db, "settings", "star"), { active: true, uid: r.id, name: r.name, hours: (r.w / 3600).toFixed(1), note: note.trim(), at: Date.now() });
+    await setDoc(doc(db, "settings", "star"), { active: true, uid: r.id, name: r.name, title: r.title || "", avatar: r.avatar || "", photo: r.photo || "", hours: (r.w / 3600).toFixed(1), note: note.trim(), at: Date.now() });
     closeSheet(); toast("🌟 تم اختيار طالب الأسبوع"); loadStar();
   } catch (e) { alert("فشل: " + (e.code || e.message)); }
 }
@@ -621,7 +630,7 @@ $("statBtn").onclick = async () => {
       box(used + "/" + codes.length, "🔑 أكواد مستخدمة") + box(activeWeek + "/" + rows.length, "🟢 نشطين هذا الأسبوع") +
       box(weekH.toFixed(1), "⏱️ ساعات هذا الأسبوع") + box(totalH.toFixed(1), "⏱️ ساعات إجمالية") +
       box(doneAll, "✅ محاضرات منجزة") + box(idle, "⚠️ غائبين 3 أيام+") + `</div>` +
-      (rows.slice(0, 100).map((r, i) => `<div class="lbrow ${r.days >= 3 ? "idle" : ""}"><span class="rk">${i + 1}</span><span class="nm">${esc(r.name)}<small>${esc(emailOf[r.id] || "")}</small><small>⏱️ ${((r.sec || 0) / 3600).toFixed(1)} ساعة (الأسبوع ${(r.w / 3600).toFixed(1)}) • ✅ ${r.done || 0} • 🔥 ${r.streak || 0} • آخر زيارة: ${ago(r.days)}</small></span></div>`).join("") || "<p>ما كو طلاب بلوحة الترتيب بعد.</p>") +
+      (rows.slice(0, 100).map((r, i) => `<div class="lbrow ${r.days >= 3 ? "idle" : ""}"><span class="rk">${i + 1}</span><span class="av">${avHtml(r)}</span><span class="nm">${esc(r.name)}${r.title ? `<i class="tt">${esc(r.title)}</i>` : ""}<small>${esc(emailOf[r.id] || "")}</small><small>⏱️ ${((r.sec || 0) / 3600).toFixed(1)} ساعة (الأسبوع ${(r.w / 3600).toFixed(1)}) • ✅ ${r.done || 0} • 🔥 ${r.streak || 0} • آخر زيارة: ${ago(r.days)}</small></span></div>`).join("") || "<p>ما كو طلاب بلوحة الترتيب بعد.</p>") +
       `<p class="note">الإحصائيات تشمل فقط الطلاب اللي اختاروا اسم بلوحة الترتيب. الباهت يعني غايب 3 أيام أو أكثر.</p><button class="chk" id="sheetX">إغلاق</button>`);
   } catch (e) { openSheet(`<h2>📊 إحصائيات الطلاب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`); }
 };
@@ -640,17 +649,56 @@ async function doSync() {
   const done = L.filter(l => dn[l.id]).length;
   const streak = calcStreak(d.sessions).n;
   const score = Math.round(sec / 3600 * 10 + done * 2 + streak * 3);
-  try { await setDoc(doc(db, "leaderboard", me.uid), { name: nick, sec, weekSec, wk, done, streak, score, sessions: d.sessions.length, at: Date.now() }); } catch (e) {}
+  try { await setDoc(doc(db, "leaderboard", me.uid), { name: nick, title: localStorage.getItem(TK()) || "", avatar: localStorage.getItem(AK()) || "", photo: localStorage.getItem(PK()) || "", sec, weekSec, wk, done, streak, score, sessions: d.sessions.length, at: Date.now() }); } catch (e) {}
 }
 let syncT;
 function syncMe() { clearTimeout(syncT); syncT = setTimeout(doSync, 1500); }
 
+const TK = () => "title_" + (me ? me.uid : "x");
+const AK = () => "avatar_" + (me ? me.uid : "x");
+const PK = () => "photo_" + (me ? me.uid : "x");
+const EMO = ["🙂", "😎", "🦁", "🦅", "🐯", "🐼", "🚀", "⭐", "🔥", "📚", "🧠", "🎓", "🌙", "⚡", "🏆", "🦉"];
+const TITLES = ["المثابر", "الطموح", "نجم الأحياء", "بطل الفيزياء", "ملك الرياضيات", "صاحب الهمّة"];
+let tmpEmo = "🙂", tmpPhoto = "";
+function avHtml(r) {
+  return r.photo && /^data:image\/(jpeg|png|webp);base64,/.test(r.photo) ? `<img src="${esc(r.photo)}" alt="">` : esc(r.avatar || "🙂");
+}
+function showPrev() { const e = $("avPrev"); if (e) e.innerHTML = avHtml({ photo: tmpPhoto, avatar: tmpEmo }); }
 function askNick(cb) {
-  openSheet(`<h2>🏆 اختر اسمك بلوحة الترتيب</h2><p class="note">هذا الاسم راح يظهر لباقي الطلاب مع ساعات دراستك ومحاضراتك المنجزة. تقدر تكتب اسم مستعار.</p><input id="nickIn" maxlength="20" placeholder="مثال: نجم الأحياء" value="${esc(localStorage.getItem(NK()) || "")}"><div class="row"><button class="save" id="nickOk">حفظ</button><button class="chk" id="sheetX">إلغاء</button></div>`);
+  tmpEmo = localStorage.getItem(AK()) || "🙂";
+  tmpPhoto = localStorage.getItem(PK()) || "";
+  openSheet(`<h2>👤 ملفي بلوحة الترتيب</h2><p class="note">هذي المعلومات تظهر لباقي الطلاب. تقدر تستخدم اسم مستعار.</p>` +
+    `<div style="text-align:center"><span class="av big" id="avPrev"></span></div>` +
+    `<div class="emos">${EMO.map(e => `<button data-emo="${e}">${e}</button>`).join("")}</div>` +
+    `<div class="row"><label class="chk upl">📷 رفع صورة<input type="file" id="photoIn" accept="image/*" hidden></label><button class="chk" id="photoDel">🗑️ حذف الصورة</button></div>` +
+    `<input id="nickIn" maxlength="20" placeholder="الاسم" value="${esc(localStorage.getItem(NK()) || "")}">` +
+    `<input id="ttlIn" maxlength="20" placeholder="اللقب (اختياري) مثل: المثابر" value="${esc(localStorage.getItem(TK()) || "")}">` +
+    `<div class="emos">${TITLES.map(t => `<button data-ttl="${t}">${t}</button>`).join("")}</div>` +
+    `<div class="row"><button class="save" id="nickOk">حفظ</button><button class="chk" id="sheetX">إلغاء</button></div>`);
+  showPrev();
+  $("photoIn").onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const img = new Image(), url = URL.createObjectURL(f);
+    img.onload = () => {
+      const sz = 120, c = document.createElement("canvas"); c.width = c.height = sz;
+      const m = Math.min(img.width, img.height);
+      c.getContext("2d").drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, sz, sz);
+      tmpPhoto = c.toDataURL("image/jpeg", 0.7);
+      URL.revokeObjectURL(url); showPrev();
+    };
+    img.onerror = () => toast("تعذّر قراءة الصورة");
+    img.src = url;
+  };
+  $("photoDel").onclick = () => { tmpPhoto = ""; showPrev(); };
   $("nickOk").onclick = async () => {
     const v = $("nickIn").value.trim();
     if (v.length < 2) { toast("الاسم قصير"); return; }
-    localStorage.setItem(NK(), v);
+    try {
+      localStorage.setItem(NK(), v);
+      localStorage.setItem(TK(), $("ttlIn").value.trim().slice(0, 20));
+      localStorage.setItem(AK(), tmpEmo);
+      localStorage.setItem(PK(), tmpPhoto);
+    } catch (e) { toast("تعذّر الحفظ"); return; }
     await doSync();
     cb();
   };
@@ -668,13 +716,13 @@ async function openBoard(tab) {
     rows.sort((a, b) => b.v - a.v || (b.score || 0) - (a.score || 0));
     const ranked = rows.filter(r => r.v > 0 || r.id === myId);
     const medals = ["🥇", "🥈", "🥉"];
-    const row = (r, i) => `<div class="lbrow ${r.id === myId ? "me" : ""}"><span class="rk">${medals[i] || i + 1}</span><span class="nm">${esc(r.name)}<small>⏱️ ${((r.sec || 0) / 3600).toFixed(1)} ساعة • ✅ ${r.done || 0} محاضرة • 🔥 ${r.streak || 0}</small></span><b>${tab === "w" ? (r.w / 3600).toFixed(1) + " س" : (r.score || 0) + " نقطة"}</b></div>`;
+    const row = (r, i) => `<div class="lbrow ${r.id === myId ? "me" : ""}"><span class="rk">${medals[i] || i + 1}</span><span class="av">${avHtml(r)}</span><span class="nm">${esc(r.name)}${r.title ? `<i class="tt">${esc(r.title)}</i>` : ""}<small>⏱️ ${((r.sec || 0) / 3600).toFixed(1)} ساعة • ✅ ${r.done || 0} محاضرة • 🔥 ${r.streak || 0}</small></span><b>${tab === "w" ? (r.w / 3600).toFixed(1) + " س" : (r.score || 0) + " نقطة"}</b></div>`;
     let html = ranked.slice(0, 20).map(row).join("");
     const mi = ranked.findIndex(r => r.id === myId);
     if (mi >= 20) html += `<p class="note" style="text-align:center">• • •</p>` + row(ranked[mi], mi);
     openSheet(`<h2>🏆 لوحة الترتيب</h2><div class="tabs"><button data-tab="w" class="${tab === "w" ? "on" : ""}">📅 هذا الأسبوع</button><button data-tab="a" class="${tab === "a" ? "on" : ""}">🏅 الإجمالي</button></div>` +
       (html || "<p>ما كو نشاط بعد، كن أول واحد! 🚀</p>") +
-      `<p class="note">النقاط: كل ساعة دراسة = 10 • كل محاضرة منجزة = 2 • كل يوم بالسلسلة = 3. الأسبوع يبدأ من السبت.</p><div class="row">${isAdmin ? "" : '<button class="chk" id="nickEdit">✏️ غيّر اسمي</button>'}<button class="chk" id="sheetX">إغلاق</button></div>`);
+      `<p class="note">النقاط: كل ساعة دراسة = 10 • كل محاضرة منجزة = 2 • كل يوم بالسلسلة = 3. الأسبوع يبدأ من السبت.</p><div class="row">${isAdmin ? "" : '<button class="chk" id="nickEdit">✏️ ملفي الشخصي</button>'}<button class="chk" id="sheetX">إغلاق</button></div>`);
   } catch (e) {
     openSheet(`<h2>🏆 لوحة الترتيب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`);
   }
