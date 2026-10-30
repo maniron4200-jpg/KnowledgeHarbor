@@ -88,6 +88,21 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .lbrow .nm{flex:1;font-weight:700;font-size:15px;min-width:0}
 .lbrow .nm small{display:block;color:var(--muted);font-weight:400;font-size:12px}
 .lbrow b{color:var(--gold);font-size:15px;white-space:nowrap}
+.lbrow.idle{opacity:.7}
+#focus{display:none;position:fixed;inset:0;z-index:60;background:#0f0c05;color:#f3e9c8;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px}
+#focus.open{display:flex}
+#focus .ft{font-size:64px;font-weight:800;color:#e8c964;letter-spacing:2px;direction:ltr;font-variant-numeric:tabular-nums}
+#focus p{margin:0;font-size:16px;line-height:1.8;opacity:.85;max-width:320px}
+#focus button{padding:12px 22px;border-radius:14px;border:2px solid #c9a227;background:none;color:#f3e9c8;font:800 15px Tajawal,sans-serif;cursor:pointer}
+#focus button.end{background:#b3261e;border-color:#b3261e;color:#fff}
+.star{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,var(--soft),var(--card));border:2px solid var(--gold);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.star .em{font-size:34px}
+.star b{color:var(--gold)}
+.star small{display:block;color:var(--muted2);font-weight:400;margin-top:2px;line-height:1.6}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sbox{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.sbox b{display:block;font-size:22px;color:var(--gold)}
+.sbox small{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
@@ -98,15 +113,19 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     <a id="codesLink" href="codes.html" style="display:none">🔑 الأكواد</a>
     <a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a>
     <button id="annBtn" style="display:none">📢 إعلان للطلاب</button>
+    <button id="starBtn" style="display:none">🌟 طالب الأسبوع</button>
+    <button id="statBtn" style="display:none">📊 إحصائيات الطلاب</button>
     <button id="themeBtn">🌙 الوضع الليلي</button>
     <button id="out">🚪 خروج</button>
   </div>
 </header>
 <div style="max-width:640px;margin:0 auto;padding:18px 16px 0"><div class="quote">✨ في مرسى المعرفة، كل ساعة تدرسها اليوم هي خطوة تقرّبك من حلمك، فاصبر وواصل، فالنجاح يبدأ بجلسة وحدة. ✨<small>🎓 مرسى المعرفة</small></div></div>
 <div id="annWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
+<div id="starWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
 <div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
 <div id="searchWrap"><input id="q" type="search" placeholder="🔍 ابحث عن محاضرة..." autocomplete="off"><div id="results"></div></div>
 <div id="sheet"></div>
+<div id="focus"><div class="ft" id="ftimer">00:00:00</div><p id="fquote"></p><button class="end" id="fEnd">⏹️ إنهاء الجلسة</button><button id="fExit">↩️ خروج (الجلسة تكمل)</button></div>
 <div class="toast" id="toast"></div>
 <main id="app">⏳ جارٍ التحميل...</main>
 
@@ -170,7 +189,7 @@ onAuthStateChanged(auth, async u => {
   if (!u) { location.replace("login.html"); return; }
   me = u;
   document.body.style.display = "block";
-  if (u.email === ADMIN) { isAdmin = true; $("adminLink").style.display = ""; $("codesLink").style.display = ""; $("annBtn").style.display = ""; load(); return; }
+  if (u.email === ADMIN) { isAdmin = true; $("adminLink").style.display = ""; $("codesLink").style.display = ""; $("annBtn").style.display = ""; $("starBtn").style.display = ""; $("statBtn").style.display = ""; load(); return; }
   let a = null;
   try { a = await myAccess(u); } catch (e) {}
   if (a) { allowed = a; load(); return; }
@@ -256,7 +275,7 @@ async function load() {
     render();
     renderStats();
     $("searchWrap").style.display = "block";
-    loadAnn(); syncMe();
+    loadAnn(); loadStar(); syncMe();
   } catch (e) { $("app").textContent = "تعذّر تحميل المحتوى: " + (e.code || e.message); }
 }
 
@@ -481,6 +500,8 @@ $("sheet").onclick = e => {
   if (!b) return;
   if (b.dataset.tab) openBoard(b.dataset.tab);
   else if (b.id === "nickEdit") askNick(() => openBoard("w"));
+  else if (b.dataset.star !== undefined) pickStar(+b.dataset.star);
+  else if (b.id === "starOff") clearStar();
   else if (b.id === "sheetX" || b.id === "annCancel") closeSheet();
 };
 
@@ -511,6 +532,98 @@ $("annBtn").onclick = async () => {
   };
   $("annPub").onclick = () => save(true);
   $("annDel").onclick = () => save(false);
+};
+
+// ---- بدء/إنهاء الجلسة ووضع التركيز ----
+function toggleSession() {
+  const run = +localStorage.getItem(RK()) || 0;
+  if (!run) { localStorage.setItem(RK(), String(Date.now())); renderStats(); return; }
+  const sec = Math.floor((Date.now() - run) / 1000);
+  localStorage.removeItem(RK());
+  if (sec >= 60) { const d = getStudy(); d.sessions.push({ d: today(), sec }); putStudy(d); toast("🔥 انحسبت الجلسة وسلسلتك مستمرة"); syncMe(); }
+  else alert("الجلسة أقل من دقيقة، ما انحسبت.");
+  renderStats();
+}
+const FQ = ["ركّز، كل دقيقة الآن تقرّبك من هدفك 🎯", "سكّر الإشعارات وخلّ عقلك كله بالدراسة 📵", "خطوة صغيرة كل يوم تصنع فرقاً كبيراً ✨", "اصبر، النجاح يبدأ بجلسة وحدة 🌟"];
+let wl = null;
+async function openFocus() {
+  if (!(+localStorage.getItem(RK()))) toggleSession();
+  $("fquote").textContent = FQ[Math.floor(Math.random() * FQ.length)];
+  $("focus").classList.add("open");
+  tickFocus();
+  try { if (navigator.wakeLock) wl = await navigator.wakeLock.request("screen"); } catch (e) {}
+}
+function closeFocus() { $("focus").classList.remove("open"); try { if (wl) wl.release(); } catch (e) {} wl = null; }
+function tickFocus() { const run = +localStorage.getItem(RK()) || 0; if (run) $("ftimer").textContent = fmt(Math.floor((Date.now() - run) / 1000)); }
+$("fEnd").onclick = () => { toggleSession(); closeFocus(); };
+$("fExit").onclick = closeFocus;
+
+// ---- طالب الأسبوع ----
+let starRows = [];
+async function loadStar() {
+  const w = $("starWrap");
+  try {
+    const s = await getDoc(doc(db, "settings", "star"));
+    if (!s.exists() || !s.data().active) { w.innerHTML = ""; return; }
+    const a = s.data();
+    w.innerHTML = `<div class="star"><span class="em">🌟</span><span><b>طالب الأسبوع: ${esc(a.name)}</b><small>⏱️ ${esc(a.hours)} ساعة هذا الأسبوع${a.note ? " • " + esc(a.note) : ""}</small></span></div>`;
+  } catch (e) {}
+}
+$("starBtn").onclick = async () => {
+  $("menu").classList.remove("open");
+  openSheet("<h2>🌟 طالب الأسبوع</h2><p>⏳ جارٍ التحميل...</p>");
+  try {
+    const wk = weekKey();
+    const q = await getDocs(collection(db, "leaderboard"));
+    starRows = q.docs.map(d => { const r = { id: d.id, ...d.data() }; r.w = r.wk === wk ? (r.weekSec || 0) : 0; return r; })
+      .filter(r => r.w > 0).sort((a, b) => b.w - a.w).slice(0, 10);
+    const medals = ["🥇", "🥈", "🥉"];
+    openSheet(`<h2>🌟 طالب الأسبوع</h2><p class="note">أعلى 10 طلاب هذا الأسبوع. اضغط على الطالب اللي تريد تختاره.</p>` +
+      (starRows.map((r, i) => `<button class="item" data-star="${i}"><span class="ico">${medals[i] || i + 1}</span><span>${esc(r.name)}<small>⏱️ ${(r.w / 3600).toFixed(1)} ساعة • 🔥 ${r.streak || 0} • ✅ ${r.done || 0}</small></span></button>`).join("") || "<p>ما كو طلاب نشطين هذا الأسبوع.</p>") +
+      `<div class="row"><button class="chk" id="starOff">🗑️ إزالة طالب الأسبوع</button><button class="chk" id="sheetX">إغلاق</button></div>`);
+  } catch (e) { openSheet(`<h2>🌟 طالب الأسبوع</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`); }
+};
+async function pickStar(i) {
+  const r = starRows[i]; if (!r) return;
+  const note = prompt("رسالة تهنئة قصيرة (اختياري):", "");
+  if (note === null) return;
+  try {
+    await setDoc(doc(db, "settings", "star"), { active: true, uid: r.id, name: r.name, hours: (r.w / 3600).toFixed(1), note: note.trim(), at: Date.now() });
+    closeSheet(); toast("🌟 تم اختيار طالب الأسبوع"); loadStar();
+  } catch (e) { alert("فشل: " + (e.code || e.message)); }
+}
+async function clearStar() {
+  try { await setDoc(doc(db, "settings", "star"), { active: false, at: Date.now() }); closeSheet(); toast("🗑️ تمت الإزالة"); loadStar(); }
+  catch (e) { alert("فشل: " + (e.code || e.message)); }
+}
+
+// ---- إحصائيات الطلاب (للمشرف) ----
+$("statBtn").onclick = async () => {
+  $("menu").classList.remove("open");
+  openSheet("<h2>📊 إحصائيات الطلاب</h2><p>⏳ جارٍ التحميل...</p>");
+  try {
+    const wk = weekKey(), now = Date.now();
+    const [lq, cq] = await Promise.all([getDocs(collection(db, "leaderboard")), getDocs(collection(db, "codes"))]);
+    const codes = cq.docs.map(d => d.data());
+    const emailOf = {};
+    codes.forEach(c => { if (c.uid) emailOf[c.uid] = c.email || ""; });
+    const rows = lq.docs.map(d => { const r = { id: d.id, ...d.data() }; r.w = r.wk === wk ? (r.weekSec || 0) : 0; r.days = r.at ? Math.floor((now - r.at) / 864e5) : 999; return r; })
+      .sort((a, b) => b.w - a.w || a.days - b.days);
+    const used = codes.filter(c => c.uid).length;
+    const activeWeek = rows.filter(r => r.w > 0).length;
+    const weekH = rows.reduce((a, r) => a + r.w, 0) / 3600;
+    const totalH = rows.reduce((a, r) => a + (r.sec || 0), 0) / 3600;
+    const doneAll = rows.reduce((a, r) => a + (r.done || 0), 0);
+    const idle = rows.filter(r => r.days >= 3).length;
+    const box = (v, t) => `<div class="sbox"><b>${v}</b><small>${t}</small></div>`;
+    const ago = d => d >= 999 ? "—" : d === 0 ? "اليوم" : d === 1 ? "أمس" : "قبل " + d + " أيام";
+    openSheet(`<h2>📊 إحصائيات الطلاب</h2><div class="sgrid">` +
+      box(used + "/" + codes.length, "🔑 أكواد مستخدمة") + box(activeWeek + "/" + rows.length, "🟢 نشطين هذا الأسبوع") +
+      box(weekH.toFixed(1), "⏱️ ساعات هذا الأسبوع") + box(totalH.toFixed(1), "⏱️ ساعات إجمالية") +
+      box(doneAll, "✅ محاضرات منجزة") + box(idle, "⚠️ غائبين 3 أيام+") + `</div>` +
+      (rows.slice(0, 100).map((r, i) => `<div class="lbrow ${r.days >= 3 ? "idle" : ""}"><span class="rk">${i + 1}</span><span class="nm">${esc(r.name)}<small>${esc(emailOf[r.id] || "")}</small><small>⏱️ ${((r.sec || 0) / 3600).toFixed(1)} ساعة (الأسبوع ${(r.w / 3600).toFixed(1)}) • ✅ ${r.done || 0} • 🔥 ${r.streak || 0} • آخر زيارة: ${ago(r.days)}</small></span></div>`).join("") || "<p>ما كو طلاب بلوحة الترتيب بعد.</p>") +
+      `<p class="note">الإحصائيات تشمل فقط الطلاب اللي اختاروا اسم بلوحة الترتيب. الباهت يعني غايب 3 أيام أو أكثر.</p><button class="chk" id="sheetX">إغلاق</button>`);
+  } catch (e) { openSheet(`<h2>📊 إحصائيات الطلاب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`); }
 };
 
 // ---- لوحة الترتيب ----
@@ -601,13 +714,14 @@ function renderStats() {
     `<div class="streak">🔥 <b>${st.n}</b> ${st.n === 1 ? "يوم" : "أيام"} متتالية<small>${hint}</small></div>` +
     `<div class="bar"><i style="width:${pct}%"></i></div>` +
     `<div class="goal"><span>الهدف اليومي: ${d.goal} ساعة</span><button id="goalBtn">✏️ تغيير</button></div>` +
-    `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button>` +
+    `<button class="sess ${run ? "run" : ""}" id="sessBtn">${run ? "⏹️ إنهاء الجلسة • <span id=\"timer\">" + fmt(Math.floor((Date.now() - run) / 1000)) + "</span>" : "▶️ ابدأ جلسة دراسة"}</button><button class="cont" id="focusBtn">🎯 وضع التركيز</button>` +
     (rt ? `<button class="cont" id="contBtn" data-lid="${esc(rt.id)}">⏯️ كمّل من وين وقفت: ${esc(rt.title)}</button>` : "") +
     `<button class="cont" id="lbBtn">🏆 لوحة الترتيب</button>`;
 }
 setInterval(() => {
   const run = +localStorage.getItem(RK()) || 0, t = $("timer");
   if (run && t) t.textContent = fmt(Math.floor((Date.now() - run) / 1000));
+  if (run) tickFocus();
 }, 1000);
 $("statsWrap").onclick = e => {
   const b = e.target.closest("button");
@@ -618,17 +732,8 @@ $("statsWrap").onclick = e => {
     const d = getStudy();
     const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
     if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); }
-  } else if (b.id === "sessBtn") {
-    const run = +localStorage.getItem(RK()) || 0;
-    if (!run) localStorage.setItem(RK(), String(Date.now()));
-    else {
-      const sec = Math.floor((Date.now() - run) / 1000);
-      localStorage.removeItem(RK());
-      if (sec >= 60) { const d = getStudy(); d.sessions.push({ d: today(), sec }); putStudy(d); toast("🔥 انحسبت الجلسة وسلسلتك مستمرة"); syncMe(); }
-      else alert("الجلسة أقل من دقيقة، ما انحسبت.");
-    }
-    renderStats();
-  }
+  } else if (b.id === "sessBtn") { toggleSession(); }
+  else if (b.id === "focusBtn") { openFocus(); }
 };
 
 $("app").onclick = e => {
