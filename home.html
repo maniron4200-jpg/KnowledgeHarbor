@@ -96,12 +96,37 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .emos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .emos button{padding:6px 10px;border:2px solid var(--line);background:var(--card);border-radius:10px;font:700 14px Tajawal,sans-serif;color:var(--ink);cursor:pointer}
 .upl{display:block;flex:1;text-align:center;cursor:pointer;margin:10px 0 0}
-#focus{display:none;position:fixed;inset:0;z-index:60;background:#0f0c05;color:#f3e9c8;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px}
+/* ===== وضع التركيز ===== */
+#focus{display:none;position:fixed;inset:0;z-index:60;background:#120b1f;color:#f0e9fb;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:22px 18px;overflow:auto}
 #focus.open{display:flex}
-#focus .ft{font-size:64px;font-weight:800;color:#e8c964;letter-spacing:2px;direction:ltr;font-variant-numeric:tabular-nums}
-#focus p{margin:0;font-size:16px;line-height:1.8;opacity:.85;max-width:320px}
-#focus button{padding:12px 22px;border-radius:14px;border:2px solid #c9a227;background:none;color:#f3e9c8;font:800 15px Tajawal,sans-serif;cursor:pointer}
-#focus button.end{background:#b3261e;border-color:#b3261e;color:#fff}
+#focus svg{display:block}
+#focus .ftop{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:360px;font-weight:800;font-size:14px;color:#b794f6}
+#focus .ftop span{display:inline-flex;align-items:center;gap:6px}
+#focus .ft{font-size:64px;font-weight:800;color:#b794f6;line-height:1;letter-spacing:1px;direction:ltr;font-variant-numeric:tabular-nums}
+#focus .fbarw,#focus .fchain{width:100%;max-width:360px}
+#focus .fbar{height:14px;background:#241a3a;border-radius:8px;overflow:hidden}
+#focus .fbar i{display:block;height:100%;width:0;background:#b794f6;border-radius:8px;transition:width 1s linear}
+#focus .fbl{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;color:#9b8bc4}
+#focus .fchain{background:#241a3a;border-radius:18px;padding:14px}
+#focus .fch{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;margin-bottom:12px;color:#f0e9fb}
+#focus .fch b{display:inline-flex;align-items:center;gap:6px;color:#f0e9fb}
+#focus .fch b svg{color:#b794f6}
+#focus .fch span{color:#b794f6}
+#focus .fchrow{display:flex;align-items:center}
+#focus .nd{width:30px;height:30px;border-radius:50%;border:1.5px solid #4a3577;display:flex;align-items:center;justify-content:center;flex:none;color:#120b1f}
+#focus .nd.on{background:#b794f6;border-color:#b794f6}
+#focus .nd.td{border-color:#b794f6}
+#focus .ln{flex:1;height:3px;background:#4a3577;border-radius:2px}
+#focus .ln.on{background:#b794f6}
+#focus .fdays{display:flex;justify-content:space-between;font-size:11px;margin-top:6px;color:#f0e9fb;opacity:.7;direction:rtl}
+#focus .fdays span{width:30px;text-align:center}
+#focus .fchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:360px}
+#focus button{padding:12px 22px;border-radius:14px;border:1.5px solid #4a3577;background:#120b1f;color:#f0e9fb;font:700 15px Tajawal,sans-serif;cursor:pointer}
+#focus .fchips button{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:13px}
+#focus .fchips button.on{background:#b794f6;border-color:#b794f6;color:#120b1f}
+#focus .frow{display:flex;gap:12px}
+#focus button.end{background:#b3261e;border-color:#b3261e;color:#fff;font-weight:800}
+#focus #fExit{border-color:#b794f6}
 .star{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,var(--soft),var(--card));border:2px solid var(--gold);border-radius:14px;padding:12px 14px;margin-bottom:14px}
 .star .em{font-size:34px}
 .star b{color:var(--gold)}
@@ -132,7 +157,15 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 <div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
 <div id="searchWrap"><input id="q" type="search" placeholder="🔍 ابحث عن محاضرة..." autocomplete="off"><div id="results"></div></div>
 <div id="sheet"></div>
-<div id="focus"><div class="ft" id="ftimer">00:00:00</div><p id="fquote"></p><button class="end" id="fEnd">⏹️ إنهاء الجلسة</button><button id="fExit">↩️ خروج (الجلسة تكمل)</button></div>
+<div id="focus">
+  <div class="ftop"><span id="flevel"></span><span id="fpts"></span></div>
+  <div class="ft" id="ftimer">00:00:00</div>
+  <div class="fbarw"><div class="fbar"><i id="fArc"></i></div><div class="fbl"><span id="fpc"></span><span id="fgl"></span></div></div>
+  <div class="fchain"><div class="fch"><b id="fchT"></b><span id="fsn"></span></div><div class="fchrow" id="fCh"></div><div class="fdays" id="fDays"></div></div>
+  <div class="fchips" id="fGoal"><button data-g="0">حر</button><button data-g="25">25 د</button><button data-g="45">45 د</button><button data-g="60">60 د</button><button data-g="90">90 د</button></div>
+  <div class="fchips" id="fSnd"><button data-s="">صمت</button><button data-s="rain">مطر</button><button data-s="wave">موج</button><button data-s="calm">هدوء</button></div>
+  <div class="frow"><button class="end" id="fEnd">إنهاء</button><button id="fExit">تصغير</button></div>
+</div>
 <div class="toast" id="toast"></div>
 <main id="app">⏳ جارٍ التحميل...</main>
 
@@ -157,6 +190,21 @@ const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false, allowed = null;
+
+// أيقونات خطية لوضع التركيز
+const svg = (p, n = 16) => `<svg viewBox="0 0 24 24" width="${n}" height="${n}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC = {
+  flame: svg('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'),
+  star: svg('<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>'),
+  moon: svg('<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>'),
+  mute: svg('<polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/>'),
+  wave: svg('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'),
+  rain: svg('<path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="16" y1="19" x2="16" y2="21"/>')
+};
+const SNDIC = { "": IC.mute, rain: IC.rain, wave: IC.wave, calm: IC.moon };
+document.querySelectorAll("#fSnd button").forEach(b => { b.innerHTML = b.textContent + " " + SNDIC[b.dataset.s]; });
+$("fchT").innerHTML = IC.flame + " سلسلتك";
+$("fEnd").textContent = "إنهاء"; $("fExit").textContent = "تصغير";
 
 const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
 const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
@@ -543,7 +591,7 @@ $("annBtn").onclick = async () => {
   $("annDel").onclick = () => save(false);
 };
 
-// ---- بدء/إنهاء الجلسة ووضع التركيز ----
+// ---- بدء/إنهاء الجلسة ----
 function toggleSession() {
   const run = +localStorage.getItem(RK()) || 0;
   if (!run) { localStorage.setItem(RK(), String(Date.now())); renderStats(); return; }
@@ -553,19 +601,99 @@ function toggleSession() {
   else alert("الجلسة أقل من دقيقة، ما انحسبت.");
   renderStats();
 }
-const FQ = ["ركّز، كل دقيقة الآن تقرّبك من هدفك 🎯", "سكّر الإشعارات وخلّ عقلك كله بالدراسة 📵", "خطوة صغيرة كل يوم تصنع فرقاً كبيراً ✨", "اصبر، النجاح يبدأ بجلسة وحدة 🌟"];
-let wl = null;
+
+// ---- وضع التركيز ----
+let wl = null, fGoal = +localStorage.getItem("fgoal") || 0, fSnd = localStorage.getItem("fsnd") || "", actx = null, snode = null, fDone = false;
+const lvl = sec => sec < 900 ? "مبتدئ" : sec < 2700 ? "مركّز" : sec < 5400 ? "محترف" : "أسطورة";
+function ac() { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); return actx; }
+function beep() {
+  try { const a = ac(), o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + .4); } catch (e) {}
+}
+function stopSound() { try { if (snode) snode.stop(); } catch (e) {} snode = null; }
+function playSound(k) {
+  stopSound(); if (!k) return;
+  try {
+    const a = ac(), n = a.sampleRate * 2, buf = a.createBuffer(1, n, a.sampleRate), ch = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; ch[i] = k === "rain" ? w : (last = (last + 0.02 * w) / 1.02) * 3.5; }
+    const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    src.buffer = buf; src.loop = true;
+    f.type = k === "rain" ? "highpass" : "lowpass"; f.frequency.value = k === "rain" ? 1500 : 600;
+    g.gain.value = k === "rain" ? 0.12 : 0.35;
+    src.connect(f); f.connect(g); g.connect(a.destination);
+    let o = null;
+    if (k === "wave") { o = a.createOscillator(); const og = a.createGain(); o.frequency.value = 0.12; og.gain.value = 0.25; o.connect(og); og.connect(g.gain); o.start(); }
+    src.start();
+    snode = { stop() { src.stop(); if (o) o.stop(); } };
+  } catch (e) {}
+}
+function markChips() {
+  document.querySelectorAll("#fGoal button").forEach(b => b.classList.toggle("on", +b.dataset.g === fGoal));
+  document.querySelectorAll("#fSnd button").forEach(b => b.classList.toggle("on", b.dataset.s === fSnd));
+}
 async function openFocus() {
   if (!(+localStorage.getItem(RK()))) toggleSession();
-  $("fquote").textContent = FQ[Math.floor(Math.random() * FQ.length)];
+  const r = +localStorage.getItem(RK()) || 0;
+  fDone = !!(fGoal && r && (Date.now() - r) / 1000 >= fGoal * 60);
   $("focus").classList.add("open");
-  tickFocus();
+  markChips(); tickFocus(); playSound(fSnd);
   try { if (navigator.wakeLock) wl = await navigator.wakeLock.request("screen"); } catch (e) {}
 }
-function closeFocus() { $("focus").classList.remove("open"); try { if (wl) wl.release(); } catch (e) {} wl = null; }
-function tickFocus() { const run = +localStorage.getItem(RK()) || 0; if (run) $("ftimer").textContent = fmt(Math.floor((Date.now() - run) / 1000)); }
-$("fEnd").onclick = () => { toggleSession(); closeFocus(); };
+function closeFocus() { $("focus").classList.remove("open"); stopSound(); try { if (wl) wl.release(); } catch (e) {} wl = null; }
+function renderChain(sec) {
+  const d = getStudy(), days = new Set(d.sessions.map(x => x.d)), st = calcStreak(d.sessions), td = today();
+  const wk = new Date(weekKey() + "T00:00:00"), names = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"], on = [];
+  let tdi = -1;
+  for (let i = 0; i < 7; i++) {
+    const dt = new Date(wk); dt.setDate(wk.getDate() + i);
+    const ds = dayStr(dt);
+    if (ds === td) tdi = i;
+    on.push(days.has(ds) || (ds === td && sec >= 60));
+  }
+  const n = st.n + (!st.studiedToday && sec >= 60 ? 1 : 0);
+  $("fCh").innerHTML = on.map((v, i) => (i ? `<div class="ln ${v && on[i - 1] ? "on" : ""}"></div>` : "") + `<div class="nd ${v ? "on" : ""} ${tdi === i ? "td" : ""}">${v ? IC.flame : ""}</div>`).join("");
+  $("fDays").innerHTML = names.map(x => `<span>${x}</span>`).join("");
+  $("fsn").textContent = n + (n === 1 ? " يوم" : " أيام");
+}
+function tickFocus() {
+  const run = +localStorage.getItem(RK()) || 0; if (!run) return;
+  const sec = Math.floor((Date.now() - run) / 1000), tot = fGoal * 60;
+  $("ftimer").textContent = fmt(sec);
+  $("flevel").textContent = lvl(sec);
+  $("fpts").innerHTML = IC.star + " +" + (sec / 360).toFixed(1) + " نقطة";
+  const pc = tot ? Math.min(100, Math.round(sec / tot * 100)) : Math.round((sec % 3600) / 36);
+  $("fArc").style.width = pc + "%"; $("fpc").textContent = pc + "%"; $("fgl").textContent = tot ? "الهدف " + fGoal + " د" : "جلسة حرة";
+  renderChain(sec);
+  if (tot && sec >= tot && !fDone) { fDone = true; try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {} beep(); toast("🎉 حققت هدف الجلسة! كمّل أو أنهِ"); }
+}
+$("fGoal").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  fGoal = +b.dataset.g; try { localStorage.setItem("fgoal", fGoal); } catch (x) {}
+  const r = +localStorage.getItem(RK()) || 0;
+  fDone = !!(fGoal && r && (Date.now() - r) / 1000 >= fGoal * 60);
+  markChips(); tickFocus();
+};
+$("fSnd").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  fSnd = b.dataset.s; try { localStorage.setItem("fsnd", fSnd); } catch (x) {}
+  markChips(); playSound(fSnd);
+};
+$("fEnd").onclick = () => {
+  const r = +localStorage.getItem(RK()) || 0, sec = r ? Math.floor((Date.now() - r) / 1000) : 0;
+  toggleSession(); closeFocus();
+  if (sec >= 60) showSummary(sec);
+};
 $("fExit").onclick = closeFocus;
+function showSummary(sec) {
+  const d = getStudy(), st = calcStreak(d.sessions);
+  const td = d.sessions.filter(x => x.d === today()).reduce((a, x) => a + x.sec, 0);
+  const pct = Math.min(100, Math.round(td / 3600 / d.goal * 100));
+  const box = (v, t) => `<div class="sbox"><b>${v}</b><small>${t}</small></div>`;
+  openSheet(`<div style="text-align:center"><div style="font-size:56px">🎉</div><h2 style="border:0">أحسنت! انتهت الجلسة</h2><p class="note">${lvl(sec)}</p></div><div class="sgrid">` +
+    box(Math.round(sec / 60) + " د", "⏱️ مدة الجلسة") + box((sec / 360).toFixed(1), "⭐ نقاط كسبتها") +
+    box(st.n, "🔥 أيام متتالية") + box(pct + "%", "🏆 إنجاز اليوم") + `</div><div class="bar"><i style="width:${pct}%"></i></div>` +
+    `<div class="row"><button class="save" id="sheetX">تمام 👍</button></div>`);
+}
 
 // ---- طالب الأسبوع ----
 let starRows = [];
