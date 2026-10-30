@@ -58,7 +58,7 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 <body>
 <header>
   <h1>🎓 مرسى المعرفة</h1>
-  <span><a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a> <button id="out">🚪 خروج</button></span>
+  <span><a id="codesLink" href="codes.html" style="display:none">🔑 الأكواد</a> <a id="adminLink" href="admin.html" style="display:none">⚙️ التحكم</a> <button id="out">🚪 خروج</button></span>
 </header>
 <div style="max-width:640px;margin:0 auto;padding:18px 16px 0"><div class="quote">✨ في مرسى المعرفة، كل ساعة تدرسها اليوم هي خطوة تقرّبك من حلمك، فاصبر وواصل، فالنجاح يبدأ بجلسة وحدة. ✨<small>🎓 مرسى المعرفة</small></div></div>
 <div id="statsWrap" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
@@ -68,7 +68,7 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -85,7 +85,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false;
+let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false, allowed = null;
 
 const ICONS = [["فيزياء","⚛️"],["كيمياء","🧪"],["أحياء","🧬"],["احياء","🧬"],["رياضيات","📐"],["عربي","📖"],["عربية","📖"],["انكليزي","🔤"],["إنكليزي","🔤"],["english","🔤"],["اسلامية","🕌"],["إسلامية","🕌"],["تاريخ","🏛️"],["جغرافية","🌍"],["حاسوب","💻"]];
 const icon = n => { n = String(n || ""); const f = ICONS.find(([k]) => n.includes(k)); return f ? f[1] : "📘"; };
@@ -96,32 +96,64 @@ const norm = n => String(n || "")
   .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
   .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
 
+// ---- الدخول بكود الطالب ----
+// يرجع قائمة المدرسين المسموحين للطالب، أو null إذا ما عنده كود صالح
+async function myAccess(u) {
+  const m = await getDoc(doc(db, "members", u.uid));
+  if (!m.exists() || !m.data().code) return null;
+  const c = await getDoc(doc(db, "codes", String(m.data().code)));
+  if (!c.exists()) return null;
+  const d = c.data();
+  if (!d.active || d.uid !== u.uid) return null;
+  return d.teachers || [];
+}
+
 onAuthStateChanged(auth, async u => {
   if (!u) { location.replace("login.html"); return; }
   me = u;
   document.body.style.display = "block";
-  if (u.email === ADMIN) { isAdmin = true; $("adminLink").style.display = ""; load(); return; }
-  try {
-    const m = await getDoc(doc(db, "members", u.uid));
-    if (m.exists()) { load(); return; }
-  } catch (e) {}
+  if (u.email === ADMIN) { isAdmin = true; $("adminLink").style.display = ""; $("codesLink").style.display = ""; load(); return; }
+  let a = null;
+  try { a = await myAccess(u); } catch (e) {}
+  if (a) { allowed = a; load(); return; }
   showGate();
 });
 $("out").onclick = async () => { await signOut(auth); location.replace("login.html"); };
 
-function showGate() {
-  $("app").innerHTML = `<div class="gate"><h2>🔑 كود الدخول</h2><p>اكتب الكود الي أعطاك إياه المشرف.</p><input id="code" dir="ltr" placeholder="الكود" autocomplete="off"><button class="item" id="codeBtn" style="justify-content:center">✅ دخول</button><p class="err" id="codeMsg"></p></div>`;
+function showGate(msg) {
+  $("app").innerHTML = `<div class="gate"><h2>🔑 كود الدخول</h2><p>اكتب الكود الخاص بك الي أعطاك إياه المشرف.</p><input id="code" dir="ltr" placeholder="XXXX-XXXX" autocomplete="off"><button class="item" id="codeBtn" style="justify-content:center">✅ دخول</button><p class="err" id="codeMsg">${esc(msg || "")}</p></div>`;
   $("codeBtn").onclick = async () => {
-    const code = $("code").value.trim();
+    const code = $("code").value.trim().toUpperCase().replace(/\//g, "");
     if (!code) return;
-    $("codeMsg").textContent = "";
+    const msg = $("codeMsg");
+    msg.textContent = "";
     try {
+      const ref = doc(db, "codes", code);
+      const c = await getDoc(ref);
+      if (!c.exists() || !c.data().active) { msg.textContent = "الكود غير صحيح أو معطّل."; return; }
+      const d = c.data();
+      if (d.uid && d.uid !== me.uid) { msg.textContent = "هذا الكود مستخدم من حساب آخر. تواصل مع المشرف."; return; }
+      if (!d.uid) await updateDoc(ref, { uid: me.uid, email: me.email });
       await setDoc(doc(db, "members", me.uid), { code, email: me.email });
+      allowed = d.teachers || [];
       await load();
     } catch (e) {
-      $("codeMsg").textContent = e.code === "permission-denied" ? "الكود غير صحيح." : "حدث خطأ: " + e.code;
+      msg.textContent = "حدث خطأ: " + (e.code || e.message);
     }
   };
+}
+
+// يخفي كل شي ما يخص الطالب: يبقى بس المدرسين المسموحين له
+function applyAccess() {
+  if (allowed === null) return;
+  const ok = new Set(allowed), pids = new Set();
+  groups().forEach(g => teachers(g).forEach(t => {
+    if (ok.has(g.key + "|" + t.key)) t.profs.forEach(f => pids.add(f.id));
+  }));
+  P = P.filter(p => pids.has(p.id));
+  L = L.filter(l => pids.has(l.professorId));
+  const used = new Set(P.map(p => p.subjectId));
+  S = S.filter(s => used.has(s.id));
 }
 
 const ORD = ["اولي","ثاني","ثالث","رابع","خامس","سادس","سابع","ثامن","تاسع","عاشر"];
@@ -160,6 +192,7 @@ async function load() {
       const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
       S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
     }
+    applyAccess();
     sortL();
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
     render();
