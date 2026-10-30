@@ -27,6 +27,7 @@ small{color:#9a8650}
 .ph{background:var(--gold)}
 .mv{background:var(--soft);color:var(--ink);border:1px solid var(--gold)}
 .dirty{outline:3px solid var(--err)}
+.cd{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:8px 0;font-size:14px}
 </style>
 </head>
 <body>
@@ -56,6 +57,13 @@ small{color:#9a8650}
     <button class="add" id="addL">➕ إضافة المحاضرة</button>
   </div>
   <div class="card">
+    <h2>🔑 أكواد الطلاب</h2>
+    <input id="cName" placeholder="اسم الطالب">
+    <button class="add" id="addC">➕ إنشاء كود</button>
+    <p id="cNew" style="font-weight:800;font-size:20px;text-align:center;direction:ltr;margin:10px 0 0"></p>
+    <div id="codes" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
     <h2>🗂️ المحتوى الحالي</h2>
     <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
     <div id="list"></div>
@@ -65,7 +73,7 @@ small{color:#9a8650}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -143,6 +151,7 @@ onAuthStateChanged(auth, u => {
   if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
   document.body.style.display = "block";
   load();
+  loadCodes();
 });
 
 async function loadFirestore() {
@@ -284,6 +293,52 @@ $("list").onclick = async e => {
       P = P.filter(x => x.id !== id);
     } else L = L.filter(x => x.id !== id);
   });
+};
+
+// ---- أكواد الطلاب ----
+const genCode = () => {
+  const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const a = crypto.getRandomValues(new Uint8Array(8));
+  return [...a].map(n => c[n % c.length]).join("");
+};
+let C = [];
+async function loadCodes() {
+  try {
+    const q = await getDocs(collection(db, "codes"));
+    C = q.docs.map(d => ({ code: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  } catch (e) {
+    $("codes").innerHTML = "<small>تعذّر تحميل الأكواد: " + esc(e.code || e.message) + "</small>";
+    return;
+  }
+  $("codes").innerHTML = C.map(c =>
+    `<div class="cd"><span><b>${esc(c.name)}</b> <small>${c.usedBy ? "✅ مستخدم" : "⏳ غير مستخدم"}</small><br><code dir="ltr">${esc(c.code)}</code></span><span><button class="x mv" data-c="copy" data-id="${esc(c.code)}">نسخ</button><button class="x" data-c="del" data-id="${esc(c.code)}">حذف</button></span></div>`).join("") || "<small>ما كو أكواد بعد.</small>";
+}
+$("addC").onclick = async () => {
+  if (!val("cName")) return alert("اكتب اسم الطالب");
+  const code = genCode();
+  try {
+    await setDoc(doc(db, "codes", code), { name: val("cName"), usedBy: null, createdAt: Date.now() });
+    $("cName").value = "";
+    $("cNew").textContent = code;
+    await loadCodes();
+  } catch (e) { alert("فشل إنشاء الكود: " + (e.code || e.message)); }
+};
+$("codes").onclick = async e => {
+  const b = e.target.closest("button[data-id]");
+  if (!b) return;
+  const c = C.find(x => x.code === b.dataset.id);
+  if (!c) return;
+  if (b.dataset.c === "copy") {
+    try { await navigator.clipboard.writeText(c.code); alert("تم النسخ ✅"); }
+    catch (_) { prompt("انسخ الكود:", c.code); }
+    return;
+  }
+  if (!confirm(c.usedBy ? "حذف الكود وسحب صلاحية الطالب؟" : "حذف الكود؟")) return;
+  try {
+    if (c.usedBy) await deleteDoc(doc(db, "members", c.usedBy));
+    await deleteDoc(doc(db, "codes", c.code));
+    await loadCodes();
+  } catch (e) { alert("فشل الحذف: " + (e.code || e.message)); }
 };
 </script>
 </body>
