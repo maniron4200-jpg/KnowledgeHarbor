@@ -205,6 +205,12 @@
    "name": "استاذ علي",
    "photo": "IMG_20261031_000942_353.jpg",
    "subjectId": "0a9caeb600ae44cd88e4"
+  },
+  {
+   "id": "ec9a8553946e404b9506",
+   "name": "نور الدين",
+   "photo": "IMG_20261026_151100_276.jpg",
+   "subjectId": "f70ffee21089490dac40"
   }
  ],
  "lectures": [
