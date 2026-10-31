@@ -35,9 +35,9 @@
   --donebg:#13291b;
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:none;overflow-x:hidden;padding-bottom:0}
+body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:none;overflow-x:hidden;padding-bottom:76px}
 
-/* ===== الهيدر والواجهة العلوية ===== */
+/* ===== الهيدر والواجهة العلوية والحركات الحية ===== */
 .hero-wrapper{
   position:relative;
   background:linear-gradient(180deg, #071224 0%, #0f2342 55%, #18335c 85%, var(--bg) 100%);
@@ -52,6 +52,23 @@ body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;backgroun
   pointer-events:none;
   z-index:0;
 }
+@keyframes sweepBeam {
+  0%, 100% { transform: rotate(-3deg); opacity: 0.88; }
+  50% { transform: rotate(4deg); opacity: 1; }
+}
+@keyframes twinkleStar {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes floatCloud {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+}
+.lh-beam { transform-origin: 132px 126px; animation: sweepBeam 8s ease-in-out infinite; }
+.tw-1 { animation: twinkleStar 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.tw-2 { animation: twinkleStar 4.5s ease-in-out 1.2s infinite; transform-box: fill-box; transform-origin: center; }
+.clouds-anim { animation: floatCloud 14s ease-in-out infinite; }
+
 header{
   position:relative;
   z-index:5;
@@ -166,7 +183,7 @@ header h1{
   background:linear-gradient(90deg, var(--gold2), transparent);
 }
 
-#menu{display:none;position:absolute;left:16px;right:auto;top:70px;z-index:50;background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:8px;min-width:190px;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+#menu{display:none;position:absolute;left:16px;right:auto;top:70px;z-index:50;background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:8px;min-width:195px;box-shadow:0 10px 28px rgba(0,0,0,.35)}
 #menu.open{display:block}
 #menu a,#menu button{display:block;width:100%;text-align:right;background:none;border:0;border-radius:10px;padding:10px 12px;font:700 14px Tajawal,sans-serif;color:var(--ink);cursor:pointer;text-decoration:none}
 #menu a:active,#menu button:active{background:var(--soft)}
@@ -219,7 +236,7 @@ header h1{
   margin-top:2px;
 }
 
-/* ===== بطاقة السلسلة والهدف اليومي ===== */
+/* ===== بطاقة السلسلة والهدف والامتحان والأوسمة ===== */
 .after-hero{
   max-width:640px;
   margin:-14px auto 0;
@@ -279,13 +296,23 @@ header h1{
   font-weight:700;
   margin-top:2px;
 }
+.cloud-pill{
+  font-size:11px;
+  font-weight:800;
+  color:var(--gold);
+  background:rgba(201,162,39,.12);
+  border:1px solid var(--line);
+  padding:3px 8px;
+  border-radius:99px;
+  white-space:nowrap;
+}
 
 .goal-card{
   background:linear-gradient(135deg, var(--card), var(--soft));
   border:1.8px solid var(--line);
   border-radius:18px;
   padding:10px 14px;
-  margin-bottom:14px;
+  margin-bottom:10px;
   box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
 .goal-top{
@@ -298,7 +325,7 @@ header h1{
   margin-bottom:7px;
 }
 .goal-top .gl-r{display:flex;align-items:center;gap:6px}
-.goal-top .gl-r svg{width:18px;height:18px;color:var(--navy2)}
+.goal-top .gl-r svg{width:18px;height:18px;color:var(--gold)}
 .goal-top button{
   background:none;
   border:0;
@@ -322,7 +349,80 @@ header h1{
   transition:width .3s ease;
 }
 
-/* ===== وضع التركيز (لوحة المرسى والكتب) ===== */
+/* عداد الامتحان التنازلي */
+.exam-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:linear-gradient(135deg, #0d1f3c, #183460);
+  color:#fff;
+  border:1.5px solid var(--gold);
+  border-radius:18px;
+  padding:10px 14px;
+  margin-bottom:10px;
+  box-shadow:0 5px 15px rgba(12,27,51,.25);
+}
+.exam-l{display:flex;align-items:center;gap:10px;min-width:0}
+.exam-days{
+  background:linear-gradient(135deg, var(--gold2), var(--gold));
+  color:#0c1b33;
+  font-weight:900;
+  border-radius:12px;
+  padding:5px 10px;
+  text-align:center;
+  line-height:1.1;
+  flex:none;
+}
+.exam-days b{display:block;font-size:18px}
+.exam-days small{font-size:10px;font-weight:800}
+.exam-txt b{display:block;font-size:14px;color:var(--gold2)}
+.exam-txt small{display:block;font-size:12px;color:#d0d9ec}
+.exam-btn{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(232,201,100,.5);
+  color:var(--gold2);
+  border-radius:10px;
+  padding:5px 9px;
+  font:700 12px Tajawal,sans-serif;
+  cursor:pointer;
+  flex:none;
+}
+
+/* شريط الأوسمة البحرية */
+.badges-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  background:var(--card);
+  border:1.5px solid var(--line);
+  border-radius:18px;
+  padding:8px 12px;
+  margin-bottom:14px;
+  cursor:pointer;
+}
+.badges-list{display:flex;gap:6px;align-items:center;overflow-x:auto}
+.bdg-mini{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  background:var(--soft);
+  border:1.5px solid var(--line);
+  filter:grayscale(1);opacity:.45;
+  transition:.2s;
+  flex:none;
+}
+.bdg-mini.on{
+  filter:none;opacity:1;
+  background:radial-gradient(circle, #fff8dc, #f1d272);
+  border-color:var(--gold);
+  box-shadow:0 2px 8px rgba(201,162,39,.35);
+}
+.badges-lbl{font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.badges-lbl small{color:var(--gold);font-weight:800}
+
+/* ===== وضع التركيز وحلقة التقدم وبومودورو ===== */
 #focus{
   position:relative;
   display:flex;
@@ -334,12 +434,19 @@ header h1{
   color:#eef2fb;
   flex-direction:column;
   align-items:center;
-  gap:12px;
+  gap:11px;
   padding:18px 14px 20px;
   border-radius:26px;
   max-width:640px;
   margin:0 auto 14px;
   overflow:hidden;
+  transition:background .4s ease, border-color .4s ease;
+}
+#focus.break-mode{
+  background:
+    radial-gradient(circle at 50% 34%, rgba(79,195,247,.22), transparent 50%),
+    linear-gradient(165deg, #082233 0%, #0e3952 55%, #071d2b 100%);
+  border-color:#4fc3f7;
 }
 #focus::before{
   content:"";
@@ -379,33 +486,56 @@ header h1{
 #focus .ftop span{display:inline-flex;align-items:center;gap:6px}
 #focus .ftop #fpts{color:var(--gold2)}
 
+/* حلقة التقدم التفاعلية حول المؤقت */
 .timer-ring{
   position:relative;
   z-index:2;
   width:210px;
-  height:148px;
+  height:168px;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  margin:2px 0;
+  margin:0;
 }
-.timer-ring::before{
-  content:"";
+.ring-svg{
   position:absolute;
-  width:152px;
-  height:152px;
-  border-radius:50%;
-  border:2.5px solid var(--gold2);
-  box-shadow:0 0 22px rgba(232,201,100,.55), inset 0 0 18px rgba(232,201,100,.35);
+  width:166px;
+  height:166px;
+  transform:rotate(-90deg);
+  pointer-events:none;
+  filter:drop-shadow(0 0 10px rgba(232,201,100,.45));
 }
+.ring-bg{
+  fill:none;
+  stroke:rgba(255,255,255,.12);
+  stroke-width:6;
+}
+.ring-fg{
+  fill:none;
+  stroke:var(--gold2);
+  stroke-width:6.5;
+  stroke-linecap:round;
+  stroke-dasharray:440;
+  stroke-dashoffset:440;
+  transition:stroke-dashoffset .6s linear, stroke .3s ease;
+}
+@keyframes ringPulse{
+  0%,100%{filter:drop-shadow(0 0 8px rgba(232,201,100,.45))}
+  50%{filter:drop-shadow(0 0 18px rgba(232,201,100,.9))}
+}
+#focus.running .ring-svg{animation:ringPulse 2.4s ease-in-out infinite}
+#focus.goal-done .ring-fg{stroke:#4caf50}
+#focus.break-mode .ring-fg{stroke:#4fc3f7}
+
 #focus .ft{
   position:relative;
   z-index:3;
-  background:rgba(7,17,36,.85);
-  border:1.5px solid rgba(232,201,100,.4);
-  padding:10px 20px;
-  border-radius:20px;
-  font-size:40px;
+  background:rgba(7,17,36,.88);
+  border:1.5px solid rgba(232,201,100,.45);
+  padding:9px 18px;
+  border-radius:18px;
+  font-size:38px;
   font-weight:900;
   color:#fff;
   line-height:1;
@@ -414,7 +544,18 @@ header h1{
   font-variant-numeric:tabular-nums;
   text-shadow:0 2px 10px rgba(0,0,0,.6);
 }
-#focus .fbarw{width:100%;max-width:360px;position:relative;z-index:2;display:none}
+.ring-sub{
+  position:relative;
+  z-index:3;
+  font-size:11px;
+  font-weight:800;
+  color:var(--gold2);
+  margin-top:5px;
+  background:rgba(7,17,36,.75);
+  padding:2px 9px;
+  border-radius:99px;
+}
+#focus .fbarw{display:none}
 #focus .fchain{
   position:relative;
   z-index:2;
@@ -461,7 +602,7 @@ header h1{
   position:relative;
   z-index:2;
   display:flex;
-  gap:7px;
+  gap:6px;
   flex-wrap:wrap;
   justify-content:center;
   width:100%;
@@ -470,11 +611,11 @@ header h1{
   background:rgba(15,33,69,.85);
   border:1.5px solid rgba(159,182,220,.38);
   color:#eef2fb;
-  font:700 13px Tajawal,sans-serif;
+  font:700 12.5px Tajawal,sans-serif;
   display:inline-flex;
   align-items:center;
   gap:5px;
-  padding:7px 13px;
+  padding:6px 12px;
   border-radius:99px;
   cursor:pointer;
   transition:.2s;
@@ -508,7 +649,59 @@ header h1{
   color:#fff;
 }
 
-/* ===== المحتوى الرئيسي والمواد ===== */
+/* ===== شريط البحث والفلاتر العلوية ===== */
+.search-hub{
+  max-width:640px;
+  margin:10px auto 0;
+  padding:0 16px;
+}
+#searchWrap{
+  display:none;
+}
+.search-box{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+#q{
+  width:100%;
+  padding:12px 16px;
+  border:2px solid var(--gold);
+  border-radius:99px;
+  font:700 15px Tajawal,sans-serif;
+  background:var(--card);
+  color:var(--ink);
+  box-shadow:0 4px 14px rgba(201,162,39,.14);
+}
+#q::placeholder{color:var(--muted)}
+.filter-pills{
+  display:flex;
+  gap:7px;
+  margin-top:9px;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+.filter-pills button{
+  flex:none;
+  padding:6px 14px;
+  border-radius:99px;
+  border:1.5px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  font:800 13px Tajawal,sans-serif;
+  cursor:pointer;
+  transition:.2s;
+}
+.filter-pills button.on{
+  background:linear-gradient(135deg, var(--gold), var(--gold2));
+  border-color:var(--gold);
+  color:#0c1b33;
+}
+#results{
+  margin-top:10px;
+}
+
+/* ===== المحتوى الرئيسي والمواد والمحاضرات ===== */
 main{max-width:640px;margin:0 auto;padding:12px 16px 24px}
 main h2{
   margin:4px 0 14px;
@@ -574,12 +767,66 @@ main h2::after{
 .ico img{width:100%;height:100%;object-fit:cover}
 .back{background:none;border:0;color:var(--gold);font:800 15px Tajawal,sans-serif;cursor:pointer;padding:0 0 10px}
 .lec{background:var(--card);border:2px solid var(--line);border-right:5px solid var(--gold);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-.lec h3{margin:0 0 6px;font-size:16px}
+.lec-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.lec h3{margin:0;font-size:16px;flex:1}
+.bm-btn{
+  flex:none;
+  background:var(--soft);
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;
+  transition:.2s;
+}
+.bm-btn.on{background:#fff3c4;border-color:var(--gold);transform:scale(1.06)}
 .lec p{margin:6px 0 0;font-size:14px;color:var(--muted2)}
 .lec.hl{animation:hl 1.8s ease}
 @keyframes hl{0%,60%{box-shadow:0 0 0 4px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
 iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 .lec a{color:var(--gold);font-weight:700}
+
+/* ملاحظات الطالب على المحاضرة */
+.lec-actions{display:flex;gap:8px;margin-top:10px}
+.lec-actions .chk{margin-top:0;flex:2}
+.note-btn{
+  flex:1;
+  padding:10px 8px;
+  border:2px solid var(--line);
+  background:var(--card);
+  border-radius:10px;
+  font:700 13.5px Tajawal,sans-serif;
+  color:var(--ink);
+  cursor:pointer;
+}
+.note-btn.has{border-color:var(--gold);background:var(--soft)}
+.lec-note-view{
+  margin-top:8px;
+  padding:9px 12px;
+  background:var(--soft);
+  border-right:3px solid var(--gold);
+  border-radius:8px;
+  font-size:13.5px;
+  color:var(--ink);
+  white-space:pre-wrap;
+  line-height:1.6;
+}
+.lec-note-box{margin-top:8px;display:none}
+.lec-note-box.open{display:block}
+.lec-note-box textarea{
+  width:100%;
+  padding:10px;
+  border:1.5px solid var(--gold);
+  border-radius:10px;
+  font:14px Tajawal,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+.lec-note-box .row{display:flex;gap:6px;margin-top:6px}
+.lec-note-box button{flex:1;padding:8px;border-radius:8px;border:0;font:700 13px Tajawal,sans-serif;cursor:pointer}
+.lec-note-box .nsave{background:var(--gold);color:#fff}
+.lec-note-box .ncancel{background:var(--soft);color:var(--ink)}
+
 .gate{background:var(--card);border:2px solid var(--gold);border-radius:18px;padding:20px}
 .gate input{width:100%;padding:12px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;font:16px Tajawal,sans-serif;background:var(--bg);color:var(--ink)}
 .err{color:var(--err);font-weight:700;min-height:22px}
@@ -605,11 +852,11 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 }
 .cont:active{background:var(--gold2)}
 
-/* ===== الفوتر السفلي والبحث ===== */
+/* ===== الفوتر السفلي وشريط التنقل الثابت ===== */
 .bottom-bar{
   position:relative;
-  background:linear-gradient(180deg, var(--bg) 0%, #0d1e3a 28%, #081326 100%);
-  padding:32px 16px 26px;
+  background:linear-gradient(180deg, var(--bg) 0%, #0d1e3a 32%, #081326 100%);
+  padding:30px 16px 24px;
   margin-top:12px;
   overflow:hidden;
 }
@@ -628,41 +875,51 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px}
 }
 .bottom-inner{
   max-width:640px;
-  margin:10px auto 0;
+  margin:8px auto 0;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
+  justify-content:center;
 }
-#searchWrap{
-  display:none;
-  flex:1;
-  min-width:210px;
-  position:relative;
-}
-#q{
-  width:100%;
-  padding:11px 16px 11px 38px;
-  border:1.5px solid rgba(232,201,100,.65);
-  border-radius:99px;
-  font:700 14px Tajawal,sans-serif;
-  background:rgba(12,25,48,.85);
-  color:#fff;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.4);
-}
-#q::placeholder{color:#b8c7e6}
 .bottom-motto{
   color:var(--gold2);
   font-weight:800;
   font-size:16px;
-  white-space:nowrap;
   text-shadow:0 2px 8px rgba(0,0,0,.5);
 }
-#results{
+
+/* شريط التنقل السفلي الثابت */
+.bnav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:45;
+  background:rgba(10,22,44,.94);
+  backdrop-filter:blur(10px);
+  border-top:1.5px solid rgba(232,201,100,.45);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
   max-width:640px;
-  margin:12px auto 0;
+  margin:0 auto;
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -6px 20px rgba(0,0,0,.35);
 }
+.bnav button{
+  flex:1;
+  background:none;
+  border:0;
+  color:#9fb2d6;
+  font:700 11.5px Tajawal,sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:4px 0;
+  cursor:pointer;
+  transition:.2s;
+}
+.bnav button span.bico{font-size:19px;line-height:1}
+.bnav button.on{color:var(--gold2);font-weight:900;transform:translateY(-2px)}
 
 iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .lec.done{border-right-color:#2e7d32;background:var(--donebg)}
@@ -670,7 +927,7 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .chk.on{background:#2e7d32;border-color:#2e7d32;color:#fff}
 .prog{margin-bottom:12px}
 .prog .goal{display:flex;justify-content:space-between;margin:0 0 6px;font-size:13px;color:var(--muted);font-weight:700}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:99;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 .toast.show{opacity:1}
 .ann{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border:2px solid var(--gold);border-right-width:6px;border-radius:14px;padding:12px 14px;margin-bottom:14px;font-weight:700;font-size:14px;line-height:1.7}
 .ann span{flex:1;white-space:pre-wrap}
@@ -707,12 +964,15 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 .sbox{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center}
 .sbox b{display:block;font-size:22px;color:var(--gold)}
 .sbox small{color:var(--muted);font-size:12px}
+.badge-row{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;opacity:.55}
+.badge-row.on{border-color:var(--gold);background:var(--soft);opacity:1}
+.badge-row .b-ic{font-size:28px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;flex:none}
 </style>
 </head>
 <body>
 
-<div class="hero-wrapper">
-  <!-- خلفية المنارة والبحر والشعاع الذهبي -->
+<div class="hero-wrapper" id="topSec">
+  <!-- خلفية المنارة والبحر والشعاع الذهبي المتحرك -->
   <svg class="hero-art" viewBox="0 0 600 430" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
       <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
@@ -727,8 +987,8 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
         <stop offset="100%" stop-color="#102544" stop-opacity="0"/>
       </radialGradient>
       <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#fff4cc" stop-opacity="0.75"/>
-        <stop offset="50%" stop-color="#ffe299" stop-opacity="0.22"/>
+        <stop offset="0%" stop-color="#fff4cc" stop-opacity="0.78"/>
+        <stop offset="50%" stop-color="#ffe299" stop-opacity="0.24"/>
         <stop offset="100%" stop-color="#ffe299" stop-opacity="0"/>
       </linearGradient>
       <linearGradient id="goldWave" x1="0" y1="0" x2="1" y2="0">
@@ -739,15 +999,25 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     </defs>
     <rect width="600" height="430" fill="url(#skyGrad)"/>
     <rect width="600" height="430" fill="url(#sunGlow)"/>
-    <!-- غيوم ناعمة -->
-    <g fill="#f7d794" opacity="0.16">
+    <!-- نجوم متلألئة -->
+    <g fill="#fff5cc">
+      <circle class="tw-1" cx="460" cy="48" r="1.6"/>
+      <circle class="tw-2" cx="520" cy="78" r="2"/>
+      <circle class="tw-1" cx="380" cy="70" r="1.4"/>
+      <circle class="tw-2" cx="290" cy="42" r="1.7"/>
+      <circle class="tw-1" cx="555" cy="36" r="1.5"/>
+    </g>
+    <!-- غيوم ناعمة متحركة -->
+    <g class="clouds-anim" fill="#f7d794" opacity="0.16">
       <ellipse cx="90" cy="175" rx="75" ry="18"/>
       <ellipse cx="195" cy="190" rx="95" ry="20"/>
       <ellipse cx="45" cy="200" rx="60" ry="15"/>
     </g>
-    <!-- شعاع المنارة -->
-    <polygon points="132,126 390,55 430,195" fill="url(#beamGrad)"/>
-    <polygon points="132,126 0,90 0,165" fill="url(#beamGrad)" opacity="0.6"/>
+    <!-- شعاع المنارة المتحرك -->
+    <g class="lh-beam">
+      <polygon points="132,126 390,55 430,195" fill="url(#beamGrad)"/>
+      <polygon points="132,126 0,90 0,165" fill="url(#beamGrad)" opacity="0.6"/>
+    </g>
     <!-- طيور -->
     <path d="M48 115 q6 -6 12 0 q6 -6 12 0" fill="none" stroke="#fbe6b8" stroke-width="1.6" opacity="0.7"/>
     <path d="M78 102 q5 -5 10 0 q5 -5 10 0" fill="none" stroke="#fbe6b8" stroke-width="1.4" opacity="0.6"/>
@@ -755,7 +1025,7 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     <!-- البحر -->
     <rect x="0" y="250" width="600" height="160" fill="#0b1c38" opacity="0.75"/>
     <path d="M40 270 H210 M65 282 H190 M85 296 H175" stroke="#ffdca0" stroke-width="1.5" opacity="0.45" stroke-linecap="round"/>
-    <!-- صخرة وجزيرة المنارة (يسار) -->
+    <!-- صخرة وجزيرة المنارة -->
     <path d="M25 270 Q65 225 115 228 Q165 225 205 268 Z" fill="#121e31"/>
     <path d="M48 268 Q95 235 155 242 Q185 246 198 268 Z" fill="#1d2d44"/>
     <!-- بيت صغير جانب المنارة -->
@@ -772,7 +1042,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     <circle cx="132" cy="128" r="9" fill="#ffffff"/>
     <polygon points="120,120 132,105 144,120" fill="#1c2c47"/>
     <line x1="132" y1="105" x2="132" y2="96" stroke="#e8c964" stroke-width="2"/>
-    <!-- نوافذ المنارة -->
     <rect x="129" y="156" width="6" height="10" rx="3" fill="#273956"/>
     <rect x="129" y="182" width="6" height="10" rx="3" fill="#273956"/>
     <!-- موجات ذهبية تفصل الهيدر عن الخلفية -->
@@ -782,7 +1051,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 
   <header>
     <div class="hrow">
-      <!-- الشعار الجديد والعنوان -->
       <div class="brand">
         <span class="logo" id="logoWrap">
           <svg id="brandSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
@@ -797,16 +1065,11 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
                 <stop offset="100%" stop-color="#0f2347"/>
               </linearGradient>
             </defs>
-            <!-- النجمة الثمانية العلوية -->
             <polygon points="100,12 105,29 118,20 110,34 127,39 110,44 118,58 105,49 100,66 95,49 82,58 90,44 73,39 90,34 82,20 95,29" fill="url(#gGold)"/>
-            <!-- صفحات الكتاب الذهبية -->
             <path d="M100,96 C86,75 63,63 32,60 L32,71 C60,74 82,85 100,106 C118,85 140,74 168,71 L168,60 C137,63 114,75 100,96 Z" fill="url(#gGold)"/>
             <path d="M100,111 C84,91 58,80 22,78 L22,90 C55,92 80,103 100,124 C120,103 145,92 178,90 L178,78 C142,80 116,91 100,111 Z" fill="url(#gGold)"/>
-            <!-- ذراعا المرساة والكتاب الأزرق -->
             <path d="M16,94 C54,96 82,108 92,130 L92,158 C72,158 55,146 47,128 L57,125 L36,105 L28,135 L37,132 C48,158 70,172 100,176 C130,172 152,158 163,132 L172,135 L164,105 L143,125 L153,128 C145,146 128,158 108,158 L108,130 C118,108 146,96 184,94 L184,104 C150,106 124,117 116,136 L116,162 C136,160 151,147 159,130 L166,132 L162,114 L149,125 L154,127 C145,148 126,164 100,168 L100,188 C74,178 50,163 36,136 L29,139 L34,108 L54,125 L45,128 C55,151 75,164 100,167" fill="url(#gBlue)" stroke="url(#gGold)" stroke-width="1.8"/>
-            <!-- قلب المرساة المزدوج -->
             <path d="M100,132 C92,110 64,98 20,96 L20,106 C58,108 82,118 90,138 L90,162 C68,160 50,147 41,126 L52,122 L31,102 L23,132 L32,129 C43,157 67,174 100,184 C133,174 157,157 168,129 L177,132 L169,102 L148,122 L159,126 C150,147 132,160 110,162 L110,138 C118,118 142,108 180,106 L180,96 C136,98 108,110 100,132 Z" fill="url(#gBlue)" stroke="url(#gGold)" stroke-width="2.2"/>
-            <!-- اللمعة الذهبية السفلية للمرساة -->
             <path d="M35,112 L47,122 L39,125 C50,152 74,167 100,174 L100,152 C97,158 93,161 86,162 C66,162 49,148 39,125 Z" fill="url(#gGold)"/>
             <path d="M165,112 L153,122 L161,125 C150,152 126,167 100,174 L100,166 C123,161 143,146 154,123 Z" fill="url(#gGold)"/>
           </svg>
@@ -818,7 +1081,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
         </div>
       </div>
 
-      <!-- أزرار القائمة والإعلانات -->
       <div class="hbtns">
         <button id="bellBtn" aria-label="الإعلانات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg></button>
         <button id="menuBtn" aria-label="القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -831,6 +1093,9 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
       <button id="annBtn" style="display:none">📢 إعلان للطلاب</button>
       <button id="starBtn" style="display:none">🌟 طالب الأسبوع</button>
       <button id="statBtn" style="display:none">📊 إحصائيات الطلاب</button>
+      <button id="examMenuBtn">📅 موعد الامتحان</button>
+      <button id="badgesMenuBtn">⚓ أوسمة المرسى</button>
+      <button id="shareMenuBtn">📸 مشاركة إنجازي</button>
       <button id="themeBtn">🌙 الوضع الليلي</button>
       <button id="out">🚪 خروج</button>
     </div>
@@ -850,32 +1115,68 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
   <div id="streakWrap"></div>
 </div>
 
-<div style="max-width:640px;margin:0 auto;padding:0 16px">
+<!-- لوحة وضع التركيز المتطورة -->
+<div style="max-width:640px;margin:0 auto;padding:0 16px" id="focusSec">
   <div id="focus">
     <div class="ftop"><span id="flevel"></span><span id="fpts"></span></div>
     <div class="timer-ring">
+      <svg class="ring-svg" viewBox="0 0 160 160">
+        <circle class="ring-bg" cx="80" cy="80" r="70"/>
+        <circle class="ring-fg" id="ringFg" cx="80" cy="80" r="70"/>
+      </svg>
       <div class="ft" id="ftimer">00:00:00</div>
+      <div class="ring-sub" id="fgl">جلسة حرة</div>
     </div>
-    <div class="fbarw"><div class="fbar"><i id="fArc"></i></div><div class="fbl"><span id="fpc"></span><span id="fgl"></span></div></div>
+    <div class="fbarw"><div class="fbar"><i id="fArc"></i></div><div class="fbl"><span id="fpc"></span></div></div>
     <div class="fchain"><div class="fch"><b id="fchT"></b><span id="fsn"></span></div><div class="fchrow" id="fCh"></div><div class="fdays" id="fDays"></div></div>
-    <div class="fchips" id="fGoal"><button data-g="0">حر</button><button data-g="25">25 د</button><button data-g="45">45 د</button><button data-g="60">60 د</button><button data-g="90">90 د</button><button data-g="180">180 د</button><button data-g="270">270 د</button><button data-g="360">360 د</button></div>
+    <div class="fchips" id="fGoal">
+      <button data-g="0">حر</button>
+      <button data-g="25" data-pomo="1">🍅 بومودورو</button>
+      <button data-g="25">25 د</button>
+      <button data-g="45">45 د</button>
+      <button data-g="60">60 د</button>
+      <button data-g="90">90 د</button>
+      <button data-g="180">180 د</button>
+    </div>
     <div class="fchips" id="fSnd"><button data-s="">صمت</button><button data-s="rain">مطر</button><button data-s="wave">موج</button><button data-s="calm">هدوء</button></div>
     <div class="frow"><button id="fEnd">▶ ابدأ الجلسة</button></div>
   </div>
 </div>
 
 <div id="statsWrap2" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
+
+<!-- مركز البحث السريع والفلاتر فوق المواد مباشرة -->
+<div class="search-hub" id="subjectsSec">
+  <div id="searchWrap">
+    <div class="search-box">
+      <input id="q" type="search" placeholder="🔍 ابحث عن محاضرة أو موضوع..." autocomplete="off">
+    </div>
+    <div class="filter-pills" id="filterPills">
+      <button data-flt="all" class="on">📚 الكل</button>
+      <button data-flt="undone">⏳ غير منجزة</button>
+      <button data-flt="fav">⭐ المفضلة</button>
+      <button data-flt="notes">📝 بملاحظاتي</button>
+    </div>
+  </div>
+  <div id="results"></div>
+</div>
+
 <main id="app">⏳ جارٍ التحميل...</main>
 
 <footer class="bottom-bar">
   <div class="bottom-inner">
-    <div id="searchWrap">
-      <input id="q" type="search" placeholder="🔍 ابحث عن محاضرة..." autocomplete="off">
-    </div>
     <div class="bottom-motto">تَعَلَّم .. تطور .. تحقق أهدافك</div>
   </div>
-  <div id="results"></div>
 </footer>
+
+<!-- شريط التنقل السفلي السريع -->
+<nav class="bnav" id="bnav">
+  <button data-nav="home" class="on"><span class="bico">🏠</span><span>الرئيسية</span></button>
+  <button data-nav="focus"><span class="bico">⏱️</span><span>التركيز</span></button>
+  <button data-nav="fav"><span class="bico">⭐</span><span>مفضلتي</span></button>
+  <button data-nav="board"><span class="bico">🏆</span><span>المتصدرين</span></button>
+  <button data-nav="badges"><span class="bico">⚓</span><span>أوسمتي</span></button>
+</nav>
 
 <div id="sheet"></div>
 <div class="toast" id="toast"></div>
@@ -914,8 +1215,9 @@ const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false, allowed = null;
+let curFilter = "all";
 
-// أيقونات خطية لوضع التركيز والإحصائيات
+// أيقونات خطية
 const svg = (p, n = 16) => `<svg viewBox="0 0 24 24" width="${n}" height="${n}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const IC = {
   flame: svg('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'),
@@ -943,6 +1245,16 @@ const norm = n => String(n || "")
   .replace(/[\u064B-\u0652\u0640]/g, "")
   .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
   .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
+
+// ---- مفاتيح التخزين المحلي للخصائص الجديدة ----
+const DK = () => "done_" + (me ? me.uid : "x");
+const BK = () => "bm_" + (me ? me.uid : "x");
+const NTK = () => "notes_" + (me ? me.uid : "x");
+const EXK = () => "exam_" + (me ? me.uid : "x");
+const getDone = () => { try { return JSON.parse(localStorage.getItem(DK())) || {}; } catch (e) { return {}; } };
+const getBm = () => { try { return JSON.parse(localStorage.getItem(BK())) || {}; } catch (e) { return {}; } };
+const getNotes = () => { try { return JSON.parse(localStorage.getItem(NTK())) || {}; } catch (e) { return {}; } };
+const getExam = () => { try { return JSON.parse(localStorage.getItem(EXK())) || { title: "الامتحانات الوزارية", date: "2026-06-01" }; } catch (e) { return { title: "الامتحانات الوزارية", date: "2026-06-01" }; } };
 
 // ---- القائمة العلوية والوضع الليلي ----
 const themeNow = () => document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -994,7 +1306,7 @@ function showGate(msg) {
       const d = c.data();
       if (d.uid && d.uid !== me.uid) { msg.textContent = "هذا الكود مستخدم من حساب آخر. تواصل مع المشرف."; return; }
       if (!d.uid) await updateDoc(ref, { uid: me.uid, email: me.email });
-      await setDoc(doc(db, "members", me.uid), { code, email: me.email });
+      await setDoc(doc(db, "members", me.uid), { code, email: me.email }, { merge: true });
       allowed = d.teachers || [];
       await load();
     } catch (e) {
@@ -1031,6 +1343,47 @@ const lecKey = l => usingData
   : ((orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l));
 const sortL = () => L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
 
+// ---- المزامنة السحابية لتقدم الطالب (Cloud Sync) ----
+async function pullCloudProgress() {
+  if (!me) return;
+  try {
+    const snap = await getDoc(doc(db, "members", me.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (data.doneMap && typeof data.doneMap === "object") {
+      const mergedDone = { ...data.doneMap, ...getDone() };
+      localStorage.setItem(DK(), JSON.stringify(mergedDone));
+    }
+    if (data.bmMap && typeof data.bmMap === "object") {
+      const mergedBm = { ...data.bmMap, ...getBm() };
+      localStorage.setItem(BK(), JSON.stringify(mergedBm));
+    }
+    if (data.notesMap && typeof data.notesMap === "object") {
+      const mergedNotes = { ...data.notesMap, ...getNotes() };
+      localStorage.setItem(NTK(), JSON.stringify(mergedNotes));
+    }
+    if (data.studyData && Array.isArray(data.studyData.sessions)) {
+      const local = getStudy();
+      if ((data.studyData.sessions.length || 0) > (local.sessions.length || 0)) {
+        putStudy(data.studyData);
+      }
+    }
+  } catch (e) {}
+}
+
+async function pushCloudProgress() {
+  if (!me) return;
+  try {
+    await setDoc(doc(db, "members", me.uid), {
+      doneMap: getDone(),
+      bmMap: getBm(),
+      notesMap: getNotes(),
+      studyData: getStudy(),
+      syncAt: Date.now()
+    }, { merge: true });
+  } catch (e) {}
+}
+
 async function load() {
   try {
     usingData = false;
@@ -1051,6 +1404,7 @@ async function load() {
       const m = q => q.docs.map(d => ({ id: d.id, ...d.data() }));
       S = m(qs[0]); P = m(qs[1]); L = m(qs[2]);
     }
+    await pullCloudProgress();
     applyAccess();
     sortL();
     S.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
@@ -1107,6 +1461,24 @@ function teachers(g) {
   return [...m.values()];
 }
 
+function renderLectureCard(l) {
+  const dn = getDone(), bm = getBm(), notes = getNotes();
+  const noteTxt = notes[l.id] || "";
+  return `<div class="lec ${dn[l.id] ? "done" : ""}" data-lid="${esc(l.id)}">` +
+    `<div class="lec-head"><h3>🎬 ${esc(l.title)}</h3><button class="bm-btn ${bm[l.id] ? "on" : ""}" data-bm="${esc(l.id)}" title="حفظ للمراجعة">${bm[l.id] ? "⭐" : "☆"}</button></div>` +
+    `${embed(l.url)}` +
+    `<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>` +
+    `${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}` +
+    `<div class="lec-note-view" id="nview_${esc(l.id)}" style="${noteTxt ? "" : "display:none"}">📌 <b>ملاحظتي:</b> ${esc(noteTxt)}</div>` +
+    `<div class="lec-note-box" id="nbox_${esc(l.id)}"><textarea rows="3" maxlength="500" placeholder="اكتب ملاحظتك أو الدقيقة المهمة بالمحاضرة...">${esc(noteTxt)}</textarea><div class="row"><button class="nsave" data-nsave="${esc(l.id)}">💾 حفظ الملاحظة</button><button class="ncancel" data-ncancel="${esc(l.id)}">إلغاء</button></div></div>` +
+    `<div class="lec-actions">` +
+      `<button class="chk ${dn[l.id] ? "on" : ""}" data-done="${esc(l.id)}">${dn[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>` +
+      `<button class="note-btn ${noteTxt ? "has" : ""}" data-nopen="${esc(l.id)}">📝 ${noteTxt ? "تعديل ملاحظتي" : "أضف ملاحظة"}</button>` +
+    `</div>` +
+    `${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${esc(l.id)}">⬆️ للأعلى</button><button data-mv="down" data-id="${esc(l.id)}">⬇️ للأسفل</button></div>` : ""}` +
+  `</div>`;
+}
+
 function render() {
   const app = $("app");
   const g = sel.s ? (groups().find(x => x.key === sel.s) || { name: "", ids: [], terms: [] }) : null;
@@ -1129,8 +1501,7 @@ function render() {
     app.innerHTML = `<button class="back" data-back="p">→ رجوع ${multi ? "للفصول" : "للأساتذة"}</button><h2>👨‍🏫 ${esc(p?.name)}${multi ? " – " + esc(termOf(p)) : ""}</h2>` +
       (isAdmin ? `<button class="save" id="saveO">💾 حفظ الترتيب</button>` : "") +
       progressHtml() +
-      (L.filter(l => l.professorId === sel.p).map(l =>
-        `<div class="lec ${getDone()[l.id] ? "done" : ""}" data-lid="${esc(l.id)}"><h3>🎬 ${esc(l.title)}</h3>${embed(l.url)}<p><a href="${esc(l.url)}" target="_blank" rel="noopener">${linkLabel(l.url)}</a></p>${l.desc ? `<p>📝 ${esc(l.desc)}</p>` : ""}<button class="chk ${getDone()[l.id] ? "on" : ""}" data-done="${esc(l.id)}">${getDone()[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${esc(l.id)}">⬆️ للأعلى</button><button data-mv="down" data-id="${esc(l.id)}">⬇️ للأسفل</button></div>` : ""}</div>`).join("") || "<p>ما كو محاضرات بعد.</p>");
+      (L.filter(l => l.professorId === sel.p).map(renderLectureCard).join("") || "<p>ما كو محاضرات بعد.</p>");
     if ($("saveO")) $("saveO").classList.toggle("dirty", dirty);
   }
 }
@@ -1191,11 +1562,9 @@ async function saveOrder() {
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 }
 
-// ---- علامة إنجاز المحاضرات ----
-const DK = () => "done_" + (me ? me.uid : "x");
-const getDone = () => { try { return JSON.parse(localStorage.getItem(DK())) || {}; } catch (e) { return {}; } };
+// ---- علامة إنجاز المحاضرات والمفضلة والملاحظات ----
 let tt;
-function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200); }
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2400); }
 function progressHtml() {
   const lecs = L.filter(l => l.professorId === sel.p);
   if (!lecs.length) return "";
@@ -1219,6 +1588,37 @@ function toggleDone(id, btn) {
     const lecs = L.filter(l => l.professorId === sel.p);
     toast(lecs.every(l => dn[l.id]) ? "🏆 ممتاز! خلصت كل محاضرات هذا الفصل" : ["👏 أحسنت!", "🌟 استمر يا بطل!", "🔥 إنجاز رائع!"][Math.floor(Math.random() * 3)]);
   }
+}
+function toggleBookmark(id, btn) {
+  const bm = getBm();
+  if (bm[id]) delete bm[id]; else bm[id] = 1;
+  localStorage.setItem(BK(), JSON.stringify(bm));
+  btn.classList.toggle("on", !!bm[id]);
+  btn.textContent = bm[id] ? "⭐" : "☆";
+  toast(bm[id] ? "⭐ انحفظت المحاضرة بقائمة المراجعة" : "تمت الإزالة من المفضلة");
+  syncMe();
+}
+function saveLectureNote(id, card) {
+  const box = card.querySelector(".lec-note-box");
+  const val = box.querySelector("textarea").value.trim();
+  const notes = getNotes();
+  if (val) notes[id] = val; else delete notes[id];
+  localStorage.setItem(NTK(), JSON.stringify(notes));
+  const view = card.querySelector(".lec-note-view");
+  const nbtn = card.querySelector(".note-btn");
+  if (val) {
+    view.innerHTML = `📌 <b>ملاحظتي:</b> ${esc(val)}`;
+    view.style.display = "";
+    nbtn.classList.add("has");
+    nbtn.textContent = "📝 تعديل ملاحظتي";
+  } else {
+    view.style.display = "none";
+    nbtn.classList.remove("has");
+    nbtn.textContent = "📝 أضف ملاحظة";
+  }
+  box.classList.remove("open");
+  toast("💾 تم حفظ ملاحظتك");
+  syncMe();
 }
 
 // ---- كمّل من وين وقفت ----
@@ -1245,29 +1645,198 @@ function goTo(id) {
   const p = P.find(x => x.id === l.professorId); if (!p) return;
   const s = S.find(x => x.id === p.subjectId); if (!s) return;
   sel = { s: norm(s.name), t: norm(p.name), p: p.id };
-  $("q").value = ""; $("results").innerHTML = ""; $("app").style.display = "";
+  $("q").value = ""; curFilter = "all"; markFilterPills();
+  $("results").innerHTML = ""; $("app").style.display = "";
   render();
   renderStats();
   const el = [...document.querySelectorAll(".lec")].find(x => x.dataset.lid === id);
   if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("hl"); }
 }
 
-// ---- البحث عن محاضرة ----
-$("q").oninput = () => {
+// ---- البحث والفلاتر الذكية ----
+function markFilterPills() {
+  document.querySelectorAll("#filterPills button").forEach(b => b.classList.toggle("on", b.dataset.flt === curFilter));
+}
+function runSearchAndFilter() {
   const q = norm($("q").value);
   const box = $("results");
-  if (!q) { box.innerHTML = ""; $("app").style.display = ""; return; }
+  if (!q && curFilter === "all") { box.innerHTML = ""; $("app").style.display = ""; return; }
   $("app").style.display = "none";
-  const hits = L.filter(l => norm(l.title).includes(q) || norm(l.desc).includes(q)).slice(0, 30);
+  const dn = getDone(), bm = getBm(), notes = getNotes();
+  const hits = L.filter(l => {
+    if (curFilter === "undone" && dn[l.id]) return false;
+    if (curFilter === "fav" && !bm[l.id]) return false;
+    if (curFilter === "notes" && !notes[l.id]) return false;
+    if (q && !(norm(l.title).includes(q) || norm(l.desc).includes(q) || norm(notes[l.id] || "").includes(q))) return false;
+    return true;
+  }).slice(0, 40);
   box.innerHTML = hits.map(l => {
     const p = P.find(x => x.id === l.professorId), s = p && S.find(x => x.id === p.subjectId);
-    return `<button class="item" data-go="${esc(l.id)}"><span class="ico">${icon(s ? s.name : "")}</span><span>${esc(l.title)}<small>${esc(s ? s.name : "")} • ${esc(p ? p.name : "")}${s && s.term ? " • " + esc(s.term) : ""}</small></span></button>`;
-  }).join("") || "<p style='color:#fff;text-align:center'>ما لقيت محاضرة بهذا الاسم 🔍</p>";
+    const tags = [bm[l.id] ? "⭐" : "", dn[l.id] ? "✅" : "", notes[l.id] ? "📝" : ""].filter(Boolean).join(" ");
+    return `<button class="item" data-go="${esc(l.id)}"><span class="ico">${icon(s ? s.name : "")}</span><span>${esc(l.title)} ${tags}<small>${esc(s ? s.name : "")} • ${esc(p ? p.name : "")}${s && s.term ? " • " + esc(s.term) : ""}</small></span></button>`;
+  }).join("") || `<p style="text-align:center;color:var(--muted);font-weight:700">ما كو محاضرات مطابقة لبحثك 🔍</p>`;
+}
+$("q").oninput = runSearchAndFilter;
+$("filterPills").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  curFilter = b.dataset.flt;
+  markFilterPills();
+  runSearchAndFilter();
 };
 $("results").onclick = e => {
   const b = e.target.closest("button");
   if (b && b.dataset.go) goTo(b.dataset.go);
 };
+
+// ---- الأوسمة البحرية (Harbor Badges) ----
+function getHarborBadges() {
+  const d = getStudy(), dn = getDone(), notes = getNotes();
+  const hours = d.sessions.reduce((a, s) => a + s.sec, 0) / 3600;
+  const doneCount = L.filter(l => dn[l.id]).length;
+  const streak = calcStreak(d.sessions).n;
+  const notesCount = Object.keys(notes).length;
+  const anyFullChapter = P.some(p => {
+    const pls = L.filter(l => l.professorId === p.id);
+    return pls.length > 0 && pls.every(l => dn[l.id]);
+  });
+  return [
+    { id: "sailor", ico: "🛶", name: "بحّار مبتدئ", desc: "إنجاز أول محاضرة أو جلسة دراسية", on: doneCount >= 1 || d.sessions.length >= 1 },
+    { id: "writer", ico: "📝", name: "مدوّن المرسى", desc: "كتابة 3 ملاحظات دراسية على المحاضرات", on: notesCount >= 3 },
+    { id: "navigator", ico: "🧭", name: "ربّان ماهر", desc: "سلسلة التزام لمدة 7 أيام متتالية", on: streak >= 7 },
+    { id: "captain", ico: "🚢", name: "قبطان المرسى", desc: "إكمال 25 ساعة دراسية في المنصة", on: hours >= 25 },
+    { id: "legend", ico: "👑", name: "أسطورة البحار", desc: "إتمام جميع محاضرات فصل دراسي كامل 100%", on: anyFullChapter }
+  ];
+}
+function openBadgesSheet() {
+  const list = getHarborBadges();
+  const unlocked = list.filter(b => b.on).length;
+  openSheet(`<h2>⚓ أوسمة مرسى المعرفة (${unlocked}/${list.length})</h2><p class="note">تُفتح الأوسمة تلقائياً كلما تقدمت بالدراسة والالتزام اليومي.</p>` +
+    list.map(b => `<div class="badge-row ${b.on ? "on" : ""}"><span class="b-ic">${b.ico}</span><div><b>${b.name} ${b.on ? "✅" : "🔒"}</b><div class="note">${b.desc}</div></div></div>`).join("") +
+    `<div class="row"><button class="save" id="sheetShareBtn">📸 مشاركة بطاقة إنجازي</button><button class="chk" id="sheetX">إغلاق</button></div>`);
+}
+
+// ---- عداد الامتحانات التنازلي ----
+function openExamEditor() {
+  const ex = getExam();
+  openSheet(`<h2>📅 إعداد عدّاد الامتحان</h2><p class="note">حدد اسم وموعد الامتحان القادم ليظهر العد التنازلي أمامك يومياً.</p>` +
+    `<input id="exTitle" maxlength="35" placeholder="مثال: الامتحانات الوزارية" value="${esc(ex.title)}">` +
+    `<input id="exDate" type="date" value="${esc(ex.date)}">` +
+    `<div class="row"><button class="save" id="exSave">حفظ الموعد</button><button class="chk" id="sheetX">إلغاء</button></div>`);
+  $("exSave").onclick = () => {
+    const title = $("exTitle").value.trim() || "الامتحان القادم";
+    const date = $("exDate").value || "2026-06-01";
+    localStorage.setItem(EXK(), JSON.stringify({ title, date }));
+    closeSheet(); renderStats(); toast("📅 تم تحديث عداد الامتحان");
+  };
+}
+
+// ---- بطاقة مشاركة الإنجاز المصورة (Story Card Generator) ----
+async function shareStoryCard() {
+  const d = getStudy(), dn = getDone(), st = calcStreak(d.sessions);
+  const hours = (d.sessions.reduce((a, s) => a + s.sec, 0) / 3600).toFixed(1);
+  const doneCount = L.filter(l => dn[l.id]).length;
+  const nick = localStorage.getItem(NK()) || "طالب المرسى";
+  const badges = getHarborBadges().filter(b => b.on);
+  const rankTitle = badges.length ? badges[badges.length - 1].name : "بحّار طموح";
+
+  const c = document.createElement("canvas");
+  c.width = 720; c.height = 960;
+  const ctx = c.getContext("2d");
+
+  // خلفية كحلية متدرجة فخمة
+  const bg = ctx.createLinearGradient(0, 0, 0, 960);
+  bg.addColorStop(0, "#071224");
+  bg.addColorStop(0.5, "#11284c");
+  bg.addColorStop(1, "#08152b");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 720, 960);
+
+  // توهج ذهبي بالوسط
+  const glow = ctx.createRadialGradient(360, 260, 20, 360, 260, 340);
+  glow.addColorStop(0, "rgba(232,201,100,0.28)");
+  glow.addColorStop(1, "rgba(232,201,100,0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 720, 960);
+
+  // إطار ذهبي مزدوج
+  ctx.strokeStyle = "#e8c964";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(28, 28, 664, 904);
+  ctx.strokeStyle = "rgba(232,201,100,0.35)";
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(40, 40, 640, 880);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#e8c964";
+  ctx.font = "900 44px Tajawal, sans-serif";
+  ctx.fillText("⚓ مرسى المعرفة", 360, 125);
+  ctx.fillStyle = "#b8c7e6";
+  ctx.font = "700 22px Tajawal, sans-serif";
+  ctx.fillText("Knowledge Harbor • بطاقة إنجاز طالب", 360, 165);
+
+  // اسم الطالب واللقب
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 38px Tajawal, sans-serif";
+  ctx.fillText(nick, 360, 250);
+  ctx.fillStyle = "#e8c964";
+  ctx.font = "800 24px Tajawal, sans-serif";
+  ctx.fillText("الرتبة: " + rankTitle, 360, 292);
+
+  // صناديق الإحصائيات
+  const boxes = [
+    { lbl: "ساعات الدراسة", val: hours + " س" },
+    { lbl: "أيام الالتزام", val: st.n + " 🔥" },
+    { lbl: "المحاضرات المنجزة", val: doneCount + " ✅" },
+    { lbl: "عدد الجلسات", val: d.sessions.length + " 🎯" }
+  ];
+  boxes.forEach((b, i) => {
+    const x = i % 2 === 0 ? 80 : 380;
+    const y = i < 2 ? 350 : 535;
+    ctx.fillStyle = "rgba(20, 42, 78, 0.85)";
+    ctx.strokeStyle = "#c9a227";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.roundRect(x, y, 260, 150, 22);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 40px Tajawal, sans-serif";
+    ctx.fillText(b.val, x + 130, y + 78);
+    ctx.fillStyle = "#e8c964";
+    ctx.font = "700 22px Tajawal, sans-serif";
+    ctx.fillText(b.lbl, x + 130, y + 122);
+  });
+
+  // الأوسمة المفتوحة
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 26px Tajawal, sans-serif";
+  ctx.fillText("الأوسمة المكتسبة: " + (badges.map(b => b.ico).join("  ") || "🛶"), 360, 765);
+
+  ctx.fillStyle = "#e8c964";
+  ctx.font = "800 26px Tajawal, sans-serif";
+  ctx.fillText("« معاً .. نحو مستقبل أوسع »", 360, 855);
+
+  const dataUrl = c.toDataURL("image/png");
+  openSheet(`<h2>📸 بطاقة إنجازك جاهزة!</h2><p class="note">اضغط مشاركة أو حفظ الصورة لنشرها بالستوري مع أصدقائك.</p>` +
+    `<img src="${dataUrl}" style="width:100%;max-width:340px;display:block;margin:8px auto;border-radius:16px;border:2px solid var(--gold)">` +
+    `<div class="row"><button class="save" id="dlCardBtn">📥 تحميل / مشاركة الصورة</button><button class="chk" id="sheetX">إغلاق</button></div>`);
+  $("dlCardBtn").onclick = async () => {
+    try {
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], "knowledge-harbor-story.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "إنجازي في مرسى المعرفة" });
+        return;
+      }
+    } catch (e) {}
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = "knowledge-harbor-story.png";
+    a.click();
+  };
+}
 
 // ---- نافذة منبثقة ----
 function openSheet(html) { $("sheet").innerHTML = `<div class="box">${html}</div>`; $("sheet").classList.add("open"); }
@@ -1282,8 +1851,13 @@ $("sheet").onclick = e => {
   else if (b.dataset.ttl !== undefined) { $("ttlIn").value = b.dataset.ttl; }
   else if (b.dataset.star !== undefined) pickStar(+b.dataset.star);
   else if (b.id === "starOff") clearStar();
+  else if (b.id === "sheetShareBtn") shareStoryCard();
   else if (b.id === "sheetX" || b.id === "annCancel") closeSheet();
 };
+
+$("examMenuBtn").onclick = () => { $("menu").classList.remove("open"); openExamEditor(); };
+$("badgesMenuBtn").onclick = () => { $("menu").classList.remove("open"); openBadgesSheet(); };
+$("shareMenuBtn").onclick = () => { $("menu").classList.remove("open"); shareStoryCard(); };
 
 // ---- إعلانات المشرف ----
 async function loadAnn() {
@@ -1332,8 +1906,9 @@ function toggleSession() {
   renderStats();
 }
 
-// ---- وضع التركيز ----
-let wl = null, fGoal = +localStorage.getItem("fgoal") || 0, fSnd = localStorage.getItem("fsnd") || "", actx = null, snode = null, fDone = false;
+// ---- وضع التركيز وحلقة SVG وبومودورو الذكي ----
+let wl = null, fGoal = +localStorage.getItem("fgoal") || 0, isPomo = localStorage.getItem("fpomo") === "1", pomoBreak = false, breakStart = 0;
+let fSnd = localStorage.getItem("fsnd") || "", actx = null, snode = null, fDone = false;
 const lvl = sec => sec < 900 ? "مبتدئ" : sec < 2700 ? "مركّز" : sec < 5400 ? "محترف" : "أسطورة";
 function ac() { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); return actx; }
 function beep() {
@@ -1358,16 +1933,25 @@ function playSound(k) {
   } catch (e) {}
 }
 function markChips() {
-  document.querySelectorAll("#fGoal button").forEach(b => b.classList.toggle("on", +b.dataset.g === fGoal));
+  document.querySelectorAll("#fGoal button").forEach(b => {
+    const bPomo = b.dataset.pomo === "1";
+    b.classList.toggle("on", +b.dataset.g === fGoal && bPomo === isPomo);
+  });
   document.querySelectorAll("#fSnd button").forEach(b => b.classList.toggle("on", b.dataset.s === fSnd));
 }
 let fInit = false;
 function startFocus() {
+  pomoBreak = false;
+  $("focus").classList.remove("break-mode");
   toggleSession(); fDone = false; fInit = true;
   playSound(fSnd);
   if (navigator.wakeLock) navigator.wakeLock.request("screen").then(l => { wl = l; }).catch(() => {});
 }
-function releaseFocus() { stopSound(); try { if (wl) wl.release(); } catch (e) {} wl = null; }
+function releaseFocus() {
+  pomoBreak = false;
+  $("focus").classList.remove("break-mode", "running", "goal-done");
+  stopSound(); try { if (wl) wl.release(); } catch (e) {} wl = null;
+}
 markChips();
 function renderChain(sec) {
   const d = getStudy(), days = new Set(d.sessions.map(x => x.d)), st = calcStreak(d.sessions), td = today();
@@ -1385,21 +1969,61 @@ function renderChain(sec) {
   $("fsn").textContent = n + (n === 1 ? " يوم" : " أيام");
 }
 function tickFocus() {
+  const focusEl = $("focus");
+  if (pomoBreak) {
+    const bSec = Math.floor((Date.now() - breakStart) / 1000);
+    const rem = Math.max(0, 300 - bSec);
+    $("ftimer").textContent = fmt(rem);
+    $("fgl").textContent = "☕ استراحة بومودورو (5 د)";
+    const bPct = Math.min(100, Math.round(bSec / 300 * 100));
+    $("ringFg").style.strokeDashoffset = String(440 - (440 * bPct) / 100);
+    if (rem === 0) {
+      pomoBreak = false;
+      focusEl.classList.remove("break-mode");
+      beep();
+      toast("⏰ انتهت الاستراحة! ابدأ جولة تركيز جديدة");
+      tickFocus();
+    }
+    return;
+  }
+
   const run = +localStorage.getItem(RK()) || 0;
   const sec = run ? Math.floor((Date.now() - run) / 1000) : 0, tot = fGoal * 60;
   if (run && !fInit) { fInit = true; fDone = !!(tot && sec >= tot); }
+  focusEl.classList.toggle("running", !!run);
+  focusEl.classList.toggle("goal-done", !!(run && tot && sec >= tot));
+
   const fb = $("fEnd"); fb.textContent = run ? "⏹ إنهاء الجلسة" : "▶ ابدأ الجلسة"; fb.classList.toggle("end", !!run);
   $("ftimer").textContent = fmt(sec);
   $("flevel").innerHTML = IC.bars + " مستوى: " + lvl(sec);
   $("fpts").innerHTML = "+" + (sec / 360).toFixed(1) + " نقطة " + IC.star;
   const pc = tot ? Math.min(100, Math.round(sec / tot * 100)) : Math.round((sec % 3600) / 36);
-  $("fArc").style.width = pc + "%"; $("fpc").textContent = pc + "%"; $("fgl").textContent = tot ? "الهدف " + fGoal + " د" : "جلسة حرة";
+  $("fArc").style.width = pc + "%"; $("fpc").textContent = pc + "%";
+  $("fgl").textContent = isPomo ? `🍅 بومودورو (${pc}%)` : (tot ? `الهدف ${fGoal} د (${pc}%)` : "جلسة حرة");
+  const ringEl = $("ringFg");
+  if (ringEl) ringEl.style.strokeDashoffset = String(440 - (440 * (run ? pc : 0)) / 100);
+
   renderChain(sec);
-  if (run && tot && sec >= tot && !fDone) { fDone = true; try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {} beep(); toast("🎉 حققت هدف الجلسة! كمّل أو أنهِ"); }
+  if (run && tot && sec >= tot && !fDone) {
+    fDone = true;
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+    beep();
+    if (isPomo) {
+      toggleSession();
+      pomoBreak = true;
+      breakStart = Date.now();
+      focusEl.classList.add("break-mode");
+      toast("🍅 كفو! خلصت 25 دقيقة، بدأت استراحة 5 دقائق تلقائياً");
+    } else {
+      toast("🎉 حققت هدف الجلسة! كمّل أو أنهِ");
+    }
+  }
 }
 $("fGoal").onclick = e => {
   const b = e.target.closest("button"); if (!b) return;
-  fGoal = +b.dataset.g; try { localStorage.setItem("fgoal", fGoal); } catch (x) {}
+  fGoal = +b.dataset.g;
+  isPomo = b.dataset.pomo === "1";
+  try { localStorage.setItem("fgoal", fGoal); localStorage.setItem("fpomo", isPomo ? "1" : "0"); } catch (x) {}
   const r = +localStorage.getItem(RK()) || 0;
   fDone = !!(fGoal && r && (Date.now() - r) / 1000 >= fGoal * 60);
   markChips(); tickFocus();
@@ -1410,6 +2034,7 @@ $("fSnd").onclick = e => {
   markChips(); if (+localStorage.getItem(RK())) playSound(fSnd); else stopSound();
 };
 $("fEnd").onclick = () => {
+  if (pomoBreak) { pomoBreak = false; $("focus").classList.remove("break-mode"); tickFocus(); return; }
   const r = +localStorage.getItem(RK()) || 0;
   if (!r) { startFocus(); return; }
   const sec = Math.floor((Date.now() - r) / 1000);
@@ -1424,7 +2049,7 @@ function showSummary(sec) {
   openSheet(`<div style="text-align:center"><div style="font-size:56px">🎉</div><h2 style="border:0">أحسنت! انتهت الجلسة</h2><p class="note">${lvl(sec)}</p></div><div class="sgrid">` +
     box(Math.round(sec / 60) + " د", "⏱️ مدة الجلسة") + box((sec / 360).toFixed(1), "⭐ نقاط كسبتها") +
     box(st.n, "🔥 أيام متتالية") + box(pct + "%", "🏆 إنجاز اليوم") + `</div><div class="bar"><i style="width:${pct}%"></i></div>` +
-    `<div class="row"><button class="save" id="sheetX">تمام 👍</button></div>`);
+    `<div class="row"><button class="save" id="sheetShareBtn">📸 مشاركة إنجازي</button><button class="chk" id="sheetX">تمام 👍</button></div>`);
 }
 
 // ---- طالب الأسبوع ----
@@ -1495,11 +2120,13 @@ $("statBtn").onclick = async () => {
   } catch (e) { openSheet(`<h2>📊 إحصائيات الطلاب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`); }
 };
 
-// ---- لوحة الترتيب ----
+// ---- لوحة الترتيب + المزامنة السحابية ----
 const NK = () => "nick_" + (me ? me.uid : "x");
 const weekKey = () => { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 1) % 7); return dayStr(d); };
 async function doSync() {
-  if (!me || isAdmin) return;
+  if (!me) return;
+  await pushCloudProgress();
+  if (isAdmin) return;
   const nick = localStorage.getItem(NK());
   if (!nick) return;
   const d = getStudy(), wk = weekKey(), dn = getDone();
@@ -1517,7 +2144,7 @@ const TK = () => "title_" + (me ? me.uid : "x");
 const AK = () => "avatar_" + (me ? me.uid : "x");
 const PK = () => "photo_" + (me ? me.uid : "x");
 const EMO = ["🙂", "😎", "🦁", "🦅", "🐯", "🐼", "🚀", "⭐", "🔥", "📚", "🧠", "🎓", "🌙", "⚡", "🏆", "🦉"];
-const TITLES = ["المثابر", "الطموح", "نجم الأحياء", "بطل الفيزياء", "ملك الرياضيات", "صاحب الهمّة"];
+const TITLES = ["المثابر", "الطموح", "قبطان المرسى", "ربّان ماهر", "أسطورة البحار", "صاحب الهمّة"];
 let tmpEmo = "🙂", tmpPhoto = "";
 function avHtml(r) {
   return r.photo && /^data:image\/(jpeg|png|webp);base64,/.test(r.photo) ? `<img src="${esc(r.photo)}" alt="">` : esc(r.avatar || "🙂");
@@ -1531,7 +2158,7 @@ function askNick(cb) {
     `<div class="emos">${EMO.map(e => `<button data-emo="${e}">${e}</button>`).join("")}</div>` +
     `<div class="row"><label class="chk upl">📷 رفع صورة<input type="file" id="photoIn" accept="image/*" hidden></label><button class="chk" id="photoDel">🗑️ حذف الصورة</button></div>` +
     `<input id="nickIn" maxlength="20" placeholder="الاسم" value="${esc(localStorage.getItem(NK()) || "")}">` +
-    `<input id="ttlIn" maxlength="20" placeholder="اللقب (اختياري) مثل: المثابر" value="${esc(localStorage.getItem(TK()) || "")}">` +
+    `<input id="ttlIn" maxlength="20" placeholder="اللقب (اختياري) مثل: قبطان المرسى" value="${esc(localStorage.getItem(TK()) || "")}">` +
     `<div class="emos">${TITLES.map(t => `<button data-ttl="${t}">${t}</button>`).join("")}</div>` +
     `<div class="row"><button class="save" id="nickOk">حفظ</button><button class="chk" id="sheetX">إلغاء</button></div>`);
   showPrev();
@@ -1587,7 +2214,7 @@ async function openBoard(tab) {
   }
 }
 
-// ---- شريط الجلسات والساعات والإنجاز ----
+// ---- شريط الجلسات والساعات والإنجاز وعداد الامتحان والأوسمة ----
 const SK = () => "study_" + (me ? me.uid : "x");
 const RK = () => "run_" + (me ? me.uid : "x");
 const getStudy = () => { try { return JSON.parse(localStorage.getItem(SK())) || { sessions: [], goal: 2 }; } catch (e) { return { sessions: [], goal: 2 }; } };
@@ -1615,6 +2242,11 @@ function renderStats() {
   const hint = st.n === 0 ? "ابدأ جلسة اليوم وابدأ سلسلتك" : (st.studiedToday ? "سلسلتك محفوظة اليوم" : "ادرس اليوم لتحافظ على السلسلة");
   const rt = resumeTarget();
 
+  const ex = getExam();
+  const diffDays = Math.max(0, Math.ceil((new Date(ex.date + "T00:00:00") - new Date()) / 864e5));
+  const badges = getHarborBadges();
+  const unlockedCount = badges.filter(b => b.on).length;
+
   $("statsWrap").innerHTML =
     `<div class="stats">` +
       `<div class="stat"><span class="sico">${IC.target}</span><b>${d.sessions.length}</b><small>الجلسات</small></div>` +
@@ -1627,61 +2259,51 @@ function renderStats() {
     `<div class="streak-card">` +
       `<span class="streak-orb">${IC.flame}</span>` +
       `<div class="streak-info"><b>${st.n} ${st.n === 1 ? "يوم" : "أيام"} متتالية</b><small>${hint}</small></div>` +
+      `<span class="cloud-pill" title="تقدمك محفوظ سحابياً بحسابك">☁️ متزامن</span>` +
     `</div>` +
     `<div class="goal-card">` +
       `<div class="goal-top"><span class="gl-r">${IC.cal} الهدف اليومي: ${d.goal} ساعة <button id="goalBtn">✏️ تغيير</button></span><span>${pct}%</span></div>` +
       `<div class="bar"><i style="width:${pct}%"></i></div>` +
+    `</div>` +
+    `<div class="exam-card">` +
+      `<div class="exam-l"><div class="exam-days"><b>${diffDays}</b><small>يوم متبقي</small></div><div class="exam-txt"><b>⏳ ${esc(ex.title)}</b><small>استثمر كل دقيقة، القمة بانتظارك!</small></div></div>` +
+      `<button class="exam-btn" id="examEditBtn">✏️ الموعد</button>` +
+    `</div>` +
+    `<div class="badges-bar" id="badgesBarBtn">` +
+      `<div class="badges-lbl">⚓ أوسمة المرسى <small>(${unlockedCount}/${badges.length})</small></div>` +
+      `<div class="badges-list">${badges.map(b => `<span class="bdg-mini ${b.on ? "on" : ""}" title="${esc(b.name)}">${b.ico}</span>`).join("")}</div>` +
     `</div>`;
 
   $("statsWrap2").innerHTML = "" +
     (rt ? `<button class="cont" id="contBtn" data-lid="${esc(rt.id)}">⏯️ كمّل من وين وقفت: ${esc(rt.title)}</button>` : "") +
-    `<button class="cont" id="lbBtn">🏆 لوحة الترتيب</button>`;
+    `<div style="display:flex;gap:8px"><button class="cont" id="lbBtn" style="flex:1">🏆 لوحة الترتيب</button><button class="cont" id="shareBtn" style="flex:1">📸 مشاركة إنجازي</button></div>`;
   tickFocus();
 }
 setInterval(() => {
-  const run = +localStorage.getItem(RK()) || 0, t = $("timer");
-  if (run && t) t.textContent = fmt(Math.floor((Date.now() - run) / 1000));
-  if (run) tickFocus();
+  const run = +localStorage.getItem(RK()) || 0;
+  if (run || pomoBreak) tickFocus();
 }, 1000);
 const statsClick = e => {
-  const b = e.target.closest("button");
+  const b = e.target.closest("button") || e.target.closest("#badgesBarBtn");
   if (!b) return;
   if (b.id === "contBtn") { goTo(b.dataset.lid); return; }
   if (b.id === "lbBtn") { openBoard("w"); return; }
+  if (b.id === "shareBtn") { shareStoryCard(); return; }
+  if (b.id === "examEditBtn") { openExamEditor(); return; }
+  if (b.id === "badgesBarBtn") { openBadgesSheet(); return; }
   if (b.id === "goalBtn") {
     const d = getStudy();
     const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
-    if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); }
+    if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); syncMe(); }
   }
 };
 $("statsWrap").onclick = statsClick;
 $("streakWrap").onclick = statsClick;
 $("statsWrap2").onclick = statsClick;
 
-$("app").onclick = e => {
-  const b = e.target.closest("button");
-  if (!b) return;
-  if (b.id === "saveO") { saveOrder(); return; }
-  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
-  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
-  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
-  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
-  else if (b.dataset.t) {
-    sel.t = b.dataset.t; sel.p = null;
-    const t = g && teachers(g).find(x => x.key === sel.t);
-    if (t && t.profs.length === 1) sel.p = t.profs[0].id;
-  }
-  else if (b.dataset.p) sel.p = b.dataset.p;
-  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
-  else if (b.dataset.back === "t") sel.t = sel.p = null;
-  else if (b.dataset.back === "p") {
-    const t = g && teachers(g).find(x => x.key === sel.t);
-    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
-  }
-  else return;
-  render();
-  renderStats();
-};
-</script>
-</body>
-</html>
+// ---- شريط التنقل السفلي الثابت (Bottom Nav) ----
+$("bnav").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#bnav button").forEach(x => x.classList.toggle("on", x === b));
+  const nav = b.dataset.nav;
+  if (nav === "home"
