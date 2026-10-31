@@ -35,7 +35,7 @@
   --donebg:#13291b;
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:none;overflow-x:hidden;padding-bottom:76px}
+body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:block;overflow-x:hidden;padding-bottom:76px}
 
 /* ===== الهيدر والواجهة العلوية والحركات الحية ===== */
 .hero-wrapper{
@@ -53,21 +53,16 @@ body{margin:0;min-height:100vh;font-family:'Tajawal',Tahoma,sans-serif;backgroun
   z-index:0;
 }
 @keyframes sweepBeam {
-  0%, 100% { transform: rotate(-3deg); opacity: 0.88; }
-  50% { transform: rotate(4deg); opacity: 1; }
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
 }
 @keyframes twinkleStar {
-  0%, 100% { opacity: 0.25; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1.2); }
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
 }
-@keyframes floatCloud {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(10px); }
-}
-.lh-beam { transform-origin: 132px 126px; animation: sweepBeam 8s ease-in-out infinite; }
-.tw-1 { animation: twinkleStar 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-.tw-2 { animation: twinkleStar 4.5s ease-in-out 1.2s infinite; transform-box: fill-box; transform-origin: center; }
-.clouds-anim { animation: floatCloud 14s ease-in-out infinite; }
+.lh-beam { animation: sweepBeam 6s ease-in-out infinite; }
+.tw-1 { animation: twinkleStar 3.2s ease-in-out infinite; }
+.tw-2 { animation: twinkleStar 4.5s ease-in-out 1.2s infinite; }
 
 header{
   position:relative;
@@ -972,7 +967,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 <body>
 
 <div class="hero-wrapper" id="topSec">
-  <!-- خلفية المنارة والبحر والشعاع الذهبي المتحرك -->
   <svg class="hero-art" viewBox="0 0 600 430" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
       <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
@@ -999,7 +993,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     </defs>
     <rect width="600" height="430" fill="url(#skyGrad)"/>
     <rect width="600" height="430" fill="url(#sunGlow)"/>
-    <!-- نجوم متلألئة -->
     <g fill="#fff5cc">
       <circle class="tw-1" cx="460" cy="48" r="1.6"/>
       <circle class="tw-2" cx="520" cy="78" r="2"/>
@@ -1007,33 +1000,26 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
       <circle class="tw-2" cx="290" cy="42" r="1.7"/>
       <circle class="tw-1" cx="555" cy="36" r="1.5"/>
     </g>
-    <!-- غيوم ناعمة متحركة -->
-    <g class="clouds-anim" fill="#f7d794" opacity="0.16">
+    <g fill="#f7d794" opacity="0.16">
       <ellipse cx="90" cy="175" rx="75" ry="18"/>
       <ellipse cx="195" cy="190" rx="95" ry="20"/>
       <ellipse cx="45" cy="200" rx="60" ry="15"/>
     </g>
-    <!-- شعاع المنارة المتحرك -->
     <g class="lh-beam">
       <polygon points="132,126 390,55 430,195" fill="url(#beamGrad)"/>
       <polygon points="132,126 0,90 0,165" fill="url(#beamGrad)" opacity="0.6"/>
     </g>
-    <!-- طيور -->
     <path d="M48 115 q6 -6 12 0 q6 -6 12 0" fill="none" stroke="#fbe6b8" stroke-width="1.6" opacity="0.7"/>
     <path d="M78 102 q5 -5 10 0 q5 -5 10 0" fill="none" stroke="#fbe6b8" stroke-width="1.4" opacity="0.6"/>
     <path d="M32 132 q4 -4 8 0 q4 -4 8 0" fill="none" stroke="#fbe6b8" stroke-width="1.3" opacity="0.5"/>
-    <!-- البحر -->
     <rect x="0" y="250" width="600" height="160" fill="#0b1c38" opacity="0.75"/>
     <path d="M40 270 H210 M65 282 H190 M85 296 H175" stroke="#ffdca0" stroke-width="1.5" opacity="0.45" stroke-linecap="round"/>
-    <!-- صخرة وجزيرة المنارة -->
     <path d="M25 270 Q65 225 115 228 Q165 225 205 268 Z" fill="#121e31"/>
     <path d="M48 268 Q95 235 155 242 Q185 246 198 268 Z" fill="#1d2d44"/>
-    <!-- بيت صغير جانب المنارة -->
     <rect x="78" y="206" width="38" height="26" fill="#d8d2c5"/>
     <polygon points="73,206 97,190 120,206" fill="#3a4c6b"/>
     <rect x="86" y="213" width="7" height="8" fill="#ffe6a3"/>
     <rect x="100" y="213" width="7" height="8" fill="#ffe6a3"/>
-    <!-- برج المنارة -->
     <polygon points="117,232 147,232 141,142 123,142" fill="#efeae0"/>
     <polygon points="132,232 147,232 141,142 132,142" fill="#cfc7b8"/>
     <rect x="119" y="138" width="26" height="5" rx="2" fill="#273956"/>
@@ -1044,7 +1030,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
     <line x1="132" y1="105" x2="132" y2="96" stroke="#e8c964" stroke-width="2"/>
     <rect x="129" y="156" width="6" height="10" rx="3" fill="#273956"/>
     <rect x="129" y="182" width="6" height="10" rx="3" fill="#273956"/>
-    <!-- موجات ذهبية تفصل الهيدر عن الخلفية -->
     <path d="M0 398 Q180 355 370 395 T600 385 L600 432 L0 432 Z" style="fill:var(--bg)"/>
     <path d="M0 398 Q180 355 370 395 T600 385" fill="none" stroke="url(#goldWave)" stroke-width="3.5"/>
   </svg>
@@ -1115,7 +1100,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
   <div id="streakWrap"></div>
 </div>
 
-<!-- لوحة وضع التركيز المتطورة -->
 <div style="max-width:640px;margin:0 auto;padding:0 16px" id="focusSec">
   <div id="focus">
     <div class="ftop"><span id="flevel"></span><span id="fpts"></span></div>
@@ -1145,7 +1129,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 
 <div id="statsWrap2" style="max-width:640px;margin:0 auto;padding:0 16px"></div>
 
-<!-- مركز البحث السريع والفلاتر فوق المواد مباشرة -->
 <div class="search-hub" id="subjectsSec">
   <div id="searchWrap">
     <div class="search-box">
@@ -1169,7 +1152,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
   </div>
 </footer>
 
-<!-- شريط التنقل السفلي السريع -->
 <nav class="bnav" id="bnav">
   <button data-nav="home" class="on"><span class="bico">🏠</span><span>الرئيسية</span></button>
   <button data-nav="focus"><span class="bico">⏱️</span><span>التركيز</span></button>
@@ -1183,14 +1165,16 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 
 <script>
 (function(){
-  var svgEl = document.getElementById("brandSvg");
-  if(!svgEl) return;
-  var xml = new XMLSerializer().serializeToString(svgEl);
-  var u = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xml)));
-  ["icon","apple-touch-icon"].forEach(function(r){
-    var l=document.createElement("link");
-    l.rel=r; l.href=u; document.head.appendChild(l);
-  });
+  try {
+    var svgEl = document.getElementById("brandSvg");
+    if(!svgEl) return;
+    var xml = new XMLSerializer().serializeToString(svgEl);
+    var u = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xml)));
+    ["icon","apple-touch-icon"].forEach(function(r){
+      var l=document.createElement("link");
+      l.rel=r; l.href=u; document.head.appendChild(l);
+    });
+  } catch(e){}
 })();
 </script>
 
@@ -1217,7 +1201,6 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 let S = [], P = [], L = [], sel = { s: null, t: null, p: null }, me = null, isAdmin = false, orderMap = null, dirty = false, usingData = false, allowed = null;
 let curFilter = "all";
 
-// أيقونات خطية
 const svg = (p, n = 16) => `<svg viewBox="0 0 24 24" width="${n}" height="${n}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const IC = {
   flame: svg('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'),
@@ -1246,7 +1229,6 @@ const norm = n => String(n || "")
   .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
   .replace(/\s+/g, " ").trim().toLowerCase().replace(/^ال/, "");
 
-// ---- مفاتيح التخزين المحلي للخصائص الجديدة ----
 const DK = () => "done_" + (me ? me.uid : "x");
 const BK = () => "bm_" + (me ? me.uid : "x");
 const NTK = () => "notes_" + (me ? me.uid : "x");
@@ -1256,7 +1238,6 @@ const getBm = () => { try { return JSON.parse(localStorage.getItem(BK())) || {};
 const getNotes = () => { try { return JSON.parse(localStorage.getItem(NTK())) || {}; } catch (e) { return {}; } };
 const getExam = () => { try { return JSON.parse(localStorage.getItem(EXK())) || { title: "الامتحانات الوزارية", date: "2026-06-01" }; } catch (e) { return { title: "الامتحانات الوزارية", date: "2026-06-01" }; } };
 
-// ---- القائمة العلوية والوضع الليلي ----
 const themeNow = () => document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 const syncThemeBtn = () => { $("themeBtn").textContent = themeNow() === "dark" ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي"; };
 syncThemeBtn();
@@ -1269,7 +1250,6 @@ $("themeBtn").onclick = () => {
 $("menuBtn").onclick = e => { e.stopPropagation(); $("menu").classList.toggle("open"); };
 document.addEventListener("click", e => { if (!e.target.closest("#menu")) $("menu").classList.remove("open"); });
 
-// ---- الدخول بكود الطالب ----
 async function myAccess(u) {
   const m = await getDoc(doc(db, "members", u.uid));
   if (!m.exists() || !m.data().code) return null;
@@ -1293,6 +1273,7 @@ onAuthStateChanged(auth, async u => {
 $("out").onclick = async () => { await signOut(auth); location.replace("login.html"); };
 
 function showGate(msg) {
+  renderStats();
   $("app").innerHTML = `<div class="gate"><h2>🔑 كود الدخول</h2><p>اكتب الكود الخاص بك الي أعطاك إياه المشرف.</p><input id="code" dir="ltr" placeholder="XXXX-XXXX" autocomplete="off"><button class="item" id="codeBtn" style="justify-content:center">✅ دخول</button><p class="err" id="codeMsg">${esc(msg || "")}</p></div>`;
   $("codeBtn").onclick = async () => {
     const code = $("code").value.trim().toUpperCase().replace(/\//g, "");
@@ -1306,7 +1287,7 @@ function showGate(msg) {
       const d = c.data();
       if (d.uid && d.uid !== me.uid) { msg.textContent = "هذا الكود مستخدم من حساب آخر. تواصل مع المشرف."; return; }
       if (!d.uid) await updateDoc(ref, { uid: me.uid, email: me.email });
-      await setDoc(doc(db, "members", me.uid), { code, email: me.email }, { merge: true });
+      await setDoc(doc(db, "members", me.uid), { code, email: me.email });
       allowed = d.teachers || [];
       await load();
     } catch (e) {
@@ -1343,44 +1324,21 @@ const lecKey = l => usingData
   : ((orderMap && typeof orderMap[l.id] === "number") ? orderMap[l.id] : (orderMap ? 1e6 : 0) + baseKey(l));
 const sortL = () => L.sort((a, b) => lecKey(a) - lecKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
 
-// ---- المزامنة السحابية لتقدم الطالب (Cloud Sync) ----
 async function pullCloudProgress() {
   if (!me) return;
   try {
-    const snap = await getDoc(doc(db, "members", me.uid));
+    const snap = await getDoc(doc(db, "leaderboard", me.uid));
     if (!snap.exists()) return;
     const data = snap.data();
     if (data.doneMap && typeof data.doneMap === "object") {
-      const mergedDone = { ...data.doneMap, ...getDone() };
-      localStorage.setItem(DK(), JSON.stringify(mergedDone));
+      localStorage.setItem(DK(), JSON.stringify({ ...data.doneMap, ...getDone() }));
     }
     if (data.bmMap && typeof data.bmMap === "object") {
-      const mergedBm = { ...data.bmMap, ...getBm() };
-      localStorage.setItem(BK(), JSON.stringify(mergedBm));
+      localStorage.setItem(BK(), JSON.stringify({ ...data.bmMap, ...getBm() }));
     }
     if (data.notesMap && typeof data.notesMap === "object") {
-      const mergedNotes = { ...data.notesMap, ...getNotes() };
-      localStorage.setItem(NTK(), JSON.stringify(mergedNotes));
+      localStorage.setItem(NTK(), JSON.stringify({ ...data.notesMap, ...getNotes() }));
     }
-    if (data.studyData && Array.isArray(data.studyData.sessions)) {
-      const local = getStudy();
-      if ((data.studyData.sessions.length || 0) > (local.sessions.length || 0)) {
-        putStudy(data.studyData);
-      }
-    }
-  } catch (e) {}
-}
-
-async function pushCloudProgress() {
-  if (!me) return;
-  try {
-    await setDoc(doc(db, "members", me.uid), {
-      doneMap: getDone(),
-      bmMap: getBm(),
-      notesMap: getNotes(),
-      studyData: getStudy(),
-      syncAt: Date.now()
-    }, { merge: true });
   } catch (e) {}
 }
 
@@ -1562,7 +1520,6 @@ async function saveOrder() {
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
 }
 
-// ---- علامة إنجاز المحاضرات والمفضلة والملاحظات ----
 let tt;
 function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2400); }
 function progressHtml() {
@@ -1621,7 +1578,6 @@ function saveLectureNote(id, card) {
   syncMe();
 }
 
-// ---- كمّل من وين وقفت ----
 const LK = () => "last_" + (me ? me.uid : "x");
 const getLast = () => { try { return JSON.parse(localStorage.getItem(LK())) || null; } catch (e) { return null; } };
 function setLast(p, l) {
@@ -1653,7 +1609,6 @@ function goTo(id) {
   if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("hl"); }
 }
 
-// ---- البحث والفلاتر الذكية ----
 function markFilterPills() {
   document.querySelectorAll("#filterPills button").forEach(b => b.classList.toggle("on", b.dataset.flt === curFilter));
 }
@@ -1688,7 +1643,6 @@ $("results").onclick = e => {
   if (b && b.dataset.go) goTo(b.dataset.go);
 };
 
-// ---- الأوسمة البحرية (Harbor Badges) ----
 function getHarborBadges() {
   const d = getStudy(), dn = getDone(), notes = getNotes();
   const hours = d.sessions.reduce((a, s) => a + s.sec, 0) / 3600;
@@ -1715,7 +1669,6 @@ function openBadgesSheet() {
     `<div class="row"><button class="save" id="sheetShareBtn">📸 مشاركة بطاقة إنجازي</button><button class="chk" id="sheetX">إغلاق</button></div>`);
 }
 
-// ---- عداد الامتحانات التنازلي ----
 function openExamEditor() {
   const ex = getExam();
   openSheet(`<h2>📅 إعداد عدّاد الامتحان</h2><p class="note">حدد اسم وموعد الامتحان القادم ليظهر العد التنازلي أمامك يومياً.</p>` +
@@ -1730,7 +1683,16 @@ function openExamEditor() {
   };
 }
 
-// ---- بطاقة مشاركة الإنجاز المصورة (Story Card Generator) ----
+function drawRoundedBox(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
 async function shareStoryCard() {
   const d = getStudy(), dn = getDone(), st = calcStreak(d.sessions);
   const hours = (d.sessions.reduce((a, s) => a + s.sec, 0) / 3600).toFixed(1);
@@ -1743,7 +1705,6 @@ async function shareStoryCard() {
   c.width = 720; c.height = 960;
   const ctx = c.getContext("2d");
 
-  // خلفية كحلية متدرجة فخمة
   const bg = ctx.createLinearGradient(0, 0, 0, 960);
   bg.addColorStop(0, "#071224");
   bg.addColorStop(0.5, "#11284c");
@@ -1751,14 +1712,12 @@ async function shareStoryCard() {
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, 720, 960);
 
-  // توهج ذهبي بالوسط
   const glow = ctx.createRadialGradient(360, 260, 20, 360, 260, 340);
   glow.addColorStop(0, "rgba(232,201,100,0.28)");
   glow.addColorStop(1, "rgba(232,201,100,0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, 720, 960);
 
-  // إطار ذهبي مزدوج
   ctx.strokeStyle = "#e8c964";
   ctx.lineWidth = 4;
   ctx.strokeRect(28, 28, 664, 904);
@@ -1774,7 +1733,6 @@ async function shareStoryCard() {
   ctx.font = "700 22px Tajawal, sans-serif";
   ctx.fillText("Knowledge Harbor • بطاقة إنجاز طالب", 360, 165);
 
-  // اسم الطالب واللقب
   ctx.fillStyle = "#ffffff";
   ctx.font = "900 38px Tajawal, sans-serif";
   ctx.fillText(nick, 360, 250);
@@ -1782,7 +1740,6 @@ async function shareStoryCard() {
   ctx.font = "800 24px Tajawal, sans-serif";
   ctx.fillText("الرتبة: " + rankTitle, 360, 292);
 
-  // صناديق الإحصائيات
   const boxes = [
     { lbl: "ساعات الدراسة", val: hours + " س" },
     { lbl: "أيام الالتزام", val: st.n + " 🔥" },
@@ -1795,8 +1752,7 @@ async function shareStoryCard() {
     ctx.fillStyle = "rgba(20, 42, 78, 0.85)";
     ctx.strokeStyle = "#c9a227";
     ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.roundRect(x, y, 260, 150, 22);
+    drawRoundedBox(ctx, x, y, 260, 150, 22);
     ctx.fill();
     ctx.stroke();
 
@@ -1808,7 +1764,6 @@ async function shareStoryCard() {
     ctx.fillText(b.lbl, x + 130, y + 122);
   });
 
-  // الأوسمة المفتوحة
   ctx.fillStyle = "#ffffff";
   ctx.font = "800 26px Tajawal, sans-serif";
   ctx.fillText("الأوسمة المكتسبة: " + (badges.map(b => b.ico).join("  ") || "🛶"), 360, 765);
@@ -1838,7 +1793,6 @@ async function shareStoryCard() {
   };
 }
 
-// ---- نافذة منبثقة ----
 function openSheet(html) { $("sheet").innerHTML = `<div class="box">${html}</div>`; $("sheet").classList.add("open"); }
 function closeSheet() { $("sheet").classList.remove("open"); }
 $("sheet").onclick = e => {
@@ -1859,7 +1813,6 @@ $("examMenuBtn").onclick = () => { $("menu").classList.remove("open"); openExamE
 $("badgesMenuBtn").onclick = () => { $("menu").classList.remove("open"); openBadgesSheet(); };
 $("shareMenuBtn").onclick = () => { $("menu").classList.remove("open"); shareStoryCard(); };
 
-// ---- إعلانات المشرف ----
 async function loadAnn() {
   const w = $("annWrap");
   try {
@@ -1895,7 +1848,6 @@ $("annBtn").onclick = async () => {
   $("annDel").onclick = () => save(false);
 };
 
-// ---- بدء/إنهاء الجلسة ----
 function toggleSession() {
   const run = +localStorage.getItem(RK()) || 0;
   if (!run) { localStorage.setItem(RK(), String(Date.now())); renderStats(); return; }
@@ -1906,7 +1858,6 @@ function toggleSession() {
   renderStats();
 }
 
-// ---- وضع التركيز وحلقة SVG وبومودورو الذكي ----
 let wl = null, fGoal = +localStorage.getItem("fgoal") || 0, isPomo = localStorage.getItem("fpomo") === "1", pomoBreak = false, breakStart = 0;
 let fSnd = localStorage.getItem("fsnd") || "", actx = null, snode = null, fDone = false;
 const lvl = sec => sec < 900 ? "مبتدئ" : sec < 2700 ? "مركّز" : sec < 5400 ? "محترف" : "أسطورة";
@@ -2052,7 +2003,6 @@ function showSummary(sec) {
     `<div class="row"><button class="save" id="sheetShareBtn">📸 مشاركة إنجازي</button><button class="chk" id="sheetX">تمام 👍</button></div>`);
 }
 
-// ---- طالب الأسبوع ----
 let starRows = [];
 async function loadStar() {
   const w = $("starWrap");
@@ -2091,7 +2041,6 @@ async function clearStar() {
   catch (e) { alert("فشل: " + (e.code || e.message)); }
 }
 
-// ---- إحصائيات الطلاب (للمشرف) ----
 $("statBtn").onclick = async () => {
   $("menu").classList.remove("open");
   openSheet("<h2>📊 إحصائيات الطلاب</h2><p>⏳ جارٍ التحميل...</p>");
@@ -2120,13 +2069,10 @@ $("statBtn").onclick = async () => {
   } catch (e) { openSheet(`<h2>📊 إحصائيات الطلاب</h2><p class="err">تعذّر التحميل: ${esc(e.code || e.message)}</p><button class="chk" id="sheetX">إغلاق</button>`); }
 };
 
-// ---- لوحة الترتيب + المزامنة السحابية ----
 const NK = () => "nick_" + (me ? me.uid : "x");
 const weekKey = () => { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 1) % 7); return dayStr(d); };
 async function doSync() {
-  if (!me) return;
-  await pushCloudProgress();
-  if (isAdmin) return;
+  if (!me || isAdmin) return;
   const nick = localStorage.getItem(NK());
   if (!nick) return;
   const d = getStudy(), wk = weekKey(), dn = getDone();
@@ -2135,7 +2081,20 @@ async function doSync() {
   const done = L.filter(l => dn[l.id]).length;
   const streak = calcStreak(d.sessions).n;
   const score = Math.round(sec / 3600 * 10 + done * 2 + streak * 3);
-  try { await setDoc(doc(db, "leaderboard", me.uid), { name: nick, title: localStorage.getItem(TK()) || "", avatar: localStorage.getItem(AK()) || "", photo: localStorage.getItem(PK()) || "", sec, weekSec, wk, done, streak, score, sessions: d.sessions.length, at: Date.now() }); } catch (e) {}
+  try {
+    await setDoc(doc(db, "leaderboard", me.uid), {
+      name: nick,
+      title: localStorage.getItem(TK()) || "",
+      avatar: localStorage.getItem(AK()) || "",
+      photo: localStorage.getItem(PK()) || "",
+      sec, weekSec, wk, done, streak, score,
+      sessions: d.sessions.length,
+      doneMap: dn,
+      bmMap: getBm(),
+      notesMap: getNotes(),
+      at: Date.now()
+    });
+  } catch (e) {}
 }
 let syncT;
 function syncMe() { clearTimeout(syncT); syncT = setTimeout(doSync, 1500); }
@@ -2214,7 +2173,6 @@ async function openBoard(tab) {
   }
 }
 
-// ---- شريط الجلسات والساعات والإنجاز وعداد الامتحان والأوسمة ----
 const SK = () => "study_" + (me ? me.uid : "x");
 const RK = () => "run_" + (me ? me.uid : "x");
 const getStudy = () => { try { return JSON.parse(localStorage.getItem(SK())) || { sessions: [], goal: 2 }; } catch (e) { return { sessions: [], goal: 2 }; } };
@@ -2279,6 +2237,9 @@ function renderStats() {
     `<div style="display:flex;gap:8px"><button class="cont" id="lbBtn" style="flex:1">🏆 لوحة الترتيب</button><button class="cont" id="shareBtn" style="flex:1">📸 مشاركة إنجازي</button></div>`;
   tickFocus();
 }
+
+renderStats();
+
 setInterval(() => {
   const run = +localStorage.getItem(RK()) || 0;
   if (run || pomoBreak) tickFocus();
@@ -2301,9 +2262,63 @@ $("statsWrap").onclick = statsClick;
 $("streakWrap").onclick = statsClick;
 $("statsWrap2").onclick = statsClick;
 
-// ---- شريط التنقل السفلي الثابت (Bottom Nav) ----
 $("bnav").onclick = e => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll("#bnav button").forEach(x => x.classList.toggle("on", x === b));
   const nav = b.dataset.nav;
-  if (nav === "home"
+  if (nav === "home") {
+    sel = { s: null, t: null, p: null };
+    curFilter = "all"; $("q").value = ""; markFilterPills(); runSearchAndFilter();
+    render();
+    $("subjectsSec").scrollIntoView({ behavior: "smooth" });
+  } else if (nav === "focus") {
+    $("focusSec").scrollIntoView({ behavior: "smooth", block: "center" });
+  } else if (nav === "fav") {
+    curFilter = "fav"; markFilterPills(); runSearchAndFilter();
+    $("subjectsSec").scrollIntoView({ behavior: "smooth" });
+  } else if (nav === "board") {
+    openBoard("w");
+  } else if (nav === "badges") {
+    openBadgesSheet();
+  }
+};
+
+$("app").onclick = e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "saveO") { saveOrder(); return; }
+  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
+  if (b.dataset.bm) { toggleBookmark(b.dataset.bm, b); return; }
+  if (b.dataset.nopen) {
+    const box = document.getElementById("nbox_" + b.dataset.nopen);
+    if (box) box.classList.toggle("open");
+    return;
+  }
+  if (b.dataset.nsave) { saveLectureNote(b.dataset.nsave, b.closest(".lec")); return; }
+  if (b.dataset.ncancel) {
+    const box = document.getElementById("nbox_" + b.dataset.ncancel);
+    if (box) box.classList.remove("open");
+    return;
+  }
+  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
+  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
+  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
+  else if (b.dataset.t) {
+    sel.t = b.dataset.t; sel.p = null;
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length === 1) sel.p = t.profs[0].id;
+  }
+  else if (b.dataset.p) sel.p = b.dataset.p;
+  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
+  else if (b.dataset.back === "t") sel.t = sel.p = null;
+  else if (b.dataset.back === "p") {
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
+  }
+  else return;
+  render();
+  renderStats();
+};
+</script>
+</body>
+</html>
