@@ -5314,6 +5314,15 @@
    "subjectId": "c2b893cb9f9341bbb9dc",
    "professorId": "ccbf637f6e8048299d81",
    "order": 557
+  },
+  {
+   "id": "6b12623afbbf479f8cf2",
+   "title": "محاضرة 1",
+   "url": "https://youtu.be/V_19Q7U9FYI?si=aNtADElEOz3oNMs2",
+   "desc": "",
+   "subjectId": "1b7a75b13be74d3db802",
+   "professorId": "a0bcd691b5bb4692b8c1",
+   "order": 558
   }
  ]
 }
