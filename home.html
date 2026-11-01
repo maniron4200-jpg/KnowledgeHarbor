@@ -1166,22 +1166,6 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 
 <div id="sheet"></div>
 <div class="toast" id="toast"></div>
-
-<script>
-(function(){
-  try {
-    var svgEl = document.getElementById("brandSvg");
-    if(!svgEl) return;
-    var xml = new XMLSerializer().serializeToString(svgEl);
-    var u = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(xml)));
-    ["icon","apple-touch-icon"].forEach(function(r){
-      var l=document.createElement("link");
-      l.rel=r; l.href=u; document.head.appendChild(l);
-    });
-  } catch(e){}
-})();
-</script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
