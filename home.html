@@ -178,8 +178,7 @@ header h1{
   background:linear-gradient(90deg, var(--gold2), transparent);
 }
 
-/* القائمة: صارت fixed وتتمرر حتى ما تنقص وتظهر كل الخيارات (مثل زر الخروج) */
-#menu{display:none;position:fixed;left:16px;right:auto;top:76px;z-index:60;background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:8px;min-width:195px;max-height:calc(100vh - 170px);overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+#menu{display:none;position:absolute;left:16px;right:auto;top:70px;z-index:50;background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:8px;min-width:195px;box-shadow:0 10px 28px rgba(0,0,0,.35)}
 #menu.open{display:block}
 #menu a,#menu button{display:block;width:100%;text-align:right;background:none;border:0;border-radius:10px;padding:10px 12px;font:700 14px Tajawal,sans-serif;color:var(--ink);cursor:pointer;text-decoration:none}
 #menu a:active,#menu button:active{background:var(--soft)}
@@ -1179,19 +1178,11 @@ iframe.tg{aspect-ratio:auto;height:480px;background:#fff}
 })();
 </script>
 
-<script>
-setTimeout(function(){
-  if(window.__booted) return;
-  var a=document.getElementById("app");
-  if(a) a.innerHTML='<div style="background:#fff3f2;border:2px solid #b3261e;border-radius:14px;padding:14px;font-weight:700;line-height:1.9">⚠️ ما انحمّلت مكتبات Firebase.<br>السبب غالباً النت أو حجب موقع gstatic.com.<br>جرّب شبكة ثانية أو VPN، ثم حدّث الصفحة.<br><a href="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js" target="_blank" style="color:#b3261e">🔗 اضغط هنا لاختبار الاتصال</a></div>';
-},8000);
-</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-window.__booted = true;
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
   authDomain: "knowledgeharbor-30476.firebaseapp.com",
@@ -1442,7 +1433,7 @@ function renderLectureCard(l) {
       `<button class="chk ${dn[l.id] ? "on" : ""}" data-done="${esc(l.id)}">${dn[l.id] ? "✅ تمت المشاهدة" : "⬜ علّم كمنجزة"}</button>` +
       `<button class="note-btn ${noteTxt ? "has" : ""}" data-nopen="${esc(l.id)}">📝 ${noteTxt ? "تعديل ملاحظتي" : "أضف ملاحظة"}</button>` +
     `</div>` +
-    `${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${esc(l.id)}">⬆️</button><button data-mv="down" data-id="${esc(l.id)}">⬇️</button><button data-del="${esc(l.id)}" style="border-color:var(--err);color:var(--err)">🗑️ حذف</button></div>` : ""}` +
+    `${isAdmin ? `<div class="mv"><button data-mv="up" data-id="${esc(l.id)}">⬆️ للأعلى</button><button data-mv="down" data-id="${esc(l.id)}">⬇️ للأسفل</button></div>` : ""}` +
   `</div>`;
 }
 
@@ -1527,38 +1518,6 @@ async function saveOrder() {
     alert("فشل الحفظ: " + e.message + (/401|403/.test(e.message) ? "\nالمفتاح غير صحيح أو ما عنده صلاحية." : ""));
   }
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
-}
-
-/* ===== حذف المحاضرات (للأدمن) ===== */
-async function ghEditData(mutate) {
-  let token = localStorage.getItem("ghtoken");
-  if (!token) { token = (prompt("الصق مفتاح GitHub:") || "").trim(); if (!token) throw new Error("ماكو مفتاح"); }
-  const owner = location.hostname.split(".")[0];
-  const seg = location.pathname.split("/").filter(Boolean)[0];
-  const repo = (seg && !seg.includes(".")) ? seg : owner + ".github.io";
-  const api = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/data.json";
-  const h = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
-  const g = await fetch(api + "?t=" + Date.now(), { headers: h, cache: "no-store" });
-  if (!g.ok) { if (g.status === 401 || g.status === 403) localStorage.removeItem("ghtoken"); throw new Error("GitHub " + g.status); }
-  const j = await g.json();
-  const cur = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, "")))));
-  mutate(cur);
-  const r = await fetch(api, { method: "PUT", headers: { ...h, "Content-Type": "application/json" },
-    body: JSON.stringify({ message: "edit data", sha: j.sha, content: btoa(unescape(encodeURIComponent(JSON.stringify(cur)))) }) });
-  if (!r.ok) throw new Error("GitHub " + r.status);
-  localStorage.setItem("ghtoken", token);
-}
-
-async function deleteLecture(id) {
-  if (!isAdmin) return;
-  const l = L.find(x => x.id === id); if (!l) return;
-  if (!confirm("حذف المحاضرة: " + l.title + " ؟")) return;
-  try {
-    if (usingData) await ghEditData(cur => { cur.lectures = (cur.lectures || []).filter(x => x.id !== id); });
-    else await deleteDoc(doc(db, "lectures", id));
-    L = L.filter(x => x.id !== id);
-    render(); renderStats(); toast("🗑️ انحذفت المحاضرة");
-  } catch (e) { alert("فشل الحذف: " + (e.code || e.message)); }
 }
 
 let tt;
@@ -2295,4 +2254,71 @@ const statsClick = e => {
   if (b.id === "badgesBarBtn") { openBadgesSheet(); return; }
   if (b.id === "goalBtn") {
     const d = getStudy();
-    const v = parseFloat(String(promp
+    const v = parseFloat(String(prompt("كم ساعة هدفك اليومي؟", d.goal) || "").replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)));
+    if (v > 0 && v <= 24) { d.goal = v; putStudy(d); renderStats(); syncMe(); }
+  }
+};
+$("statsWrap").onclick = statsClick;
+$("streakWrap").onclick = statsClick;
+$("statsWrap2").onclick = statsClick;
+
+$("bnav").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#bnav button").forEach(x => x.classList.toggle("on", x === b));
+  const nav = b.dataset.nav;
+  if (nav === "home") {
+    sel = { s: null, t: null, p: null };
+    curFilter = "all"; $("q").value = ""; markFilterPills(); runSearchAndFilter();
+    render();
+    $("subjectsSec").scrollIntoView({ behavior: "smooth" });
+  } else if (nav === "focus") {
+    $("focusSec").scrollIntoView({ behavior: "smooth", block: "center" });
+  } else if (nav === "fav") {
+    curFilter = "fav"; markFilterPills(); runSearchAndFilter();
+    $("subjectsSec").scrollIntoView({ behavior: "smooth" });
+  } else if (nav === "board") {
+    openBoard("w");
+  } else if (nav === "badges") {
+    openBadgesSheet();
+  }
+};
+
+$("app").onclick = e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "saveO") { saveOrder(); return; }
+  if (b.dataset.done) { toggleDone(b.dataset.done, b); return; }
+  if (b.dataset.bm) { toggleBookmark(b.dataset.bm, b); return; }
+  if (b.dataset.nopen) {
+    const box = document.getElementById("nbox_" + b.dataset.nopen);
+    if (box) box.classList.toggle("open");
+    return;
+  }
+  if (b.dataset.nsave) { saveLectureNote(b.dataset.nsave, b.closest(".lec")); return; }
+  if (b.dataset.ncancel) {
+    const box = document.getElementById("nbox_" + b.dataset.ncancel);
+    if (box) box.classList.remove("open");
+    return;
+  }
+  if (b.dataset.mv) { move(b.dataset.id, b.dataset.mv); return; }
+  const g = sel.s ? groups().find(x => x.key === sel.s) : null;
+  if (b.dataset.s) sel = { s: b.dataset.s, t: null, p: null };
+  else if (b.dataset.t) {
+    sel.t = b.dataset.t; sel.p = null;
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length === 1) sel.p = t.profs[0].id;
+  }
+  else if (b.dataset.p) sel.p = b.dataset.p;
+  else if (b.dataset.back === "s") sel = { s: null, t: null, p: null };
+  else if (b.dataset.back === "t") sel.t = sel.p = null;
+  else if (b.dataset.back === "p") {
+    const t = g && teachers(g).find(x => x.key === sel.t);
+    if (t && t.profs.length > 1) sel.p = null; else sel.t = sel.p = null;
+  }
+  else return;
+  render();
+  renderStats();
+};
+</script>
+</body>
+  </html>
