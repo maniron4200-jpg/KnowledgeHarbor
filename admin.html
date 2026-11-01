@@ -6,74 +6,132 @@
 <title>مرسى المعرفة – لوحة التحكم</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e}
+:root{--ink:#3b2f14;--gold:#c9a227;--gold2:#e8c964;--navy:#0c1b33;--soft:#fbf3dc;--line:#ead9a4;--err:#b3261e;--bg:#faf6ea;--mut:#8a7a4d}
 *{box-sizing:border-box}
-body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:#fffefa;color:var(--ink);display:none}
-header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(201,162,39,.18)}
-header h1{margin:0;font-size:20px;color:var(--gold)}
-header a{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:13px}
-main{max-width:640px;margin:0 auto;padding:18px 16px}
-.card{background:#fff;border:2px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(201,162,39,.12)}
-h2{margin:0 0 10px;font-size:17px;color:var(--ink);padding-bottom:8px;border-bottom:2px solid var(--line)}
+body{margin:0;font-family:Tajawal,Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:none;padding-bottom:90px}
+small{color:var(--mut);font-size:12px}
+
+.top{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 2px 10px rgba(201,162,39,.18)}
+.top header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.top h1{margin:0;font-size:19px;color:var(--gold)}
+.home{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-weight:800;text-decoration:none;border-radius:10px;padding:7px 12px;font-size:13px}
+nav.tabs{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+nav.tabs button,nav.tabs a{flex:1;text-align:center;padding:11px 0;background:none;border:0;border-bottom:3px solid transparent;font:700 14px Tajawal,sans-serif;color:var(--mut);text-decoration:none;cursor:pointer}
+nav.tabs .on{color:var(--ink);border-bottom-color:var(--gold)}
+
+main{max-width:640px;margin:0 auto;padding:14px 16px}
+.panel{display:none}
+.panel.on{display:block}
+
 input,select,textarea{width:100%;padding:11px;margin:5px 0;border:1.5px solid var(--line);border-radius:10px;font:15px Tajawal,sans-serif;background:#fff;color:var(--ink)}
 textarea{min-height:70px}
-.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font:800 15px Tajawal,sans-serif;cursor:pointer}
-.sub{border-bottom:1px solid var(--line);padding:8px 0}
-.prof{margin:6px 14px}
-.prof img{width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid var(--line)}
-.lec{margin:4px 28px;font-size:14px}
-small{color:#9a8650}
-.x{background:var(--err);color:#fff;border:0;border-radius:6px;padding:3px 9px;font:700 12px Tajawal,sans-serif;cursor:pointer;margin-right:6px}
-.ph{background:var(--gold)}
-.mv{background:var(--soft);color:var(--ink);border:1px solid var(--gold)}
-.dirty{outline:3px solid var(--err)}
-.cd{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:8px 0;font-size:14px}
+.add{width:100%;margin-top:6px;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font:800 15px Tajawal,sans-serif;cursor:pointer}
+.add:disabled{opacity:.6}
+
+.card{background:#fff;border:1.5px solid var(--gold);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h2{margin:0 0 8px;font-size:16px}
+.card p{margin:0 0 8px;font-size:14px}
+
+details.acc{background:#fff;border:1.5px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+details.acc summary{padding:14px;font:800 16px Tajawal,sans-serif;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"⌄";color:var(--gold);font-size:20px;transition:.2s}
+details.acc[open] summary{border-bottom:1px solid var(--line)}
+details.acc[open] summary::after{transform:rotate(180deg)}
+details.acc .in{padding:10px 14px 14px}
+
+.sj{background:#fff;border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.sj-h{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer}
+.ico{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.sj-t{flex:1;min-width:0}
+.sj-t b{display:block;font-size:15px}
+.chev{color:var(--gold);transition:.2s;font-size:20px;flex:none}
+.sj.open .chev{transform:rotate(180deg)}
+.sj-b{display:none;border-top:1px solid var(--line);background:#fffdf6}
+.sj.open .sj-b{display:block}
+
+.ib{width:34px;height:34px;padding:0;border:1px solid var(--line);background:var(--soft);border-radius:8px;font:800 15px Tajawal,sans-serif;color:var(--ink);cursor:pointer;flex:none}
+.menu{display:none;gap:8px;padding:8px 12px;background:#fff8e6;border-top:1px dashed var(--line);flex-wrap:wrap}
+.menu.show{display:flex}
+.menu button{padding:7px 12px;border-radius:8px;border:0;font:700 13px Tajawal,sans-serif;cursor:pointer;background:var(--soft);color:var(--ink)}
+.menu .del{background:var(--err);color:#fff}
+
+.pr{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fdf6df;border-bottom:1px solid var(--line)}
+.pr b{flex:1;min-width:0;font-size:14px}
+.av{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.lr{display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1px solid #f2e7c3;font-size:14px}
+.lr .n{width:22px;text-align:center;color:var(--mut);font-size:12px;flex:none}
+.lr .lt{flex:1;min-width:0;overflow-wrap:anywhere}
+.addl{display:block;width:calc(100% - 24px);margin:10px 12px;padding:9px;border:1px dashed var(--gold);border-radius:8px;background:none;color:var(--ink);font:700 13px Tajawal,sans-serif;cursor:pointer}
+
+.savebar{position:fixed;bottom:0;left:0;right:0;z-index:30;display:none;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:2px solid var(--gold);box-shadow:0 -4px 14px rgba(0,0,0,.12)}
+.savebar.show{display:flex}
+.savebar .in{max-width:640px;width:100%;display:flex;align-items:center;gap:10px}
+.savebar span{flex:1;font-size:13px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.savebar span::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.savebar button{padding:11px 18px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font:800 15px Tajawal,sans-serif;cursor:pointer}
+.savebar button:disabled{opacity:.6}
+
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:20px;font:700 14px Tajawal,sans-serif;opacity:0;transition:.3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
-<header><h1>⚙️ لوحة التحكم</h1><a href="home.html">🏠 الرئيسية</a></header>
+<div class="top">
+  <header><h1>⚙️ لوحة التحكم</h1><a class="home" href="home.html">🏠 الرئيسية</a></header>
+  <nav class="tabs">
+    <button data-tab="content" class="on">🗂️ المحتوى</button>
+    <button data-tab="add">➕ إضافة</button>
+    <a href="codes.html">🔑 الأكواد</a>
+  </nav>
+</div>
+
 <main>
-  <div class="card" id="mig" style="display:none"><h2>📦 نقل البيانات إلى GitHub</h2><p style="margin:0 0 8px;font-size:14px">لازم تنقل المحاضرات مرة وحدة حتى تشتغل الإضافة والحذف والترتيب بدون Firebase.</p><button class="add" id="migBtn">📦 نقل البيانات الآن</button></div>
-  <div class="card">
-    <h2>📚 مادة جديدة</h2>
-    <input id="sName" placeholder="اسم المادة">
-    <input id="sTerm" placeholder="الفصل (مثلاً: الفصل الأول)">
-    <button class="add" id="addS">➕ إضافة المادة</button>
-  </div>
-  <div class="card">
-    <h2>👨‍🏫 أستاذ جديد</h2>
-    <input id="pName" placeholder="اسم الأستاذ">
-    <input id="pPhoto" placeholder="اسم صورة الأستاذ (مثلاً: IMG_20261026_140950_938.jpg)" dir="ltr">
-    <select id="pSub"></select>
-    <button class="add" id="addP">➕ إضافة الأستاذ</button>
-  </div>
-  <div class="card">
-    <h2>🎬 محاضرة جديدة</h2>
-    <select id="lSub"></select>
-    <select id="lProf"></select>
-    <input id="lTitle" placeholder="عنوان المحاضرة">
-    <input id="lUrl" placeholder="رابط يوتيوب" dir="ltr">
-    <textarea id="lDesc" placeholder="وصف (اختياري)"></textarea>
-    <button class="add" id="addL">➕ إضافة المحاضرة</button>
-  </div>
-  <div class="card">
-    <h2>🔑 أكواد الطلاب</h2>
-    <input id="cName" placeholder="اسم الطالب">
-    <button class="add" id="addC">➕ إنشاء كود</button>
-    <p id="cNew" style="font-weight:800;font-size:20px;text-align:center;direction:ltr;margin:10px 0 0"></p>
-    <div id="codes" style="margin-top:10px"></div>
-  </div>
-  <div class="card">
-    <h2>🗂️ المحتوى الحالي</h2>
-    <button class="add" id="saveO" style="margin-bottom:10px">💾 حفظ الترتيب</button>
+  <div class="card" id="mig" style="display:none"><h2>📦 نقل البيانات إلى GitHub</h2><p>لازم تنقل المحاضرات مرة وحدة حتى تشتغل الإضافة والحذف والترتيب بدون Firebase.</p><button class="add" id="migBtn">📦 نقل البيانات الآن</button></div>
+
+  <section class="panel on" id="tab-content">
     <div id="list"></div>
-  </div>
+  </section>
+
+  <section class="panel" id="tab-add">
+    <details class="acc" id="dS" open>
+      <summary>📚 مادة جديدة</summary>
+      <div class="in">
+        <input id="sName" placeholder="اسم المادة">
+        <input id="sTerm" placeholder="الفصل (مثلاً: الفصل الأول)">
+        <button class="add" id="addS">➕ إضافة المادة</button>
+      </div>
+    </details>
+    <details class="acc" id="dP">
+      <summary>👨‍🏫 أستاذ جديد</summary>
+      <div class="in">
+        <input id="pName" placeholder="اسم الأستاذ">
+        <input id="pPhoto" placeholder="اسم صورة الأستاذ (مثلاً: IMG_20261026_140950_938.jpg)" dir="ltr">
+        <select id="pSub"></select>
+        <button class="add" id="addP">➕ إضافة الأستاذ</button>
+      </div>
+    </details>
+    <details class="acc" id="dL">
+      <summary>🎬 محاضرة جديدة</summary>
+      <div class="in">
+        <select id="lSub"></select>
+        <select id="lProf"></select>
+        <input id="lTitle" placeholder="عنوان المحاضرة">
+        <input id="lUrl" placeholder="رابط يوتيوب" dir="ltr">
+        <textarea id="lDesc" placeholder="وصف (اختياري)"></textarea>
+        <button class="add" id="addL">➕ إضافة المحاضرة</button>
+      </div>
+    </details>
+  </section>
 </main>
+
+<div class="savebar" id="saveBar"><div class="in"><span>تغييرات غير محفوظة</span><button id="saveO">💾 حفظ الترتيب</button></div></div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpZeSTo-6oOe_s8fIcxzlbCXfw9j5Oujk",
@@ -93,6 +151,18 @@ const val = id => $(id).value.trim();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "").slice(0, 20) : String(Date.now()) + Math.random().toString(36).slice(2, 8));
 let S = [], P = [], L = [], sha = null, migrated = false;
+const openSubs = new Set();
+let firstOpenDone = false;
+
+let tt;
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200); }
+
+function showTab(n) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "tab-" + n));
+  document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === n));
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll("nav.tabs button").forEach(b => { b.onclick = () => showTab(b.dataset.tab); });
 
 // ---- GitHub ----
 const owner = location.hostname.split(".")[0];
@@ -145,13 +215,12 @@ function sortAll() {
   L.sort((a, b) => baseKey(a) - baseKey(b) || (a.title || "").localeCompare(b.title || "", "ar"));
 }
 let dirty = false;
-function setDirty(v) { dirty = v; $("saveO").classList.toggle("dirty", v); }
+function setDirty(v) { dirty = v; $("saveBar").classList.toggle("show", v); }
 
 onAuthStateChanged(auth, u => {
   if (!u || u.email !== ADMIN) { location.replace("home.html"); return; }
   document.body.style.display = "block";
   load();
-  loadCodes();
 });
 
 async function loadFirestore() {
@@ -194,14 +263,27 @@ function render() {
   $("lSub").innerHTML = opts(S, s => s.name + " (" + (s.term || "") + ")");
   if (sv && S.some(s => s.id === sv)) $("lSub").value = sv;
   fillProfs();
-  $("list").innerHTML = S.map(s =>
-    `<div class="sub"><b>📚 ${esc(s.name)}</b> <small>${esc(s.term)}</small> <button class="x" data-t="s" data-id="${s.id}">حذف</button>` +
-    P.filter(p => p.subjectId === s.id).map(p =>
-      `<div class="prof">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : "👨‍🏫"} ${esc(p.name)} <button class="x ph" data-t="ph" data-id="${p.id}">صورة</button> <button class="x" data-t="p" data-id="${p.id}">حذف</button>` +
-      L.filter(l => l.professorId === p.id).map((l, i) =>
-        `<div class="lec"><small>${i + 1}</small> 🎬 ${esc(l.title)} <button class="x mv" data-t="up" data-id="${l.id}">⬆️</button><button class="x mv" data-t="dn" data-id="${l.id}">⬇️</button><button class="x" data-t="l" data-id="${l.id}">حذف</button></div>`).join("") +
-      `</div>`).join("") +
-    `</div>`).join("") || "<p>ما كو محتوى بعد.</p>";
+  if (!firstOpenDone && S.length) { openSubs.add(S[0].id); firstOpenDone = true; }
+
+  $("list").innerHTML = S.map(s => {
+    const ps = P.filter(p => p.subjectId === s.id);
+    const cnt = L.filter(l => l.subjectId === s.id).length;
+    return `<div class="sj ${openSubs.has(s.id) ? "open" : ""}" data-sid="${s.id}">` +
+      `<div class="sj-h"><span class="ico">📚</span><div class="sj-t"><b>${esc(s.name)}</b><small>${esc(s.term)} · ${ps.length} أستاذ · ${cnt} محاضرة</small></div><button class="ib" data-t="tog" data-id="${s.id}" aria-label="خيارات">⋯</button><span class="chev">⌄</span></div>` +
+      `<div class="menu" id="m_${s.id}"><button class="del" data-t="s" data-id="${s.id}">🗑️ حذف المادة</button></div>` +
+      `<div class="sj-b">` +
+      ps.map(p => {
+        const lec = L.filter(l => l.professorId === p.id);
+        return `<div class="pr"><span class="av">${p.photo ? `<img src="${esc(p.photo)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : "👨‍🏫"}</span><b>${esc(p.name)}<br><small>${lec.length} محاضرة</small></b><button class="ib" data-t="tog" data-id="${p.id}" aria-label="خيارات">⋯</button></div>` +
+          `<div class="menu" id="m_${p.id}"><button data-t="ph" data-id="${p.id}">🖼️ تغيير الصورة</button><button class="del" data-t="p" data-id="${p.id}">🗑️ حذف الأستاذ</button></div>` +
+          lec.map((l, i) =>
+            `<div class="lr"><span class="n">${i + 1}</span><span class="lt">🎬 ${esc(l.title)}</span><button class="ib" data-t="up" data-id="${l.id}" aria-label="للأعلى">↑</button><button class="ib" data-t="dn" data-id="${l.id}" aria-label="للأسفل">↓</button><button class="ib" data-t="tog" data-id="${l.id}" aria-label="خيارات">⋯</button></div>` +
+            `<div class="menu" id="m_${l.id}"><button class="del" data-t="l" data-id="${l.id}">🗑️ حذف المحاضرة</button></div>`).join("") +
+          `<button class="addl" data-t="addl" data-id="${p.id}">➕ إضافة محاضرة لهذا الأستاذ</button>`;
+      }).join("") +
+      (ps.length ? "" : `<p style="margin:12px;font-size:13px;color:var(--mut)">ما كو أساتذة بهذي المادة بعد.</p>`) +
+      `</div></div>`;
+  }).join("") || "<p>ما كو محتوى بعد.</p>";
 }
 
 // ينفّذ التعديل بالذاكرة ثم يحفظه بـ GitHub
@@ -237,31 +319,56 @@ $("migBtn").onclick = async () => {
 $("addS").onclick = async () => {
   if (!val("sName")) return alert("اكتب اسم المادة");
   const o = { id: uid(), name: val("sName"), term: val("sTerm") };
-  if (await act(() => S.push(o))) { $("sName").value = ""; $("sTerm").value = ""; }
+  if (await act(() => S.push(o))) { $("sName").value = ""; $("sTerm").value = ""; toast("✅ تمت إضافة المادة"); }
 };
 $("addP").onclick = async () => {
   if (!val("pName") || !$("pSub").value) return alert("اكتب اسم الأستاذ واختر المادة");
   const o = { id: uid(), name: val("pName"), photo: val("pPhoto"), subjectId: $("pSub").value };
-  if (await act(() => P.push(o))) { $("pName").value = ""; $("pPhoto").value = ""; }
+  if (await act(() => P.push(o))) { $("pName").value = ""; $("pPhoto").value = ""; toast("✅ تمت إضافة الأستاذ"); }
 };
 $("addL").onclick = async () => {
   if (!val("lTitle") || !val("lUrl") || !$("lSub").value || !$("lProf").value) return alert("اختر المادة والأستاذ واكتب العنوان والرابط");
   const mx = L.reduce((m, l) => Math.max(m, typeof l.order === "number" ? l.order : -1), -1);
   const o = { id: uid(), title: val("lTitle"), url: val("lUrl"), desc: val("lDesc"), subjectId: $("lSub").value, professorId: $("lProf").value, order: mx + 1 };
-  if (await act(() => L.push(o))) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; }
+  if (await act(() => L.push(o))) { $("lTitle").value = ""; $("lUrl").value = ""; $("lDesc").value = ""; toast("✅ تمت إضافة المحاضرة"); }
 };
 
 $("saveO").onclick = async () => {
   const btn = $("saveO");
   btn.disabled = true; btn.textContent = "⏳ جاري الحفظ...";
-  await act(() => { L.forEach((l, i) => { l.order = i; }); });
+  const ok = await act(() => { L.forEach((l, i) => { l.order = i; }); });
   btn.disabled = false; btn.textContent = "💾 حفظ الترتيب";
+  if (ok) toast("✅ تم حفظ الترتيب");
 };
 
 $("list").onclick = async e => {
   const b = e.target.closest("button[data-id]");
-  if (!b) return;
+  if (!b) {
+    const h = e.target.closest(".sj-h");
+    if (h) {
+      const box = h.parentElement, id = box.dataset.sid;
+      box.classList.toggle("open");
+      if (box.classList.contains("open")) openSubs.add(id); else openSubs.delete(id);
+    }
+    return;
+  }
   const { t, id } = b.dataset;
+  if (t === "tog") {
+    const m = document.getElementById("m_" + id);
+    if (m) m.classList.toggle("show");
+    return;
+  }
+  if (t === "addl") {
+    const p = P.find(x => x.id === id);
+    if (!p) return;
+    $("lSub").value = p.subjectId;
+    fillProfs();
+    $("lProf").value = p.id;
+    $("dL").open = true;
+    showTab("add");
+    $("lTitle").focus();
+    return;
+  }
   if (t === "up" || t === "dn") {
     const cur = L.find(x => x.id === id);
     const group = L.filter(x => x.professorId === cur.professorId);
@@ -293,52 +400,6 @@ $("list").onclick = async e => {
       P = P.filter(x => x.id !== id);
     } else L = L.filter(x => x.id !== id);
   });
-};
-
-// ---- أكواد الطلاب ----
-const genCode = () => {
-  const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const a = crypto.getRandomValues(new Uint8Array(8));
-  return [...a].map(n => c[n % c.length]).join("");
-};
-let C = [];
-async function loadCodes() {
-  try {
-    const q = await getDocs(collection(db, "codes"));
-    C = q.docs.map(d => ({ code: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  } catch (e) {
-    $("codes").innerHTML = "<small>تعذّر تحميل الأكواد: " + esc(e.code || e.message) + "</small>";
-    return;
-  }
-  $("codes").innerHTML = C.map(c =>
-    `<div class="cd"><span><b>${esc(c.name)}</b> <small>${c.usedBy ? "✅ مستخدم" : "⏳ غير مستخدم"}</small><br><code dir="ltr">${esc(c.code)}</code></span><span><button class="x mv" data-c="copy" data-id="${esc(c.code)}">نسخ</button><button class="x" data-c="del" data-id="${esc(c.code)}">حذف</button></span></div>`).join("") || "<small>ما كو أكواد بعد.</small>";
-}
-$("addC").onclick = async () => {
-  if (!val("cName")) return alert("اكتب اسم الطالب");
-  const code = genCode();
-  try {
-    await setDoc(doc(db, "codes", code), { name: val("cName"), usedBy: null, createdAt: Date.now() });
-    $("cName").value = "";
-    $("cNew").textContent = code;
-    await loadCodes();
-  } catch (e) { alert("فشل إنشاء الكود: " + (e.code || e.message)); }
-};
-$("codes").onclick = async e => {
-  const b = e.target.closest("button[data-id]");
-  if (!b) return;
-  const c = C.find(x => x.code === b.dataset.id);
-  if (!c) return;
-  if (b.dataset.c === "copy") {
-    try { await navigator.clipboard.writeText(c.code); alert("تم النسخ ✅"); }
-    catch (_) { prompt("انسخ الكود:", c.code); }
-    return;
-  }
-  if (!confirm(c.usedBy ? "حذف الكود وسحب صلاحية الطالب؟" : "حذف الكود؟")) return;
-  try {
-    if (c.usedBy) await deleteDoc(doc(db, "members", c.usedBy));
-    await deleteDoc(doc(db, "codes", c.code));
-    await loadCodes();
-  } catch (e) { alert("فشل الحذف: " + (e.code || e.message)); }
 };
 </script>
 </body>
