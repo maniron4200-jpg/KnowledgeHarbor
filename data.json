@@ -64,11 +64,6 @@
    "id": "c2b893cb9f9341bbb9dc",
    "name": "كيمياء",
    "term": "الثالث"
-  },
-  {
-   "id": "0a9caeb600ae44cd88e4",
-   "name": "نكليزي",
-   "term": "يونت اول"
   }
  ],
  "professors": [
@@ -209,12 +204,6 @@
    "name": "علي السوداني",
    "photo": "IMG_20261026_201543_710.jpg",
    "subjectId": "23c3f5a444414704baf3"
-  },
-  {
-   "id": "610a0e459f1b4707ad24",
-   "name": "استاذ علي",
-   "photo": "IMG_20261101_153339_451.png",
-   "subjectId": "0a9caeb600ae44cd88e4"
   },
   {
    "id": "ec9a8553946e404b9506",
@@ -2398,15 +2387,6 @@
    "subjectId": "23c3f5a444414704baf3",
    "professorId": "12d6077a3e5f4fec951e",
    "order": 232
-  },
-  {
-   "id": "8d28f06ca855438099f8",
-   "title": "حفضيات",
-   "url": "https://youtu.be/ELLzeuzK4CU?si=lOQjUtgltS6W38ac",
-   "desc": "",
-   "subjectId": "0a9caeb600ae44cd88e4",
-   "professorId": "610a0e459f1b4707ad24",
-   "order": 233
   },
   {
    "id": "4c036ea1740649c89ce2",
