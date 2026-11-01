@@ -1,0 +1,18 @@
+{
+  "name": "مرسى المعرفة | Knowledge Harbor",
+  "short_name": "مرسى المعرفة",
+  "start_url": "home.html",
+  "display": "standalone",
+  "background_color": "#0c1b33",
+  "theme_color": "#0c1b33",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
