@@ -5526,7 +5526,7 @@
    "desc": "",
    "subjectId": "7bc1e52a86ad41648a84",
    "professorId": "829f23778ef34775851a",
-   "order": 577
+   "order": 574
   },
   {
    "id": "2794c64aa93f4079bbaf",
@@ -5535,7 +5535,7 @@
    "desc": "",
    "subjectId": "1b7a75b13be74d3db802",
    "professorId": "a0bcd691b5bb4692b8c1",
-   "order": 578
+   "order": 575
   },
   {
    "id": "28e48cced96b4fb19af0",
@@ -5544,7 +5544,7 @@
    "desc": "",
    "subjectId": "06062233420548aba13a",
    "professorId": "df6340edc2554aa1b81c",
-   "order": 579
+   "order": 576
   },
   {
    "id": "40c45fa4adc24bd3a4be",
@@ -5553,7 +5553,7 @@
    "desc": "",
    "subjectId": "06062233420548aba13a",
    "professorId": "df6340edc2554aa1b81c",
-   "order": 581
+   "order": 577
   },
   {
    "id": "647a4a1a4d0b408bbf60",
@@ -5562,7 +5562,7 @@
    "desc": "",
    "subjectId": "06062233420548aba13a",
    "professorId": "df6340edc2554aa1b81c",
-   "order": 582
+   "order": 578
   },
   {
    "id": "a5edf4a15d054bdfb7a3",
@@ -5571,7 +5571,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 583
+   "order": 579
   },
   {
    "id": "dc6ed83648574cd985b4",
@@ -5580,7 +5580,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 584
+   "order": 580
   },
   {
    "id": "fb26b7415bae4435a807",
@@ -5589,7 +5589,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 585
+   "order": 581
   },
   {
    "id": "b4b49d53d4204cf5b6c9",
@@ -5598,7 +5598,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 586
+   "order": 582
   },
   {
    "id": "27cb3506a0b64a5989b1",
@@ -5607,7 +5607,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 587
+   "order": 583
   },
   {
    "id": "82ca91ff48084770b72a",
@@ -5616,7 +5616,7 @@
    "desc": "",
    "subjectId": "94330064bb444141a685",
    "professorId": "17ccffb3d8b245dcacb1",
-   "order": 588
+   "order": 584
   },
   {
    "id": "436a6247877347beb136",
@@ -5625,7 +5625,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 589
+   "order": 585
   },
   {
    "id": "e40a49863769454e9cd4",
@@ -5634,7 +5634,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 590
+   "order": 586
   },
   {
    "id": "13a0a21a7ee4461faf15",
@@ -5643,7 +5643,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 591
+   "order": 587
   },
   {
    "id": "5e845e95664b4ae6a415",
@@ -5652,7 +5652,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 592
+   "order": 588
   },
   {
    "id": "f502babc6f834fa589cd",
@@ -5661,7 +5661,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 593
+   "order": 589
   },
   {
    "id": "2004bd5ad5c0445ab3ec",
@@ -5670,7 +5670,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 594
+   "order": 590
   },
   {
    "id": "4efc66999e9d4812a6ba",
@@ -5679,7 +5679,7 @@
    "desc": "",
    "subjectId": "1a67867e113e4a76b024",
    "professorId": "aa5feb064a284207925e",
-   "order": 595
+   "order": 591
   },
   {
    "id": "35870b0a0fe44e0cad8a",
@@ -5688,7 +5688,7 @@
    "desc": "",
    "subjectId": "1b7a75b13be74d3db802",
    "professorId": "a0bcd691b5bb4692b8c1",
-   "order": 596
+   "order": 592
   }
  ]
 }
